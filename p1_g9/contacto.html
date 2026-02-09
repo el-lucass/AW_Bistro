@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bistro FDI - Contacto</title>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Inicio</a> | <a href="detalles.html">Detalles</a> | <a href="bocetos.html">Bocetos</a> | <a href="miembros.html">Miembros</a> | <a href="planificacion.html">Planificación</a> | <a href="contacto.html">Contacto</a>
+    </nav>
+    <hr>
+    <h1>Formulario de Contacto</h1>
+    <form action="mailto:tuemail@ejemplo.com" method="post" enctype="text/plain">
+        <label>Nombre:</label><br>
+        <input type="text" name="nombre" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="correo" required><br><br>
+
+        <label>Motivo de la consulta:</label><br>
+        <input type="radio" name="motivo" value="Evaluacion"> Evaluación
+        <input type="radio" name="motivo" value="Sugerencias"> Sugerencias
+        <input type="radio" name="motivo" value="Criticas"> Críticas<br><br>
+
+        <input type="checkbox" name="terminos" required> 
+        Marque esta casilla para verificar que ha leído nuestros términos y condiciones del servicio<br><br>
+
+        <label>Consulta:</label><br>
+        <textarea name="mensaje" rows="4" cols="40"></textarea><br><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>
