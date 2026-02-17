@@ -1,0 +1,9 @@
+https://github.com/el-lucass/AW_Bistro
+
+IMPORTANTE!!
+Para los siguientes: cuando creais la base de datos meter todas las tablas
+las tablas están en includes/mysql/estructura
+
+Punto 0. Gestion de usuarios
+admin.php, index.php, login.php, logout.php, procesarLogin.php, procesarRegistro.php, registro.php
+includes --> vistas, mysql, config.php, usuarios.php
