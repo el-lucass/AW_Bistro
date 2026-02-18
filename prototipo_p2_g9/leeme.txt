@@ -1,9 +1,15 @@
 https://github.com/el-lucass/AW_Bistro
 
 IMPORTANTE!!
-Para los siguientes: cuando creais la base de datos meter todas las tablas
+1) Poner el proyecto en C:\xampp\htdocs\Proyectos\AW_Bistro\prototipo_p2_g9
+    Sino las rutas de config.php no funcionan
+2) Para los siguientes: cuando creais la base de datos meter todas las tablas
 las tablas están en includes/mysql/estructura
 
-Punto 0. Gestion de usuarios
-admin.php, index.php, login.php, logout.php, procesarLogin.php, procesarRegistro.php, registro.php
-includes --> vistas, mysql, config.php, usuarios.php
+Punto 0. Gestion de usuarios Lucas Arranz
+/admin crear_usuario.php , editar_usuario.php , usuarios.php
+/includes/vistas tanto comun como plantilla
+/includes usuarios.php
+/usuarios admin_borrar.php , admin_crear.php , admin_editar.php , borrar_cuenta.php , cambio_rol.php , login.php ,
+/usuarios perfil.php , registro.php
+/ index.php , login.php , logout.php , perfil.php , registro.php

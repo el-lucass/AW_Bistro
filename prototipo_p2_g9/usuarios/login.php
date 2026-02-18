@@ -1,6 +1,6 @@
 <?php
-require_once 'includes/config.php';
-require_once 'includes/mysql/bd.php';
+require_once '../includes/config.php';
+require_once '../includes/mysql/bd.php';
 
 $usuario = $_POST['nombre_usuario'] ?? null;
 $password = $_POST['password'] ?? null;
@@ -18,8 +18,8 @@ if ($usuario && $password) {
         $_SESSION['nombre'] = $user['nombre_usuario'];
         $_SESSION['rol'] = $user['rol'];
         $_SESSION['id'] = $user['id'];
-        header('Location: index.php');
+        header('Location: ../index.php');
     } else {
-        echo "Login incorrecto. <a href='login.php'>Reintentar</a>";
+        echo "Login incorrecto. <a href='../login.php'>Reintentar</a>";
     }
 }

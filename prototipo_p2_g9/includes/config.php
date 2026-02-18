@@ -1,21 +1,19 @@
 <?php
+session_start();
 
-/**
- * Parámetros de conexión a la BD
- */
+// Configuración de la Base de Datos
 define('BD_HOST', 'localhost');
 define('BD_NAME', 'awp2');
 define('BD_USER', 'awp2');
 define('BD_PASS', 'awpass');
 
-/**
- * Parámetros de configuración utilizados para generar las URLs y las rutas a ficheros en la aplicación
- */
+// Configuración de Rutas
 define('RAIZ_APP', __DIR__);
-define('RUTA_APP', '/practica2');
-define('RUTA_IMGS', RUTA_APP.'img/');
-define('RUTA_CSS', RUTA_APP.'css/');
-define('RUTA_JS', RUTA_APP.'js/');
+// IMPORTANTE: Este nombre debe ser IGUAL al de tu carpeta en htdocs
+define('RUTA_APP', '/Proyectos/AW_Bistro/prototipo_p2_g9');
+define('RUTA_IMGS', RUTA_APP . '/img/');
+define('RUTA_CSS', RUTA_APP . '/css/');
+define('RUTA_JS', RUTA_APP . '/js/');
 
 /**
  * Configuración del soporte de UTF-8, localización (idioma y país) y zona horaria

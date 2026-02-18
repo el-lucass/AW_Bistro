@@ -22,7 +22,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     
     // Solo el gerente ve el botón de administración de usuarios (F0)
     if ($_SESSION['rol'] == 'gerente') {
-        $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin_usuarios.php'\">F0: Administrar Usuarios</button>";
+        $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button>";
     }
     
     $contenidoPrincipal .= "</div>";

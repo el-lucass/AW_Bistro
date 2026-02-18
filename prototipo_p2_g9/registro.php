@@ -6,7 +6,7 @@ $tituloPagina = 'Registro de Usuario - Bistro FDI';
 $contenidoPrincipal = <<<EOS
     <h1>Únete a Bistro FDI</h1>
     <p>Regístrate para realizar pedidos y acumular BistroCoins.</p>
-    <form action="procesarRegistro.php" method="POST">
+    <form action="usuarios/registro.php" method="POST">
         <fieldset>
             <legend>Datos Personales</legend>
             <div><label>Nombre de usuario:</label> <input type="text" name="nombre_usuario" required></div>

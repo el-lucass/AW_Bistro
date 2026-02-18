@@ -4,10 +4,10 @@ require_once 'includes/config.php';
 $tituloPagina = 'Login - Bistro FDI';
 
 // Definimos el formulario como contenido principal
-// El action apunta a procesarLogin.php que es quien tiene la lógica de BD
+// El action apunta a usuariosLogin.php que es quien tiene la lógica de BD
 $contenidoPrincipal = <<<EOS
     <h1>Iniciar Sesión</h1>
-    <form action="procesarLogin.php" method="POST">
+    <form action="usuarios/login.php" method="POST">
         <fieldset>
             <legend>Datos de acceso</legend>
             <div>
