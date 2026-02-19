@@ -1,35 +1,29 @@
 <?php
+// 1. Cargamos configuración (para sesion_start y RUTA_APP) y el modelo
 require_once '../includes/config.php';
-require_once '../includes/mysql/bd.php';
+require_once '../includes/usuarios.php';
 
-// Verificamos que sea gerente y que no se esté intentando borrar a sí mismo
-if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'gerente' && $_POST['id'] != $_SESSION['id']) {
-    $conn = conectarBD();
-    $idABorrar = $_POST['id'];
+// 2. Verificamos permisos y que no se borre a sí mismo
+if (tieneRol('gerente') && $_POST['id'] != $_SESSION['id']) {
+    $id = $_POST['id'];
 
-    // 1. Buscamos el avatar del usuario ANTES de borrarlo de la base de datos
-    $stmt_avatar = $conn->prepare("SELECT avatar FROM usuarios WHERE id = ?");
-    $stmt_avatar->bind_param("i", $idABorrar);
-    $stmt_avatar->execute();
-    $resultado = $stmt_avatar->get_result();
-    $usuario = $resultado->fetch_assoc();
+    // 3. Usamos el modelo para buscar el usuario ANTES de borrarlo (para saber su avatar)
+    $usuario = buscaUsuario($id);
 
-    // 2. Procedemos a borrar el usuario de la base de datos
-    $stmt_del = $conn->prepare("DELETE FROM usuarios WHERE id = ?");
-    $stmt_del->bind_param("i", $idABorrar);
-    
-    if ($stmt_del->execute()) {
-        // 3. Si la base de datos se borró con éxito, limpiamos el archivo físico si es necesario
-        // Solo borramos si no es un personaje (predefinidos) y no es el avatar por defecto
-        if (!str_contains($usuario['avatar'], 'predefinidos/') && $usuario['avatar'] !== 'default.png') {
-            $rutaFoto = "../img/avatares/usuarios/" . $usuario['avatar'];
-            if (file_exists($rutaFoto)) {
-                @unlink($rutaFoto);
+    if ($usuario) {
+        // 4. Usamos el modelo para borrar el registro en la base de datos
+        if (borraUsuario($id)) {
+            // 5. Si se borró de la BD, limpiamos el archivo físico si es personalizado
+            if (!str_contains($usuario['avatar'], 'predefinidos/') && $usuario['avatar'] !== 'default.png') {
+                $rutaFoto = "../img/avatares/usuarios/" . $usuario['avatar'];
+                if (file_exists($rutaFoto)) {
+                    @unlink($rutaFoto);
+                }
             }
         }
     }
 }
 
-// Redirigimos de vuelta a la lista de usuarios
-header('Location: ../admin/usuarios.php');
+// 6. REDIRECCIÓN: Fundamental para no quedarte en una página en blanco
+header('Location: ' . RUTA_APP . '/admin/usuarios.php');
 exit;

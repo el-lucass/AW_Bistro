@@ -5,6 +5,9 @@ IMPORTANTE!!
     Sino las rutas de config.php no funcionan
 2) Para los siguientes: cuando creais la base de datos meter todas las tablas
 las tablas están en includes/mysql/estructura
+3) La organización es, Modelo Vista Controlador, para seguir todos la misma:
+en gestión de usuarios están las pocas vistas o bien en la raíz o bien en la carpeta 
+llamada admin. La lógica está en /usuarios/ y la querys de SQL están en /includes/usuarios.php
 
 Punto 0. Gestion de usuarios Lucas Arranz
 /admin crear_usuario.php , editar_usuario.php , usuarios.php
@@ -14,3 +17,9 @@ Punto 0. Gestion de usuarios Lucas Arranz
 /usuarios perfil.php , registro.php
 / index.php , login.php , logout.php , perfil.php , registro.php
 /img/avatares todo
+
+/ raiz --> es vista, para la lógica se redirige a /usuarios/
+/admin/ es la vista(html) mientras que /usuarios/ es el controlador que hace los querys en /includes/usuarios.php
+includes/usuarios/ donde está toda la lógica con la base de datos de la gestión de usuarios
+/includes/usuarios.php funciones sobre los usuarios para reutilizarlas en varios scripts
+en cada carpeta tiene su propio funcion.txt

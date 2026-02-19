@@ -1,1 +1,5 @@
 Estas son las vistas que tiene el admin
+La lógica se encuentra en ../usuarios/
+crear_usuario.php --> crea usuario del mismo modo que uno puede hacer "Registrarse"
+editar_usuario.php --> edita usuario del mismo modo que uno puede hacer "Mi perfil"
+usuarios.php --> vista central del admin: enseña la tabla de los usuarios, editar / borrar
