@@ -1,46 +1,51 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/mysql/bd.php';
+require_once '../includes/usuarios.php'; // Incluye el modelo con las funciones buscaUsuario y actualizaUsuario
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['login'])) {
-    $conn = conectarBD();
     $id = $_SESSION['id'];
     
-    $res = $conn->query("SELECT avatar FROM usuarios WHERE id = $id");
-    $userOld = $res->fetch_assoc();
-    $avatarFinal = $userOld['avatar'];
+    // 1. Obtenemos los datos actuales mediante el Modelo para saber qué avatar tiene
+    $userOld = buscaUsuario($id);
+    if (!$userOld) {
+        header('Location: ../perfil.php?status=error');
+        exit;
+    }
 
+    $avatarFinal = $userOld['avatar'];
     $nombre = $_POST['nombre'];
     $apellidos = $_POST['apellidos'];
     $email = $_POST['email'];
+    $rol = $_SESSION['rol']; // El usuario no cambia su propio rol, mantenemos el de la sesión
 
-    // 1. Si el usuario sube una foto propia (Prioridad máxima)
+    // --- Lógica de Gestión de Archivos (Avatar) ---
+
+    // Prioridad 1: Subida de foto nueva
     if (!empty($_FILES['avatar_subida']['name'])) {
         $nombreArchivo = time() . "_" . $_FILES['avatar_subida']['name'];
         $rutaDestino = "../img/avatares/usuarios/" . $nombreArchivo;
 
         if (move_uploaded_file($_FILES['avatar_subida']['tmp_name'], $rutaDestino)) {
             $avatarFinal = $nombreArchivo;
-            // Borrar anterior si era personalizada para no llenar el disco
+            // Borramos la imagen antigua si era personalizada
             if (!str_contains($userOld['avatar'], 'predefinidos/') && $userOld['avatar'] !== 'default.png') {
                 @unlink("../img/avatares/usuarios/" . $userOld['avatar']);
             }
         }
     } 
-    // 2. Si elige un radio button (Predefinido o Default)
+    // Prioridad 2: Selección de radio button (Predefinido o Reset)
     elseif (isset($_POST['avatar_opcion'])) {
         $avatarFinal = $_POST['avatar_opcion'];
-        // Borrar anterior si era personalizada
+        // Borramos la antigua si era personalizada
         if (!str_contains($userOld['avatar'], 'predefinidos/') && $userOld['avatar'] !== 'default.png') {
             @unlink("../img/avatares/usuarios/" . $userOld['avatar']);
         }
     }
 
-    $stmt = $conn->prepare("UPDATE usuarios SET nombre=?, apellidos=?, email=?, avatar=? WHERE id=?");
-    $stmt->bind_param("ssssi", $nombre, $apellidos, $email, $avatarFinal, $id);
-
-    if ($stmt->execute()) {
-        $_SESSION['nombre'] = $nombre;
+    // 2. Ejecutamos la actualización mediante la función del Modelo
+    // Pasamos el ID, datos personales, el avatar decidido y el rol actual
+    if (actualizaUsuario($id, $nombre, $apellidos, $email, $avatarFinal, $rol)) {
+        $_SESSION['nombre'] = $nombre; // Actualizamos el saludo en la cabecera
         header('Location: ../perfil.php?status=success');
     } else {
         header('Location: ../perfil.php?status=error');
