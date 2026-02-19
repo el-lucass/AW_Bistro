@@ -13,3 +13,4 @@ Punto 0. Gestion de usuarios Lucas Arranz
 /usuarios admin_borrar.php , admin_crear.php , admin_editar.php , borrar_cuenta.php , cambio_rol.php , login.php ,
 /usuarios perfil.php , registro.php
 / index.php , login.php , logout.php , perfil.php , registro.php
+/img/avatares todo
