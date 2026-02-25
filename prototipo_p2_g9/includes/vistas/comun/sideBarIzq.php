@@ -19,6 +19,12 @@
                     <a href="<?= RUTA_APP ?>/admin/usuarios.php" style="color: #d35400; font-weight: bold;">
                         ⚙️ Admin Usuarios (F0)
                     </a>
+                    <li><a href="<?= RUTA_APP ?>/admin/productos.php" style="color: #d35400; font-weight: bold;">
+                        ⚙️ Admin Productos (F1)
+                    </a></li>
+                    <li><a href="<?= RUTA_APP ?>/admin/categorias.php" style="color: #d35400; font-weight: bold;">
+                        ⚙️ Admin Categorias (F1)
+                    </a></li>
                 </li>
             <?php endif; ?>
         </ul>

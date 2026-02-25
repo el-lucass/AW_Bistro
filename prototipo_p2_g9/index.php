@@ -14,7 +14,6 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     $contenidoPrincipal .= "<div class='menu-botones'>";
     
     // Botones de las funcionalidades (sin implementar aún)
-    $contenidoPrincipal .= "<button onclick=\"location.href='productos.php'\">F1: Gestión Productos</button> ";
     $contenidoPrincipal .= "<button onclick=\"location.href='pedidos.php'\">F2: Gestión Pedidos</button> ";
     $contenidoPrincipal .= "<button onclick=\"location.href='cocina.php'\">F3: Vista Cocina</button> ";
     $contenidoPrincipal .= "<button onclick=\"location.href='notificaciones.php'\">F4: Notificaciones</button> ";
@@ -23,6 +22,8 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     // Solo el gerente ve el botón de administración de usuarios (F0)
     if ($_SESSION['rol'] == 'gerente') {
         $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button>";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/productos.php'\">F1: Gestión Productos</button> ";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/categorias.php'\">F1: Gestión Categorias</button> ";
     }
     
     $contenidoPrincipal .= "</div>";
