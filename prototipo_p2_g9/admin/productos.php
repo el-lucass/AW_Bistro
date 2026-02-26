@@ -100,8 +100,6 @@ $tabla .= '</table>';
 
 $contenidoPrincipal = <<<EOS
     <h1>Panel de Control: Gestión de Productos</h1>
-    {$mensaje}
-    <p>Administra la carta del restaurante. Los productos retirados no se borran permanentemente por el histórico de pedidos.</p>
     
     <div style='margin-bottom: 20px; display: flex; gap: 15px;'>
         <a href='crear_producto.php'>

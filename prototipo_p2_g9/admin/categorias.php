@@ -18,6 +18,9 @@ if (isset($_GET['status'])) {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>¡Categoría creada correctamente!</div>";
     } elseif ($_GET['status'] === 'deleted') {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Categoría eliminada correctamente.</div>";
+    }elseif ($_GET['status'] === 'updated') {
+        // NUEVO: Mensaje de éxito al editar
+        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Categoría actualizada correctamente.</div>";
     }
 } elseif (isset($_GET['error'])) {
     $mensaje = "<div style='background: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px;'>Error al procesar la categoría. Revisa los datos.</div>";
@@ -39,8 +42,8 @@ if (!empty($categorias)) {
         
         // Etiqueta visual para los productos
         $badge = $total > 0 
-            ? "<span style='background: #3498db; color: white; padding: 3px 8px; border-radius: 10px; font-weight: bold;'>{$total} productos</span>"
-            : "<span style='background: #95a5a6; color: white; padding: 3px 8px; border-radius: 10px;'>Vacía</span>";
+            ? "<span style='color: #2980b9; font-weight: bold;'>{$total} productos</span>"
+            : "<span style='color: #7f8c8d; font-style: italic;'>0 productos</span>";
             
         // Iniciamos la fila
         $tabla .= "<tr>";
@@ -67,7 +70,7 @@ if (!empty($categorias)) {
                             <button type='submit' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Borrar</button>
                        </form>";
         } else {
-            $tabla .= "<button type='button' onclick='alert(\"⚠️ No se puede borrar esta categoría porque contiene productos.\\n\\nPor favor, borra o cambia de categoría los productos asociados primero.\");' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Borrar</button>";
+            $tabla .= "<button type='button' onclick='alert(\"No se puede borrar esta categoría porque contiene productos.\\n\\nPor favor, cambia de categoría los productos asociados primero.\");' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Borrar</button>";
         }
         
         $tabla .= "</div>"; // Cierra el flex

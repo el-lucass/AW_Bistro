@@ -192,4 +192,21 @@ function borraCategoria($id) {
     return $stmt->execute();
 }
 
+// 13. Buscar una categoría por ID
+function buscaCategoria($id) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare("SELECT * FROM categorias WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+// 14. Actualizar una categoría
+function actualizaCategoria($id, $nombre, $descripcion) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare("UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?");
+    $stmt->bind_param("ssi", $nombre, $descripcion, $id);
+    return $stmt->execute();
+}
+
 ?>
