@@ -121,4 +121,32 @@ function creaCategoria($nombre, $descripcion) {
     return $stmt->execute();
 }
 
+// 8. Actualizar un producto existente
+function actualizaProducto($id, $nombre, $descripcion, $id_categoria, $precio_base, $iva, $disponible, $rutas_imagenes = []) {
+    $conn = conectarBD();
+    $conn->begin_transaction(); 
+    
+    try {
+        // Actualizamos los datos básicos
+        $stmt = $conn->prepare("UPDATE productos SET nombre=?, descripcion=?, id_categoria=?, precio_base=?, iva=?, disponible=? WHERE id=?");
+        $stmt->bind_param("ssidiii", $nombre, $descripcion, $id_categoria, $precio_base, $iva, $disponible, $id);
+        $stmt->execute();
+        
+        // Si hay imágenes nuevas, las añadimos
+        if (!empty($rutas_imagenes)) {
+            $stmt_img = $conn->prepare("INSERT INTO producto_imagenes (id_producto, ruta_imagen) VALUES (?, ?)");
+            foreach ($rutas_imagenes as $ruta) {
+                $stmt_img->bind_param("is", $id, $ruta);
+                $stmt_img->execute();
+            }
+        }
+        
+        $conn->commit();
+        return true;
+    } catch (Exception $e) {
+        $conn->rollback();
+        return false;
+    }
+}
+
 ?>

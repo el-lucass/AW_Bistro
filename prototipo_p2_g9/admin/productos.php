@@ -21,6 +21,8 @@ if (isset($_GET['status'])) {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto retirado de la carta correctamente.</div>";
     } elseif ($_GET['status'] === 'restored') {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto vuelto a añadir a la carta.</div>";
+    } elseif ($_GET['status'] === 'updated') {
+        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto actualizado correctamente.</div>";
     }
 }
 
