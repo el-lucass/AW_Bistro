@@ -103,10 +103,15 @@ $contenidoPrincipal = <<<EOS
     {$mensaje}
     <p>Administra la carta del restaurante. Los productos retirados no se borran permanentemente por el histórico de pedidos.</p>
     
-    <div style="margin-bottom: 20px;">
+    <div style='margin-bottom: 20px; display: flex; gap: 15px;'>
         <a href='crear_producto.php'>
             <button style='background-color:#2ecc71; color:white; padding:10px 15px; cursor:pointer; border:none; border-radius:5px; font-weight:bold;'>
                 + Añadir Nuevo Producto
+            </button>
+        </a>
+        <a href='categorias.php'>
+            <button style='background-color:#3498db; color:white; padding:10px 15px; cursor:pointer; border:none; border-radius:5px; font-weight:bold;'>
+                📁 Gestionar Categorías
             </button>
         </a>
     </div>

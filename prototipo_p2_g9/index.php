@@ -23,7 +23,6 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     if ($_SESSION['rol'] == 'gerente') {
         $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button>";
         $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/productos.php'\">F1: Gestión Productos</button> ";
-        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/categorias.php'\">F1: Gestión Categorias</button> ";
     }
     
     $contenidoPrincipal .= "</div>";
