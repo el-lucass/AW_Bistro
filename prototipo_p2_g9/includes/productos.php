@@ -166,4 +166,30 @@ function borraImagen($id_imagen) {
     return $stmt->execute();
 }
 
+// 11. Obtener categorías contando cuántos productos tienen asociados
+function listaCategoriasConConteo() {
+    $conn = conectarBD();
+    $sql = "SELECT c.*, COUNT(p.id) AS total_productos 
+            FROM categorias c 
+            LEFT JOIN productos p ON c.id = p.id_categoria 
+            GROUP BY c.id";
+    $result = $conn->query($sql);
+    
+    $categorias = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $categorias[] = $row;
+        }
+    }
+    return $categorias;
+}
+
+// 12. Borrar una categoría
+function borraCategoria($id) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare("DELETE FROM categorias WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
+
 ?>
