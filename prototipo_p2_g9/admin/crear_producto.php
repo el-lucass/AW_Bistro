@@ -94,9 +94,16 @@ $contenidoPrincipal = <<<EOS
             <input type="file" name="imagenes[]" accept="image/jpeg, image/png, image/webp" multiple>
         </fieldset>
 
-        <button type="submit" style="margin-top:15px; padding:10px 20px; background:#d35400; color:white; border:none; cursor: pointer;">
-            Guardar Producto
-        </button>
+        <div style="margin-top: 15px;">
+            <button type="submit" style="padding:10px 20px; background:#d35400; color:white; border:none; cursor: pointer; border-radius: 5px; font-weight: bold;">
+                Guardar Producto
+            </button>
+            <a href="productos.php" style="margin-left: 10px; text-decoration: none;">
+                <button type="button" style="padding:10px 20px; background:#7f8c8d; color:white; border:none; cursor: pointer; border-radius: 5px;">
+                    Cancelar
+                </button>
+            </a>
+        </div>
     </form>
 
     <script>
