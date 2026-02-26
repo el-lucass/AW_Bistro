@@ -20,9 +20,11 @@ if (isset($_GET['status'])) {
     if ($_GET['status'] === 'deleted') {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto retirado de la carta correctamente.</div>";
     } elseif ($_GET['status'] === 'restored') {
-        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto vuelto a añadir a la carta.</div>";
+        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto añadido de vuelta a la carta.</div>";
     } elseif ($_GET['status'] === 'updated') {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Producto actualizado correctamente.</div>";
+    } elseif ($_GET['status'] === 'created') {
+        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>¡Producto creado y añadido a la carta correctamente!</div>";
     }
 }
 
@@ -60,7 +62,7 @@ if (!empty($productos)) {
             ? "<span style='color: #2980b9; font-weight: bold;'>En Carta</span>" 
             : "<span style='color: gray; font-style: italic;'>Retirado</span>";
 
-        $tabla .= "<tr>
+        $tabla .= "<tr id='fila-producto-{$id}'>
             <td style='padding: 10px;'>{$id}</td>
             <td style='padding: 10px; text-align:center;'>{$imgTag}</td>
             <td style='padding: 10px;'><strong>{$row['nombre']}</strong></td>
@@ -76,7 +78,7 @@ if (!empty($productos)) {
         
         // Botón dinámico: si está ofertado mostramos "Retirar", si no, "Restaurar"
         if ($row['ofertado']) {
-            $tabla .= " <form action='../productos/admin_borrar_producto.php' method='POST' style='display:inline;' onsubmit='return confirm(\"¿Seguro que quieres retirar este producto de la carta?\")'>
+            $tabla .= " <form action='../productos/admin_borrar_producto.php' method='POST' style='display:inline;'>
                             <input type='hidden' name='id' value='$id'>
                             <input type='hidden' name='accion' value='retirar'>
                             <button type='submit' style='background-color:#c0392b; color:white; border:none; padding:5px; cursor:pointer;'>Retirar</button>

@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 4. Llamar al Modelo para guardar en la Base de Datos
     if (creaProducto($nombre, $descripcion, $id_categoria, $precio_base, $iva, $disponible, $rutas_imagenes)) {
         // Todo fue bien. Redirigimos de vuelta al formulario con mensaje de éxito.
-        header('Location: ../admin/crear_producto.php?status=success');
+        header('Location: ../admin/productos.php?status=created');
         exit;
     } else {
         // Error al guardar en la base de datos

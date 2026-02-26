@@ -40,6 +40,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+
+    // 3. Procesar eliminacion de imagenes exteranas (checkboxes)
+    if (isset($_POST['eliminar_imagenes']) && is_array($_POST['eliminar_imagenes'])) {
+        foreach ($_POST['eliminar_imagenes'] as $id_img_borrar) {
+            // 1. Obtener los datos de la imagen para saber su nombre de archivo
+            $img_data = buscaImagen($id_img_borrar);
+            
+            if ($img_data) {
+                // 2. Borrar el archivo físico de la carpeta img/productos/
+                $ruta_fisica = '../img/productos/' . $img_data['ruta_imagen'];
+                if (file_exists($ruta_fisica)) {
+                    @unlink($ruta_fisica); // @ evita warnings si el archivo no existe
+                }
+                
+                // 3. Borrar el registro de la base de datos
+                borraImagen($id_img_borrar);
+            }
+        }
+    }
     
     // 3. Llamar al modelo
     if (actualizaProducto($id, $nombre, $descripcion, $id_categoria, $precio_base, $iva, $disponible, $rutas_imagenes)) {
@@ -50,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ../admin/editar_producto.php?id=$id&error=db");
         exit;
     }
+
 } else {
     header('Location: ../admin/productos.php');
     exit;

@@ -62,16 +62,22 @@ $contenidoPrincipal = <<<EOS
             
             <div style="margin-bottom: 10px;">
                 <label>Precio Base (sin IVA) en €:</label> 
-                <input type="number" name="precio_base" step="0.01" min="0" required>
+                <input type="number" name="precio_base" id="precio_base" step="0.01" min="0" required>
             </div>
             
             <div style="margin-bottom: 10px;">
                 <label>IVA Aplicable:</label>
-                <select name="iva" required>
+                <select name="iva" id="iva" required>
                     <option value="4">4% (Superreducido)</option>
                     <option value="10" selected>10% (Reducido - Hostelería)</option>
                     <option value="21">21% (General)</option>
                 </select>
+            </div>
+
+            <div style="margin-bottom: 15px; padding: 10px; background-color: #ecf0f1; border-radius: 5px;">
+                <span style="font-size: 1.1em; color: #2c3e50;">
+                    <strong>Precio Final de Venta: <span id="precio_final_display" style="color: #27ae60; font-size: 1.2em;">0.00 €</span></strong>
+                </span>
             </div>
             
             <div style="margin-bottom: 10px;">
@@ -92,6 +98,21 @@ $contenidoPrincipal = <<<EOS
             Guardar Producto
         </button>
     </form>
+
+    <script>
+    function actualizarPrecioFinal() {
+        let base = parseFloat(document.getElementById('precio_base').value) || 0;
+        let iva = parseFloat(document.getElementById('iva').value) || 0;
+        let total = base + (base * (iva / 100));
+        document.getElementById('precio_final_display').innerText = total.toFixed(2) + ' €';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
+        document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
+        actualizarPrecioFinal(); // Calcula el 0 inicial
+    });
+    </script>
 EOS;
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';

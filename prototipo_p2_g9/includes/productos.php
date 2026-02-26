@@ -149,4 +149,21 @@ function actualizaProducto($id, $nombre, $descripcion, $id_categoria, $precio_ba
     }
 }
 
+// 9. Obtener información de una imagen específica
+function buscaImagen($id_imagen) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare("SELECT * FROM producto_imagenes WHERE id = ?");
+    $stmt->bind_param("i", $id_imagen);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+// 10. Borrar una imagen de la base de datos
+function borraImagen($id_imagen) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare("DELETE FROM producto_imagenes WHERE id = ?");
+    $stmt->bind_param("i", $id_imagen);
+    return $stmt->execute();
+}
+
 ?>

@@ -35,11 +35,17 @@ foreach ([4, 10, 21] as $tipoIva) {
 
 $checkedDisponible = $producto['disponible'] ? "checked" : "";
 
-// Mostrar imágenes actuales
-$galeriaHTML = "<div style='display:flex; gap: 10px; margin-bottom: 10px;'>";
+// Mostrar imágenes actuales con opción a borrar
+$galeriaHTML = "<div style='display:flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;'>";
 if (!empty($producto['imagenes'])) {
     foreach ($producto['imagenes'] as $img) {
-        $galeriaHTML .= "<img src='../img/productos/{$img['ruta_imagen']}' width='80' height='80' style='object-fit:cover; border-radius: 5px; border: 1px solid #ccc;'>";
+        $galeriaHTML .= "
+        <div style='text-align: center; background: #fff; padding: 5px; border: 1px solid #ddd; border-radius: 5px;'>
+            <img src='../img/productos/{$img['ruta_imagen']}' width='80' height='80' style='object-fit:cover; border-radius: 5px; display: block; margin-bottom: 5px;'>
+            <label style='font-size: 0.85em; color: #c0392b; cursor: pointer;'>
+                <input type='checkbox' name='eliminar_imagenes[]' value='{$img['id']}'> Borrar
+            </label>
+        </div>";
     }
 } else {
     $galeriaHTML .= "<p style='color:#777;'>No hay imágenes asociadas.</p>";
@@ -83,14 +89,20 @@ $contenidoPrincipal = "
             
             <div style='margin-bottom: 10px;'>
                 <label>Precio Base (€):</label> 
-                <input type='number' name='precio_base' value='{$producto['precio_base']}' step='0.01' min='0' required>
+                <input type='number' name='precio_base' id='precio_base' value='{$producto['precio_base']}' step='0.01' min='0' required>
             </div>
             
             <div style='margin-bottom: 10px;'>
                 <label>IVA:</label>
-                <select name='iva' required>
+                <select name='iva' id='iva' required>
                     {$ivaOpciones}
                 </select>
+            </div>
+            
+            <div style='margin-bottom: 15px; padding: 10px; background-color: #ecf0f1; border-radius: 5px;'>
+                <span style='font-size: 1.1em; color: #2c3e50;'>
+                    <strong>Precio Final de Venta: <span id='precio_final_display' style='color: #27ae60; font-size: 1.2em;'>0.00 €</span></strong>
+                </span>
             </div>
             
             <div style='margin-bottom: 10px;'>
@@ -117,6 +129,21 @@ $contenidoPrincipal = "
             <button type='button' style='padding:10px 20px; background:#7f8c8d; color:white; border:none; cursor: pointer;'>Cancelar</button>
         </a>
     </form>
+
+    <script>
+    function actualizarPrecioFinal() {
+        let base = parseFloat(document.getElementById('precio_base').value) || 0;
+        let iva = parseFloat(document.getElementById('iva').value) || 0;
+        let total = base + (base * (iva / 100));
+        document.getElementById('precio_final_display').innerText = total.toFixed(2) + ' €';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
+        document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
+        actualizarPrecioFinal(); // Calcula el precio inicial al cargar la página con los datos de la BD
+    });
+    </script>
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
