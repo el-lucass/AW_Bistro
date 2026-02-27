@@ -97,7 +97,16 @@ CREATE TABLE `producto_imagenes` (
 
 INSERT INTO `producto_imagenes` (`id`, `id_producto`, `ruta_imagen`) VALUES
 (1, 9, '1772125717_69a07e1591fa2_nestea.jpg'),
-(3, 11, '1772127083_69a0836bb0550_cerveza.jpg');
+(3, 11, '1772127083_69a0836bb0550_cerveza.jpg'),
+(4, 1, '1772206443_69a1b96bbf4b4_kebab_pollo.jpg'),
+(5, 2, '1772206470_69a1b9867f554_kebab_ternera.jpg'),
+(6, 3, '1772206483_69a1b993afde8_Kebab_mixto.jpg'),
+(7, 4, '1772206506_69a1b9aad85fc_durum_pollo.jpg'),
+(8, 5, '1772206520_69a1b9b8d07c8_durum_ternera.jpg'),
+(9, 6, '1772206535_69a1b9c78140f_durum_mixto.jpg'),
+(10, 7, '1772203937_69a1afa13ce82_coca-cola.jpg'),
+(11, 8, '1772203975_69a1afc759b80_fanta-de-naranja.jpg'),
+(12, 10, '1772203989_69a1afd517a51_aquarius.jpg');
 
 -- --------------------------------------------------------
 
@@ -176,7 +185,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT for table `producto_imagenes`
 --
 ALTER TABLE `producto_imagenes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
@@ -199,6 +208,35 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `producto_imagenes`
   ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+-- Para la funcionalidad 2 (Gestión de Pedidos)
+
+-- Tabla principal de pedidos
+CREATE TABLE pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT(11) NOT NULL,
+    numero_dia INT NOT NULL, 
+    fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    estado ENUM('nuevo', 'recibido', 'en preparación', 'cocinando', 'listo cocina', 'terminado', 'entregado', 'cancelado') DEFAULT 'nuevo',
+    tipo ENUM('local', 'llevar') NOT NULL,
+    total_iva DECIMAL(10, 2) NOT NULL,
+    
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Tabla de qué productos tiene cada pedido
+CREATE TABLE pedido_productos (
+    id_pedido INT NOT NULL,
+    id_producto INT(11) NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario_historico DECIMAL(10, 2) NOT NULL, 
+    
+    PRIMARY KEY (id_pedido, id_producto),
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES productos(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -32,9 +32,9 @@ if ($result->num_rows > 0) {
         $id = $row['id'];
         $esMismoUsuario = ($id == $_SESSION['id']);
         
-        $colorRol = '#000';
+        $colorRol = '#16a085';
         if ($row['rol'] === 'gerente') $colorRol = '#d35400';
-        elseif ($row['rol'] === 'cocinero') $colorRol = '#27ae60';
+        elseif ($row['rol'] === 'cocinero') $colorRol = '#8e44ad';
         elseif ($row['rol'] === 'camarero') $colorRol = '#2980b9';
 
         // Ajustamos el enlace a editar (ya estamos en la carpeta admin)
