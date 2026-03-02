@@ -128,5 +128,15 @@ if ($resultadoBD['exito']) {
     </div>";
 }
 
+//Por ultimo cambiamos el estado del pedido
+if ($resultadoBD['exito']) {
+    require_once __DIR__ . '/includes/mysql/bd.php';
+    $conn = conectarBD();
+
+    $stmt = $conn->prepare("UPDATE pedidos SET estado='en preparación' WHERE id=?");
+    $stmt->bind_param("i", $resultadoBD['id_pedido']);
+    $stmt->execute();
+}
+
 require RAIZ_APP . '/vistas/plantillas/plantilla.php'; 
 ?>

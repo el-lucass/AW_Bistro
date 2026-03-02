@@ -50,7 +50,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     
     // Botones de las funcionalidades (sin implementar aún)
     $contenidoPrincipal .= "<button onclick=\"location.href='pedidos.php'\">F2: Gestión Pedidos</button> ";
-    $contenidoPrincipal .= "<button onclick=\"location.href='cocina.php'\">F3: Vista Cocina</button> ";
+    $contenidoPrincipal .= "<button onclick=\"location.href='cocinero/cocinero_pedidos.php'\">F3: Vista Cocina</button> ";
     $contenidoPrincipal .= "<button onclick=\"location.href='notificaciones.php'\">F4: Notificaciones</button> ";
     $contenidoPrincipal .= "<button onclick=\"location.href='recompensas.php'\">F5: Recompensas</button> ";
     
@@ -58,6 +58,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     if ($_SESSION['rol'] == 'gerente') {
         $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button>";
         $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/productos.php'\">F1: Gestión Productos</button> ";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/pedidos_pendientes.php'\">F3: Pedidos pendientes</button> ";
     }
     
     $contenidoPrincipal .= "</div>";
