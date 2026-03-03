@@ -106,7 +106,7 @@ function listaPedidosPorEstados($estados) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-// 5. Obtener todos los pedidos activos (para el gerente)
+// 5. Obtener todos los pedidos activos (para el gerente)lui
 function listaTodosLosPedidosActivos() {
     $conn = conectarBD();
     $stmt = $conn->prepare(

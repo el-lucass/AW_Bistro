@@ -1,12 +1,12 @@
 <?php
-require_once 'includes/config.php';
-require_once 'includes/pedidos.php';
-require_once 'includes/usuarios.php';
-require_once 'includes/mysql/bd.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/pedidos.php';
+require_once __DIR__ . '/../includes/usuarios.php';
+require_once __DIR__ . '/../includes/mysql/bd.php';
 
 // Solo camareros (y roles superiores) pueden acceder
 if (!isset($_SESSION['login']) || !tieneRol('camarero')) {
-    header('Location: login.php');
+    header('Location: ' . RUTA_APP . '/login.php');
     exit();
 }
 
@@ -25,9 +25,9 @@ if (strpos($avatarActual, 'predefinidos/') !== false) {
     $rutaAvatar = RUTA_IMGS . "avatares/usuarios/" . $avatarActual;
 }
 
-// Pedidos por cobrar (estado recibido) y por entregar (estado terminado)
+// Pedidos por cobrar (estado recibido) y por entregar (listos en cocina)
 $porCobrar   = listaPedidosPorEstados(['recibido']);
-$porEntregar = listaPedidosPorEstados(['terminado']);
+$porEntregar = listaPedidosPorEstados(['listo cocina']);
 
 $tipo_map = ['local' => 'Local', 'llevar' => 'Para Llevar'];
 
@@ -53,10 +53,9 @@ function tarjetaPedido($pedido, $nuevo_estado, $texto_boton, $tipo_map) {
         <ul style='margin:0; padding-left:18px; font-size:13px;'>{$productos}</ul>
         <div style='display:flex; justify-content:space-between; align-items:center; margin-top:5px;'>
             <strong>{$total} €</strong>
-            <form method='POST' action='pedidos/cambiar_estado.php'>
+            <form method='POST' action='camarero_accion.php'>
                 <input type='hidden' name='id_pedido'    value='{$pedido['id']}'>
                 <input type='hidden' name='nuevo_estado' value='{$nuevo_estado}'>
-                <input type='hidden' name='redirigir'    value='../camarero.php'>
                 <button type='submit'
                     style='padding:8px 18px; background:black; color:white; border:none; cursor:pointer; font-size:13px;'>
                     {$texto_boton}
@@ -78,7 +77,7 @@ $contenidoPrincipal = "
             <div style='font-size:18px; font-weight:bold;'>Hola, {$user['nombre']} 👋</div>
             <div style='color:#666; font-size:13px;'>Vista Camarero</div>
         </div>
-        <a href='index.php' style='margin-left:auto; text-decoration:none;'>
+        <a href='" . RUTA_APP . "/index.php' style='margin-left:auto; text-decoration:none;'>
             <button style='padding:8px 15px; background:white; border:1px solid #bbb; cursor:pointer; font-size:13px;'>
                 ← Inicio
             </button>

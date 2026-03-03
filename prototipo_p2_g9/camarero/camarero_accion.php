@@ -5,22 +5,20 @@ require_once __DIR__ . '/../includes/usuarios.php';
 
 // Solo personal logueado puede cambiar estados
 if (!isset($_SESSION['login']) || !tieneRol('camarero')) {
-    header('Location: ../index.php');
+    header('Location: ' . RUTA_APP . '/index.php');
     exit();
 }
 
-$id_pedido   = intval($_POST['id_pedido']   ?? 0);
-$nuevo_estado = trim($_POST['nuevo_estado'] ?? '');
-$redirigir   = $_POST['redirigir']          ?? '../index.php';
+$id_pedido    = intval($_POST['id_pedido']    ?? 0);
+$nuevo_estado = trim($_POST['nuevo_estado']   ?? '');
 
 // Transiciones permitidas por rol
 $transiciones_camarero = [
     'recibido'     => 'en preparación',
-    'listo cocina' => 'terminado',
-    'terminado'    => 'entregado',
+    'listo cocina' => 'entregado',
 ];
 $transiciones_gerente = $transiciones_camarero + [
-    'recibido'      => 'cancelado',
+    'recibido'       => 'cancelado',
     'en preparación' => 'cancelado',
 ];
 
@@ -32,6 +30,6 @@ if ($pedido && isset($permitidas[$pedido['estado']]) && $permitidas[$pedido['est
     actualizaEstadoPedido($id_pedido, $nuevo_estado);
 }
 
-header('Location: ' . $redirigir);
+header('Location: camarero_pedidos.php');
 exit();
 ?>

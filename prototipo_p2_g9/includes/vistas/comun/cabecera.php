@@ -39,7 +39,6 @@
         <?php endif; ?> 
 
         <a href="<?= RUTA_APP ?>/index.php" style="<?= $estiloBoton ?>">Inicio</a>
-        <a href="<?= RUTA_APP ?>/detalles.php" style="<?= $estiloBoton ?>">Detalles</a>
 
         <?php if (isset($_SESSION["login"]) && $_SESSION["login"]): ?>
             
