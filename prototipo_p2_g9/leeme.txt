@@ -23,3 +23,11 @@ Punto 0. Gestion de usuarios Lucas Arranz
 includes/usuarios/ donde está toda la lógica con la base de datos de la gestión de usuarios
 /includes/usuarios.php funciones sobre los usuarios para reutilizarlas en varios scripts
 en cada carpeta tiene su propio funcion.txt
+
+
+Punto 3. Preparacion de los pedidos Jaime Amaya
+/admin pedido_pendiente.php pedidos_pendiente.ph
+/cocinero cocinero_accion.php cocinero_pedido.php cocinero_pedidos.php
+/includes cocina.php  
+
+

@@ -51,6 +51,18 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     // Botón historial para clientes
     if ($_SESSION['rol'] == 'cliente') {
         $contenidoPrincipal .= "<button onclick=\"location.href='historial_pedidos.php'\">Mis Pedidos</button> ";
+    
+    // Botones de las funcionalidades (sin implementar aún)
+    $contenidoPrincipal .= "<button onclick=\"location.href='pedidos.php'\">F2: Gestión Pedidos</button> ";
+    $contenidoPrincipal .= "<button onclick=\"location.href='cocinero/cocinero_pedidos.php'\">F3: Vista Cocina</button> ";
+    $contenidoPrincipal .= "<button onclick=\"location.href='notificaciones.php'\">F4: Notificaciones</button> ";
+    $contenidoPrincipal .= "<button onclick=\"location.href='recompensas.php'\">F5: Recompensas</button> ";
+    
+    // Solo el gerente ve el botón de administración de usuarios (F0)
+    if ($_SESSION['rol'] == 'gerente') {
+        $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button>";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/productos.php'\">F1: Gestión Productos</button> ";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/pedidos_pendientes.php'\">F3: Pedidos pendientes</button> ";
     }
 
     // Vista camarero para camareros, cocineros y gerentes
