@@ -3,25 +3,24 @@ require_once __DIR__ . '/mysql/bd.php';
 
 
 // 1. Crear un pedido nuevo con sus productos (Usamos transacción para asegurar que todo se guarda o nada)
-function creaPedido($id_usuario, $tipo, $total_iva, $carrito) {
+function creaPedido($id_usuario, $tipo, $total_iva, $carrito, $estado = 'recibido') {
     $conn = conectarBD();
-    $conn->begin_transaction(); 
-    
+    $conn->begin_transaction();
+
     try {
         // 1.1 Calcular el número de pedido del día (Empezando por 1 cada día nuevo)
         $sql_num = "SELECT MAX(numero_dia) as max_dia FROM pedidos WHERE DATE(fecha_hora) = CURDATE()";
         $result_num = $conn->query($sql_num);
         $row_num = $result_num->fetch_assoc();
-        
+
         $numero_dia = 1; // Por defecto
         if ($row_num['max_dia'] !== null) {
             $numero_dia = $row_num['max_dia'] + 1; // Le sumamos 1 al máximo de hoy
         }
 
-        // 1.2 Insertar el pedido en la tabla principal
-        // El estado 'nuevo' y la fecha_hora (CURRENT_TIMESTAMP) se ponen solos según tu tabla
-        $stmt = $conn->prepare("INSERT INTO pedidos (id_usuario, numero_dia, tipo, total_iva) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("iisd", $id_usuario, $numero_dia, $tipo, $total_iva);
+        // 1.2 Insertar el pedido en la tabla principal con el estado correcto
+        $stmt = $conn->prepare("INSERT INTO pedidos (id_usuario, numero_dia, tipo, total_iva, estado) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisds", $id_usuario, $numero_dia, $tipo, $total_iva, $estado);
         $stmt->execute();
         
         // Recuperamos el ID autoincremental que nos acaba de generar
@@ -82,7 +81,60 @@ function listaPedidosUsuario($id_usuario) {
     return $pedidos;
 }
 
-// 3. Obtener los detalles (productos) de un pedido concreto
+// 3. Actualizar el estado de un pedido
+function actualizaEstadoPedido($id_pedido, $nuevo_estado) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare("UPDATE pedidos SET estado = ? WHERE id = ?");
+    $stmt->bind_param("si", $nuevo_estado, $id_pedido);
+    return $stmt->execute();
+}
+
+// 4. Obtener pedidos filtrados por uno o varios estados (con datos del usuario)
+function listaPedidosPorEstados($estados) {
+    $conn = conectarBD();
+    $placeholders = implode(',', array_fill(0, count($estados), '?'));
+    $types = str_repeat('s', count($estados));
+    $stmt = $conn->prepare(
+        "SELECT p.*, u.nombre_usuario, u.avatar
+         FROM pedidos p
+         JOIN usuarios u ON p.id_usuario = u.id
+         WHERE p.estado IN ($placeholders)
+         ORDER BY p.fecha_hora ASC"
+    );
+    $stmt->bind_param($types, ...$estados);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// 5. Obtener todos los pedidos activos (para el gerente)
+function listaTodosLosPedidosActivos() {
+    $conn = conectarBD();
+    $stmt = $conn->prepare(
+        "SELECT p.*, u.nombre_usuario
+         FROM pedidos p
+         JOIN usuarios u ON p.id_usuario = u.id
+         WHERE p.estado NOT IN ('entregado', 'cancelado')
+         ORDER BY p.fecha_hora ASC"
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// 6. Obtener un pedido concreto con los datos del usuario
+function buscaPedido($id_pedido) {
+    $conn = conectarBD();
+    $stmt = $conn->prepare(
+        "SELECT p.*, u.nombre_usuario
+         FROM pedidos p
+         JOIN usuarios u ON p.id_usuario = u.id
+         WHERE p.id = ?"
+    );
+    $stmt->bind_param("i", $id_pedido);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+// 7. Obtener los detalles (productos) de un pedido concreto
 function buscaDetallesPedido($id_pedido) {
     $conn = conectarBD();
     

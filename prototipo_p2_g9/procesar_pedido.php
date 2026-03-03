@@ -20,8 +20,12 @@ $tipoPedido = $_SESSION['carrito']['tipo'];
 // Guardamos copia de los productos para pintar el ticket
 $ticketProductos = $_SESSION['carrito']['productos'];
 
-// 2. Guardar en BD 
-$resultadoBD = creaPedido($_SESSION['id'], $tipoPedido, $totalPedido, $_SESSION['carrito']);
+// El estado inicial depende del método de pago
+$metodoPago = $_POST['metodo_pago'] ?? 'camarero';
+$estadoInicial = ($metodoPago === 'tarjeta') ? 'en preparación' : 'recibido';
+
+// 2. Guardar en BD
+$resultadoBD = creaPedido($_SESSION['id'], $tipoPedido, $totalPedido, $_SESSION['carrito'], $estadoInicial);
 
 // 3. Comprobar si ha ido bien
 $tituloPagina = 'Procesando... - Bistro FDI';
@@ -59,7 +63,7 @@ if ($resultadoBD['exito']) {
             <div style='font-size: 14px; margin-bottom: 30px;'>
                 <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
                     <span style='color: #666;'>Estado:</span>
-                    <span>En Preparación</span> 
+                    <span>" . ($estadoInicial === 'en preparación' ? 'En Preparación' : 'Recibido — pendiente de pago al camarero') . "</span>
                 </div>
                 <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
                     <span style='color: #666;'>Tipo:</span>

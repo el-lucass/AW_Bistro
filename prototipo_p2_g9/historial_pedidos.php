@@ -83,6 +83,17 @@ if (empty($pedidos)) {
                 <div style='text-align: right;'>
                     <div style='font-size: 20px; font-weight: bold;'>{$totalFormateado} €</div>
                     <div style='color: #666; font-size: 11px;'>Total</div>
+                    " . ($pedido['estado'] === 'recibido' ? "
+                    <form method='POST' action='pedidos/cambiar_estado.php' style='margin-top:8px;'
+                          onsubmit='return confirm(\"¿Cancelar el pedido #{$pedido['numero_dia']}?\")'>
+                        <input type='hidden' name='id_pedido'    value='{$pedido['id']}'>
+                        <input type='hidden' name='nuevo_estado' value='cancelado'>
+                        <input type='hidden' name='redirigir'    value='../historial_pedidos.php'>
+                        <button type='submit'
+                            style='padding:5px 12px; background:#dc3545; color:white; border:none; cursor:pointer; font-size:12px;'>
+                            Cancelar pedido
+                        </button>
+                    </form>" : "") . "
                 </div>
             </div>
 

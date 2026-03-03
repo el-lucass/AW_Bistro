@@ -47,19 +47,24 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
 
     $contenidoPrincipal .= "<h2>Panel de Control</h2>";
     $contenidoPrincipal .= "<div class='menu-botones'>";
-    
-    // Botones de las funcionalidades (sin implementar aún)
-    $contenidoPrincipal .= "<button onclick=\"location.href='pedidos.php'\">F2: Gestión Pedidos</button> ";
-    $contenidoPrincipal .= "<button onclick=\"location.href='cocina.php'\">F3: Vista Cocina</button> ";
-    $contenidoPrincipal .= "<button onclick=\"location.href='notificaciones.php'\">F4: Notificaciones</button> ";
-    $contenidoPrincipal .= "<button onclick=\"location.href='recompensas.php'\">F5: Recompensas</button> ";
-    
-    // Solo el gerente ve el botón de administración de usuarios (F0)
-    if ($_SESSION['rol'] == 'gerente') {
-        $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button>";
-        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/productos.php'\">F1: Gestión Productos</button> ";
+
+    // Botón historial para clientes
+    if ($_SESSION['rol'] == 'cliente') {
+        $contenidoPrincipal .= "<button onclick=\"location.href='historial_pedidos.php'\">Mis Pedidos</button> ";
     }
-    
+
+    // Vista camarero para camareros, cocineros y gerentes
+    if (in_array($_SESSION['rol'], ['camarero', 'cocinero', 'gerente'])) {
+        $contenidoPrincipal .= "<button onclick=\"location.href='camarero.php'\">Vista Camarero</button> ";
+    }
+
+    // Solo el gerente ve los paneles de administración
+    if ($_SESSION['rol'] == 'gerente') {
+        $contenidoPrincipal .= "<button onclick=\"location.href='pedidos.php'\">Gestión de Pedidos</button> ";
+        $contenidoPrincipal .= "<br><br><button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">Administrar Usuarios</button> ";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/productos.php'\">Gestión Productos</button> ";
+    }
+
     $contenidoPrincipal .= "</div>";
 } else {
     $contenidoPrincipal .= "<p>Por favor, identifícate para gestionar tus pedidos.</p>";
