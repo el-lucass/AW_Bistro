@@ -67,7 +67,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     }
 
     // CAMARERO, COCINERO Y GERENTE: acceso a vista camarero
-    if (in_array($_SESSION['rol'], ['camarero', 'cocinero', 'gerente'])) {
+    if (in_array($_SESSION['rol'], ['camarero'])) {
         $contenidoPrincipal .= "<div class='menu-botones' style='margin-top: 15px;'>";
         $contenidoPrincipal .= "<button onclick=\"location.href='camarero/camarero_pedidos.php'\">Vista Camarero</button> ";
         $contenidoPrincipal .= "</div>";

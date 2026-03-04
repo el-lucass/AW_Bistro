@@ -50,6 +50,11 @@
                 <a href="<?= RUTA_APP ?>/cocinero/cocinero_pedidos.php" style="<?= $estiloBoton ?>">🧾 Pedidos pendientes</a>
             <?php endif; ?>
 
+            <?php if ($_SESSION['rol'] === 'camarero'): ?>
+                <a href="<?= RUTA_APP ?>/camarero/camarero_pedidos.php" style="<?= $estiloBoton ?>">🧾 Vista Camarero</a>
+            <?php endif; ?>
+            
+
             <a href="<?= RUTA_APP ?>/perfil.php" style="<?= $estiloBoton ?>">👤 Mi Perfil</a>
             
             <a href="<?= RUTA_APP ?>/logout.php" style="text-decoration: none; color: #c0392b; background-color: #fdf2f0; border: 1px solid #c0392b; padding: 8px 15px; border-radius: 5px; font-size: 14px; margin-left: 10px;">🚪 Salir</a>

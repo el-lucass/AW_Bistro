@@ -237,7 +237,7 @@ CREATE TABLE pedido_productos (
     FOREIGN KEY (id_producto) REFERENCES productos(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---para la funcionalidad de gestion de pedidos cocinero
+-- para la funcionalidad de gestion de pedidos cocinero
 ALTER TABLE pedidos
   ADD COLUMN id_cocinero INT(11) NULL AFTER id_usuario,
   ADD CONSTRAINT fk_pedidos_cocinero
