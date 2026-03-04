@@ -48,3 +48,16 @@ function actualizaUsuario($id, $nom, $ape, $email, $avatar, $rol) {
 function tieneRol($rolRequerido) {
     return isset($_SESSION['rol']) && $_SESSION['rol'] === $rolRequerido;
 }
+
+
+function login($nombreUsuario, $password) {
+    // 1. Buscamos al usuario por su nombre
+    $usuario = buscaUsuarioPorNombre($nombreUsuario);
+
+    // 2. Si existe y la contraseña coincide con el hash
+    if ($usuario && password_verify($password, $usuario['password'])) {
+        return $usuario; // Login exitoso
+    }
+
+    return false; // Login fallido
+}

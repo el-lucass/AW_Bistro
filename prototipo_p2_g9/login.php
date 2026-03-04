@@ -1,29 +1,16 @@
 <?php
 require_once 'includes/config.php';
+require_once 'includes/clases/FormularioLogin.php';
 
-$tituloPagina = 'Login - Bistro FDI';
+$tituloPagina = 'Login';
+$form = new FormularioLogin();
+$htmlFormulario = $form->gestiona();
 
-// Definimos el formulario como contenido principal
-// El action apunta a usuariosLogin.php que es quien tiene la lógica de BD
 $contenidoPrincipal = <<<EOS
-    <h1>Iniciar Sesión</h1>
-    <form action="usuarios/login.php" method="POST">
-        <fieldset>
-            <legend>Datos de acceso</legend>
-            <div>
-                <label>Nombre de usuario:</label>
-                <input type="text" name="nombre_usuario" required>
-            </div>
-            <div>
-                <label>Contraseña:</label>
-                <input type="password" name="password" required>
-            </div>
-            <br>
-            <button type="submit">Entrar</button>
-        </fieldset>
-    </form>
-    <p>¿Aún no tienes cuenta? <a href="registro.php">Regístrate aquí</a></p>
+<div class="caja-login">
+    <h1>Acceso Usuarios</h1>
+    $htmlFormulario
+</div>
 EOS;
 
-// Usamos la ruta corregida para evitar el error de "includes/includes"
-require RAIZ_APP . '/vistas/plantillas/plantilla.php';
+require 'includes/vistas/plantillas/plantilla.php';
