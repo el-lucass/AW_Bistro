@@ -1,15 +1,17 @@
 <?php
 require_once 'includes/config.php';
+require_once 'includes/usuarios.php'; // Incluimos el modelo para usar tieneRol()
 
 $tituloPagina = 'Inicio - Bistro FDI';
 
 // Preparamos el contenido principal
 $contenidoPrincipal = "<h1>Bienvenido a Bistro FDI</h1>";
 
-if (isset($_SESSION['login']) && $_SESSION['login']) {
+// Verificamos si hay sesión iniciada de forma segura
+if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
 
     // CLIENTE: opciones de tipo de pedido + historial
-    if ($_SESSION['rol'] == 'cliente') {
+    if (tieneRol('cliente')) {
 
         $estiloBoton = "text-decoration: none; color: #333; background-color: white; border: 1px solid #bbb; padding: 8px 15px; border-radius: 5px; font-size: 14px; transition: 0.2s; margin-top: 15px; cursor: pointer;";
 
@@ -49,7 +51,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     }
 
     // GERENTE: panel de administración
-    if ($_SESSION['rol'] == 'gerente') {
+    if (tieneRol('gerente')) {
         $contenidoPrincipal .= "<h2>Panel de Administración</h2>";
         $contenidoPrincipal .= "<div class='menu-botones'>";
         $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='admin/usuarios.php'\">F0: Administrar Usuarios</button> ";
@@ -59,15 +61,15 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     }
 
     // COCINERO: vista cocina
-    if ($_SESSION['rol'] == 'cocinero') {
+    if (tieneRol('cocinero')) {
         $contenidoPrincipal .= "<h2>Panel de Cocina</h2>";
         $contenidoPrincipal .= "<div class='menu-botones'>";
         $contenidoPrincipal .= "<button onclick=\"location.href='cocinero/cocinero_pedidos.php'\">F3: Vista Cocina</button> ";
         $contenidoPrincipal .= "</div>";
     }
 
-    // CAMARERO, COCINERO Y GERENTE: acceso a vista camarero
-    if (in_array($_SESSION['rol'], ['camarero'])) {
+    // CAMARERO: vista camarero
+    if (tieneRol('camarero')) {
         $contenidoPrincipal .= "<div class='menu-botones' style='margin-top: 15px;'>";
         $contenidoPrincipal .= "<button onclick=\"location.href='camarero/camarero_pedidos.php'\">Vista Camarero</button> ";
         $contenidoPrincipal .= "</div>";
@@ -80,5 +82,5 @@ if (isset($_SESSION['login']) && $_SESSION['login']) {
     $contenidoPrincipal .= "<a href='registro.php'><button>Registrarse</button></a>";
 }
 
-// Cargamos la plantilla (siempre, independientemente de si el usuario está logueado)
+// Cargamos la plantilla
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';

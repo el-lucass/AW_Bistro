@@ -1,3 +1,13 @@
+<?php
+// Nos aseguramos de tener el archivo de usuarios disponible si no se cargó antes
+require_once __DIR__ . '/../../usuarios.php'; 
+
+// Verificamos de forma segura si el usuario está logueado
+$estaLogueado = isset($_SESSION["login"]) && $_SESSION["login"] === true;
+$rolActual = $estaLogueado && isset($_SESSION['rol']) ? $_SESSION['rol'] : 'visitante';
+$nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'] : '';
+?>
+
 <header style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #ccc; background-color: #f8f9fa;">
     
     <div style="display: flex; align-items: center; gap: 20px;">
@@ -5,23 +15,23 @@
             <img src="<?= RUTA_IMGS ?>logo.jpg" alt="Logo Bistro FDI" width="80" style="vertical-align: middle;">
         </div>
         
-        <?php if (isset($_SESSION["login"]) && $_SESSION["login"]): ?>
+        <?php if ($estaLogueado): ?>
             <?php 
-                // Determinar el color según el rol
+                // Determinar el color según el rol usando la variable segura $rolActual
                 $colorRol = '#16a085'; // Por defecto para cliente u otros
-                $rolMayusculas = strtoupper($_SESSION['rol']); 
+                $rolMayusculas = strtoupper($rolActual); 
                 
-                if ($_SESSION['rol'] === 'gerente') {
+                if ($rolActual === 'gerente') {
                     $colorRol = '#d35400';
-                } elseif ($_SESSION['rol'] === 'cocinero') {
+                } elseif ($rolActual === 'cocinero') {
                     $colorRol = '#8e44ad';
-                } elseif ($_SESSION['rol'] === 'camarero') {
+                } elseif ($rolActual === 'camarero') {
                     $colorRol = '#2980b9';
                 }
             ?>
             
             <div style="display: flex; flex-direction: column; justify-content: center;">
-                 <span style="font-size: 22px; font-weight: bold; color: #333;"><?= htmlspecialchars($_SESSION["nombre"]) ?></span>
+                 <span style="font-size: 22px; font-weight: bold; color: #333;"><?= htmlspecialchars($nombreActual) ?></span>
                  <span style="font-size: 16px; font-weight: bold; color: <?= $colorRol ?>; margin-top: 2px;"><?= htmlspecialchars($rolMayusculas) ?></span>
             </div>
             
@@ -32,7 +42,7 @@
         
         <?php $estiloBoton = "text-decoration: none; color: #333; background-color: white; border: 1px solid #bbb; padding: 8px 15px; border-radius: 5px; font-size: 14px; transition: 0.2s;"; ?>
         
-        <?php if (isset($_SESSION["login"]) && $_SESSION["login"] && $_SESSION['rol'] == 'gerente'): ?>
+        <?php if (tieneRol('gerente')): ?>
                 <a href="<?= RUTA_APP ?>/admin/usuarios.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Usuarios</a>
                 <a href="<?= RUTA_APP ?>/admin/productos.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Productos</a>
                 <a href="<?= RUTA_APP ?>/admin/pedidos_pendientes.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Pedidos pendientes</a>
@@ -40,17 +50,17 @@
 
         <a href="<?= RUTA_APP ?>/index.php" style="<?= $estiloBoton ?>">Inicio</a>
 
-        <?php if (isset($_SESSION["login"]) && $_SESSION["login"]): ?>
+        <?php if ($estaLogueado): ?>
             
-            <?php if ($_SESSION['rol'] === 'cliente'): ?>
+            <?php if (tieneRol('cliente')): ?>
                 <a href="<?= RUTA_APP ?>/historial_pedidos.php" style="<?= $estiloBoton ?>">🧾 Mis pedidos</a>
             <?php endif; ?>
                 
-            <?php if ($_SESSION['rol'] === 'cocinero'): ?>
+            <?php if (tieneRol('cocinero')): ?>
                 <a href="<?= RUTA_APP ?>/cocinero/cocinero_pedidos.php" style="<?= $estiloBoton ?>">🧾 Pedidos pendientes</a>
             <?php endif; ?>
 
-            <?php if ($_SESSION['rol'] === 'camarero'): ?>
+            <?php if (tieneRol('camarero')): ?>
                 <a href="<?= RUTA_APP ?>/camarero/camarero_pedidos.php" style="<?= $estiloBoton ?>">🧾 Vista Camarero</a>
             <?php endif; ?>
             
