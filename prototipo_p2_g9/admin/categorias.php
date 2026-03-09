@@ -1,15 +1,20 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+
+// Seguridad: Solo el gerente puede gestionar categorías
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
 $tituloPagina = 'Gestión de Categorías';
-// CAMBIO: Usamos la nueva función que cuenta los productos
-$categorias = listaCategoriasConConteo();
+
+// LLAMADA ACTUALIZADA: Usamos el método estático de la clase Producto
+$categorias = Producto::listaCategoriasConConteo();
 
 // Mensajes
 $mensaje = "";
@@ -18,8 +23,7 @@ if (isset($_GET['status'])) {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>¡Categoría creada correctamente!</div>";
     } elseif ($_GET['status'] === 'deleted') {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Categoría eliminada correctamente.</div>";
-    }elseif ($_GET['status'] === 'updated') {
-        // NUEVO: Mensaje de éxito al editar
+    } elseif ($_GET['status'] === 'updated') {
         $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Categoría actualizada correctamente.</div>";
     }
 } elseif (isset($_GET['error'])) {
@@ -40,30 +44,23 @@ if (!empty($categorias)) {
     foreach ($categorias as $cat) {
         $total = $cat['total_productos'];
         
-        // Etiqueta visual para los productos
         $badge = $total > 0 
             ? "<span style='color: #2980b9; font-weight: bold;'>{$total} productos</span>"
             : "<span style='color: #7f8c8d; font-style: italic;'>0 productos</span>";
             
-        // Iniciamos la fila
         $tabla .= "<tr>";
-        
-        // Columna 1, 2, 3 y 4
         $tabla .= "<td style='padding: 10px;'>{$cat['id']}</td>";
-        $tabla .= "<td style='padding: 10px;'><strong>{$cat['nombre']}</strong></td>";
-        $tabla .= "<td style='padding: 10px;'>{$cat['descripcion']}</td>";
+        $tabla .= "<td style='padding: 10px;'><strong>" . htmlspecialchars($cat['nombre']) . "</strong></td>";
+        $tabla .= "<td style='padding: 10px;'>" . htmlspecialchars($cat['descripcion']) . "</td>";
         $tabla .= "<td style='padding: 10px; text-align:center;'>{$badge}</td>";
         
-        // Columna 5: ACCIONES
         $tabla .= "<td style='padding: 10px;'>";
         $tabla .= "<div style='display: flex; gap: 5px; align-items: center;'>";
         
-        // Botón Editar
         $tabla .= "<a href='editar_categoria.php?id={$cat['id']}' style='text-decoration: none;'>
                         <button type='button' style='background-color:#f39c12; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Editar</button>
                    </a>";
             
-        // Botón Borrar (Seguro)
         if ($total == 0) {
             $tabla .= "<form action='../productos/admin_borrar_categoria.php' method='POST' style='margin: 0;' onsubmit='return confirm(\"¿Seguro que quieres borrar esta categoría?\")'>
                             <input type='hidden' name='id' value='{$cat['id']}'>
@@ -73,10 +70,9 @@ if (!empty($categorias)) {
             $tabla .= "<button type='button' onclick='alert(\"No se puede borrar esta categoría porque contiene productos.\\n\\nPor favor, cambia de categoría los productos asociados primero.\");' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Borrar</button>";
         }
         
-        $tabla .= "</div>"; // Cierra el flex
-        $tabla .= "</td>";  // Cierra la columna 5
-        
-        $tabla .= "</tr>";  // Cierra la fila
+        $tabla .= "</div>";
+        $tabla .= "</td>";
+        $tabla .= "</tr>";
     }
 } else {
     $tabla .= "<tr><td colspan='5' style='padding: 10px; text-align:center;'>No hay categorías creadas.</td></tr>";
@@ -106,4 +102,3 @@ $contenidoPrincipal = "
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
-?>

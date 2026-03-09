@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/cocina.php';
+
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Cocina;
 
 // Seguridad: solo cocinero
-if (!isset($_SESSION['login']) || $_SESSION['rol'] !== 'cocinero') {
-    header('Location: login.php');
+if (!Usuario::tieneRol('cocinero')) {
+    header('Location: ../login.php');
     exit();
 }
 
@@ -14,7 +16,8 @@ if ($id_pedido <= 0) {
     exit();
 }
 
-$pedido = obtenerPedido($id_pedido);
+// Usamos método estático
+$pedido = Cocina::obtenerPedido($id_pedido);
 if (!$pedido) {
     http_response_code(404);
     die("Pedido no encontrado");
@@ -39,8 +42,9 @@ if ($pedido['estado'] !== 'cocinando') {
     exit();
 }
 
-$lineas = obtenerLineasPedidoCocina($id_pedido);
-$pendientes = pendientesPedido($id_pedido);
+// Llamadas a clase
+$lineas = Cocina::obtenerLineasPedidoCocina($id_pedido);
+$pendientes = Cocina::pendientesPedido($id_pedido);
 
 $tituloPagina = "Cocina - Pedido #{$pedido['numero_dia']}";
 

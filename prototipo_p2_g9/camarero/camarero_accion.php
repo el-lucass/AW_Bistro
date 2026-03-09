@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/pedidos.php';
-require_once __DIR__ . '/../includes/usuarios.php';
+
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Pedido;
 
 // Solo personal logueado puede cambiar estados
-if (!isset($_SESSION['login']) || !tieneRol('camarero')) {
+if (!isset($_SESSION['login']) || !Usuario::tieneRol('camarero')) {
     header('Location: ' . RUTA_APP . '/index.php');
     exit();
 }
@@ -22,14 +24,22 @@ $transiciones_gerente = $transiciones_camarero + [
     'en preparación' => 'cancelado',
 ];
 
-$permitidas = tieneRol('gerente') ? $transiciones_gerente : $transiciones_camarero;
+$permitidas = Usuario::tieneRol('gerente') ? $transiciones_gerente : $transiciones_camarero;
 
-$pedido = buscaPedido($id_pedido);
+if ($id_pedido > 0 && $nuevo_estado !== '') {
+    // Usamos el método estático que devuelve un OBJETO Pedido
+    $pedido = Pedido::buscaPedido($id_pedido);
 
-if ($pedido && isset($permitidas[$pedido['estado']]) && $permitidas[$pedido['estado']] === $nuevo_estado) {
-    actualizaEstadoPedido($id_pedido, $nuevo_estado);
+    if ($pedido) {
+        $estadoActual = $pedido->getEstado();
+        
+        if (isset($permitidas[$estadoActual]) && $permitidas[$estadoActual] === $nuevo_estado) {
+            Pedido::actualizaEstadoPedido($id_pedido, $nuevo_estado);
+        }
+    }
 }
 
+// Volvemos a la vista del camarero
 header('Location: camarero_pedidos.php');
 exit();
 ?>

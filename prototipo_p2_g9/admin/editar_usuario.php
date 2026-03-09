@@ -1,43 +1,38 @@
 <?php
-// Subimos un nivel para encontrar la carpeta includes
 require_once '../includes/config.php';
-require_once '../includes/mysql/bd.php';
 
-// Verificación de seguridad básica
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\FormularioAdminEditar;
+
+// 1. SEGURIDAD: Solo gerentes pueden entrar
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
-$id = $_GET['id'] ?? null;
-$conn = conectarBD(); //
-$user = $conn->query("SELECT * FROM usuarios WHERE id = '$id'")->fetch_assoc();
+// 2. RECUPERAR EL ID (Por GET o por POST si el form ya se envió)
+$idUsuario = $_GET['id'] ?? $_POST['id'] ?? null;
 
-if (!$user) {
-    echo "Usuario no encontrado.";
+if (!$idUsuario) {
+    header('Location: usuarios.php');
     exit;
 }
 
-$tituloPagina = "Editando a: " . $user['nombre_usuario'];
+$tituloPagina = 'Editar Usuario';
 
-$roles = ['cliente', 'camarero', 'cocinero', 'gerente'];
-$opcionesRol = "";
-foreach($roles as $r) {
-    $sel = ($user['rol'] == $r) ? 'selected' : '';
-    $opcionesRol .= "<option value='$r' $sel>$r</option>";
-}
+// 3. INSTANCIAR EL FORMULARIO pasándole el ID
+$form = new FormularioAdminEditar($idUsuario);
+$htmlFormulario = $form->gestiona();
 
+// 4. PINTAR LA VISTA
 $contenidoPrincipal = <<<EOS
-<h1>Editar Usuario: {$user['nombre_usuario']}</h1>
-<form action="../usuarios/admin_editar.php" method="POST">
-    <input type="hidden" name="id" value="{$user['id']}">
-    <div><label>Nombre:</label> <input type="text" name="nombre" value="{$user['nombre']}"></div>
-    <div><label>Email:</label> <input type="email" name="email" value="{$user['email']}"></div>
-    <div><label>Rol:</label> <select name="rol">$opcionesRol</select></div>
-    <br>
-    <button type="submit">Actualizar Datos</button>
-</form>
+<div class="caja-admin">
+    <h1>Editar datos del usuario</h1>
+    <a href="usuarios.php" style="display:inline-block; margin-bottom: 15px;">⬅️ Volver a la lista</a>
+    
+    $htmlFormulario
+</div>
 EOS;
 
-// RAIZ_APP es absoluta, no necesita ../
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';

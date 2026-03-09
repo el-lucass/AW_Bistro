@@ -1,5 +1,6 @@
 <?php
-require_once 'FormularioUsuarioBase.php';
+namespace es\ucm\fdi\aw;
+
 
 class FormularioAdminCrear extends FormularioUsuarioBase
 {

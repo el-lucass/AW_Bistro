@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/config.php';
-require_once 'includes/clases/FormularioLogin.php';
+use es\ucm\fdi\aw\FormularioLogin;
+
 
 $tituloPagina = 'Login';
 $form = new FormularioLogin();

@@ -1,7 +1,9 @@
 <?php
 require_once 'includes/config.php';
-require_once 'includes/usuarios.php';
-require_once 'includes/clases/FormularioPerfil.php';
+
+// Importamos las clases que vamos a usar
+use es\ucm\fdi\aw\FormularioPerfil;
+use es\ucm\fdi\aw\Usuario;
 
 // Seguridad
 if (!isset($_SESSION['login'])) {
@@ -11,21 +13,19 @@ if (!isset($_SESSION['login'])) {
 
 $tituloPagina = 'Mi Perfil';
 
-// 1. Obtener datos del usuario para pintar la foto GRANDE actual fuera del formulario
+// 1. Obtener datos del usuario mediante la CLASE Usuario
 $id = $_SESSION['id'];
-$user = buscaUsuario($id); // Usamos la función del modelo, no SQL directo
+$user = Usuario::buscaUsuario($id); 
 
-// 2. Lógica visual para saber qué ruta mostrar en la foto de la izquierda
-$avatarActual = $user['avatar'];
+// 2. Lógica visual: Usamos los GETTERS del objeto en lugar de los arrays
+$avatarActual = $user->getAvatar();
 $rutaImagen = '';
 
 if (strpos($avatarActual, 'predefinidos/') !== false) {
-    // Si es "predefinidos/jake.png", la ruta es img/avatares/predefinidos/jake.png
     $rutaImagen = "img/avatares/" . $avatarActual;
 } elseif ($avatarActual == 'default.png') {
     $rutaImagen = "img/avatares/default.png";
 } else {
-    // Si es una foto subida "123123_foto.jpg"
     $rutaImagen = "img/avatares/usuarios/" . $avatarActual;
 }
 
@@ -33,11 +33,17 @@ if (strpos($avatarActual, 'predefinidos/') !== false) {
 $form = new FormularioPerfil();
 $htmlFormulario = $form->gestiona();
 
-// Mensaje de éxito si viene de la redirección
 $msg = '';
 if (isset($_GET['exito'])) {
     $msg = '<div style="background:#d4edda; color:#155724; padding:10px; margin-bottom:15px; border-radius:5px;">¡Perfil actualizado con éxito!</div>';
 }
+
+// Extraemos los datos del objeto a variables simples para usarlos fácilmente en el bloque HTML
+$nombreUsuarioVista = htmlspecialchars($user->getNombreUsuario());
+
+// NOTA SOBRE BISTROCOINS: Como no lo añadimos a las propiedades de la clase Usuario antes, 
+// puedes ponerlo temporalmente a 0, o si lo has añadido a tu clase, usar $user->getBistrocoins().
+$bistrocoinsVista = 0; 
 
 // 4. Construcción de la página
 $contenidoPrincipal = <<<EOS
@@ -48,8 +54,8 @@ $msg
     
     <div style="text-align: center; min-width: 200px;">
         <img src="$rutaImagen" alt="Avatar Actual" width="150" height="150" style="border-radius: 50%; border: 3px solid #d35400; object-fit: cover;">
-        <p style="font-size: 1.2em; color: #d35400;"><strong>@{$user['nombre_usuario']}</strong></p>
-        <p>BistroCoins: <strong>{$user['bistrocoins']}</strong> 🪙</p>
+        <p style="font-size: 1.2em; color: #d35400;"><strong>@$nombreUsuarioVista</strong></p>
+        <p>BistroCoins: <strong>$bistrocoinsVista</strong> 🪙</p>
     </div>
 
     <div style="flex-grow: 1;">
@@ -70,4 +76,5 @@ $msg
 </div>
 EOS;
 
-require 'includes/vistas/plantillas/plantilla.php';
+// Usamos la constante RAIZ_APP para evitar errores de rutas
+require RAIZ_APP . '/vistas/plantillas/plantilla.php';

@@ -1,5 +1,6 @@
 <?php
-require_once 'FormularioUsuarioBase.php';
+namespace es\ucm\fdi\aw;
+
 
 class FormularioRegistro extends FormularioUsuarioBase
 {
@@ -25,7 +26,7 @@ EOF;
     protected function insertaUsuario($datos)
     {
         // Llamamos al modelo con rol 'cliente' fijo
-        if (creaUsuario($datos['nombre_usuario'], $datos['password'], $datos['nombre'], $datos['apellidos'], $datos['email'], 'cliente')) {
+        if (Usuario::creaUsuario($datos['nombre_usuario'], $datos['password'], $datos['nombre'], $datos['apellidos'], $datos['email'], 'cliente')) {
             // Si devuelve true, retornamos la URL de redirección (login)
             return $this->urlRedireccion;
         }

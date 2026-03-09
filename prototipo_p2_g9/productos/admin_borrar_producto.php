@@ -1,27 +1,30 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
+
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
 
 // 1. Seguridad: Solo el gerente puede hacer esto
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
-// 2. Comprobar que venimos por POST desde los botones de la tabla
+// 2. Comprobar que venimos por POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? null;
     $accion = $_POST['accion'] ?? '';
 
     if ($id && $accion) {
         if ($accion === 'retirar') {
-            borraProducto($id);
-            // Añadimos el ancla al final de la URL
+            // Llamamos al método estático de la clase Producto
+            Producto::borraProducto($id);
             header("Location: ../admin/productos.php?status=deleted#fila-producto-$id");
             exit;
         } elseif ($accion === 'restaurar') {
-            restauraProducto($id);
-            // Añadimos el ancla al final de la URL
+            // Llamamos al método estático de la clase Producto
+            Producto::restauraProducto($id);
             header("Location: ../admin/productos.php?status=restored#fila-producto-$id");
             exit;
         }

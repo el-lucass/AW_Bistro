@@ -1,8 +1,11 @@
 <?php
 require_once 'includes/config.php';
 
+// Importamos la clase Usuario
+use es\ucm\fdi\aw\Usuario;
+
 // Seguridad: Solo clientes logueados
-if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {
+if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {
     header('Location: login.php');
     exit();
 }
@@ -43,9 +46,10 @@ foreach ($_SESSION['carrito']['productos'] as $item) {
     $totalCarrito += $subtotal;
     $precioFormateado = number_format($subtotal, 2);
     
+    // Usamos htmlspecialchars por seguridad al pintar el nombre
     $contenidoPrincipal .= "
     <div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;'>
-        <span>{$item['nombre']} x{$item['cantidad']}</span>
+        <span>" . htmlspecialchars($item['nombre']) . " x{$item['cantidad']}</span>
         <span>{$precioFormateado} €</span>
     </div>
     ";

@@ -1,16 +1,20 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/cocina.php';
+
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Cocina;
 
 // Seguridad: solo cocinero
-if (!isset($_SESSION['login']) || $_SESSION['rol'] !== 'cocinero') {
-    header('Location: login.php');
+if (!Usuario::tieneRol('cocinero')) {
+    header('Location: ../login.php');
     exit();
 }
 
 $idCocinero = (int)$_SESSION['id'];
-$misPedidos = listaMisPedidosCocinando($idCocinero);
-$pedidos = listaPedidosEnPreparacion();
+
+// Llamadas estáticas
+$misPedidos = Cocina::listaMisPedidosCocinando($idCocinero);
+$pedidos = Cocina::listaPedidosEnPreparacion();
 
 $tituloPagina = 'Cocina - Bistro FDI';
 
@@ -27,8 +31,8 @@ $contenidoPrincipal = "<div style='max-width: 900px; margin: 0 auto; padding: 20
 {$msg}";
 
 /** =======================
- *  1) MIS PEDIDOS EN CURSO
- *  ======================= */
+ * 1) MIS PEDIDOS EN CURSO
+ * ======================= */
 $contenidoPrincipal .= "
 <h2 style='margin-top:25px; margin-bottom:10px;'>Mis pedidos en curso</h2>
 <div style='border:1px solid #eee; border-radius:6px; overflow:hidden; background:#fff; margin-bottom:25px;'>";
@@ -77,8 +81,8 @@ if (empty($misPedidos)) {
 $contenidoPrincipal .= "</div>";
 
 /** =======================
- *  2) PEDIDOS EN PREPARACIÓN
- *  ======================= */
+ * 2) PEDIDOS EN PREPARACIÓN
+ * ======================= */
 $contenidoPrincipal .= "
 <h2 style='margin-top:10px; margin-bottom:10px;'>Pedidos en preparación (Sin asignar)</h2>
 <div style='border:1px solid #eee; border-radius:6px; overflow:hidden; background:#fff;'>";

@@ -1,6 +1,7 @@
 <?php
-require_once 'Formulario.php';
-require_once __DIR__ . '/../usuarios.php';
+namespace es\ucm\fdi\aw;
+
+// Ya no necesitamos require_once '../usuarios.php' gracias al Autoloader y al namespace
 
 class FormularioPerfil extends Formulario
 {
@@ -13,46 +14,51 @@ class FormularioPerfil extends Formulario
 
     protected function generaCamposFormulario(&$datos)
     {
-        // Obtener datos del usuario logueado
+        // 1. Obtener datos del usuario logueado usando la nueva clase
         $idUsuario = $_SESSION['id'] ?? null;
-        if (!$datos && $idUsuario) {
-            $datos = buscaUsuario($idUsuario);
+        $usuarioActual = null;
+        
+        if ($idUsuario) {
+            $usuarioActual = Usuario::buscaUsuario($idUsuario);
         }
 
-        $nombre = $datos['nombre'] ?? '';
-        $apellidos = $datos['apellidos'] ?? '';
-        $email = $datos['email'] ?? '';
+        // 2. Rellenamos las variables. 
+        // Si $datos tiene algo, es que venimos de un error de validación y mantenemos lo escrito.
+        // Si está vacío, sacamos los datos de la Base de Datos usando los GETTERS.
+        $nombre = $datos['nombre'] ?? ($usuarioActual ? $usuarioActual->getNombre() : '');
+        $apellidos = $datos['apellidos'] ?? ($usuarioActual ? $usuarioActual->getApellidos() : '');
+        $email = $datos['email'] ?? ($usuarioActual ? $usuarioActual->getEmail() : '');
+        $avatarActual = $usuarioActual ? $usuarioActual->getAvatar() : 'default.png';
         
         // Errores
         $erroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresNombre = self::createMensajeError($this->errores, 'nombre', 'span', ['class' => 'error']);
-        $erroresEmail = self::createMensajeError($this->errores, 'email', 'span', ['class' => 'error']);
-        $erroresFile = self::createMensajeError($this->errores, 'avatar_subida', 'span', ['class' => 'error']);
+        $erroresNombre = self::createMensajeError($this->errores, 'nombre', 'span', ['class' => 'error', 'style' => 'color:red; font-size: 0.9em; display:block;']);
+        $erroresEmail = self::createMensajeError($this->errores, 'email', 'span', ['class' => 'error', 'style' => 'color:red; font-size: 0.9em; display:block;']);
+        $erroresFile = self::createMensajeError($this->errores, 'avatar_subida', 'span', ['class' => 'error', 'style' => 'color:red; font-size: 0.9em; display:block;']);
 
         // --- HTML DEL FORMULARIO ---
-        // Fíjate que he copiado tu estructura de Fieldset y Radio Buttons
         $html = <<<EOF
         $erroresGlobales
-        <fieldset>
-            <legend>Información Personal</legend>
-            <div>
-                <label>Nombre:</label> 
-                <input type="text" name="nombre" value="$nombre" required>
+        <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+            <legend style="font-weight: bold; padding: 0 5px;">Información Personal</legend>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom: 5px;">Nombre:</label> 
+                <input type="text" name="nombre" value="$nombre" required style="width:100%; padding:8px; box-sizing:border-box;">
                 $erroresNombre
             </div>
-            <div>
-                <label>Apellidos:</label> 
-                <input type="text" name="apellidos" value="$apellidos">
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom: 5px;">Apellidos:</label> 
+                <input type="text" name="apellidos" value="$apellidos" style="width:100%; padding:8px; box-sizing:border-box;">
             </div>
-            <div>
-                <label>Email:</label> 
-                <input type="email" name="email" value="$email" required>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom: 5px;">Email:</label> 
+                <input type="email" name="email" value="$email" required style="width:100%; padding:8px; box-sizing:border-box;">
                 $erroresEmail
             </div>
             
             <hr style="margin: 20px 0;">
             
-            <h3>Cambiar Avatar</h3>
+            <h3 style="margin-top:0;">Cambiar Avatar</h3>
             
             <div style="margin-bottom: 15px;">
                 <p><strong>A) Personajes divertidos:</strong></p>
@@ -88,7 +94,7 @@ class FormularioPerfil extends Formulario
             </div>
 
             <br>
-            <button type="submit" style="background: #27ae60; color: white; padding: 10px 20px; cursor:pointer; border:none; border-radius:5px;">Guardar Cambios</button>
+            <button type="submit" style="background: #27ae60; color: white; padding: 10px 20px; cursor:pointer; border:none; border-radius:5px; font-size:16px;">Guardar Cambios</button>
         </fieldset>
 EOF;
         return $html;
@@ -110,8 +116,9 @@ EOF;
         if (count($this->errores) > 0) return;
 
         // 2. Lógica del Avatar (Prioridades)
-        $userOld = buscaUsuario($idUsuario); // Necesitamos saber qué tenía antes para borrarlo si hace falta
-        $avatarFinal = $userOld['avatar']; // Por defecto, no cambia
+        // OJO AQUÍ: Llamamos a Usuario::buscaUsuario y usamos el getter ->getAvatar()
+        $userOld = Usuario::buscaUsuario($idUsuario); 
+        $avatarFinal = $userOld ? $userOld->getAvatar() : 'default.png'; 
         $hayCambioDeImagen = false;
 
         // PRIORIDAD 1: ¿Ha subido un archivo?
@@ -119,9 +126,8 @@ EOF;
             $archivo = $_FILES['avatar_subida'];
             $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
             
-            // Validar extensión
             if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                $this->errores['avatar_subida'] = "Solo se permiten imágenes jpg, png, gif.";
+                $this->errores['avatar_subida'] = "Solo se permiten imágenes jpg, png, gif o webp.";
                 return;
             }
 
@@ -132,25 +138,22 @@ EOF;
                 $avatarFinal = $nombreArchivo;
                 $hayCambioDeImagen = true;
             } else {
-                $this->errores['avatar_subida'] = "Error al mover el archivo.";
+                $this->errores['avatar_subida'] = "Error al mover el archivo al servidor.";
                 return;
             }
         } 
         // PRIORIDAD 2: ¿Ha seleccionado un Radio Button (Personaje o Default)?
         elseif (isset($datos['avatar_opcion']) && !empty($datos['avatar_opcion'])) {
-            $avatarFinal = $datos['avatar_opcion']; // Esto valdrá "predefinidos/jake.png" o "default.png"
+            $avatarFinal = $datos['avatar_opcion']; 
             $hayCambioDeImagen = true;
         }
 
-        // 3. Limpieza de basura
-        // Si ha cambiado la imagen, y la imagen ANTIGUA era una subida por el usuario (no default ni predefinida)
-        // entonces borramos la vieja para no ocupar espacio en el servidor.
-        if ($hayCambioDeImagen) {
-            $avatarViejo = $userOld['avatar'];
+        // 3. Limpieza de basura (Fotos viejas)
+        if ($hayCambioDeImagen && $userOld) {
+            $avatarViejo = $userOld->getAvatar();
             $esPredefinido = strpos($avatarViejo, 'predefinidos/') !== false;
             $esDefault = ($avatarViejo === 'default.png');
             
-            // Solo borramos si NO es predefinido y NO es default
             if (!$esPredefinido && !$esDefault) {
                 if (file_exists("img/avatares/usuarios/" . $avatarViejo)) {
                     unlink("img/avatares/usuarios/" . $avatarViejo);
@@ -158,12 +161,12 @@ EOF;
             }
         }
 
-        // 4. Actualizar BD
-        if (actualizaUsuario($idUsuario, $nombre, $apellidos, $email, $avatarFinal, $_SESSION['rol'])) {
-            $_SESSION['nombre'] = $nombre; // Actualizar sesión
+        // 4. Actualizar BD (Llamando al método estático)
+        if (Usuario::actualizaUsuario($idUsuario, $nombre, $apellidos, $email, $avatarFinal, $_SESSION['rol'])) {
+            $_SESSION['nombre'] = $nombre; // Actualizamos el nombre en sesión por si ha cambiado
             return $this->urlRedireccion;
         } else {
-            $this->errores[] = "Error en la base de datos.";
+            $this->errores[] = "Error en la base de datos al guardar los cambios.";
         }
     }
 }

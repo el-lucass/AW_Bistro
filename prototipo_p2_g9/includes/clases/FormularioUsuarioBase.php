@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/Formulario.php';
-require_once __DIR__ . '/../usuarios.php'; // Tu modelo de datos
+namespace es\ucm\fdi\aw;
+
 
 /**
  * Clase intermedia que gestiona los campos comunes (Nombre, Usuario, Pass, Email)
@@ -73,7 +73,7 @@ EOF;
         if (empty($email)) { $this->errores['email'] = 'El email es obligatorio.'; }
 
         // 2. Verificar si usuario existe (usando tu modelo includes/usuarios.php)
-        if (empty($this->errores) && buscaUsuarioPorNombre($usuario)) {
+        if (empty($this->errores) && Usuario::buscaUsuarioPorNombre($usuario)) {
             $this->errores['nombre_usuario'] = 'El usuario ya existe.';
         }
 

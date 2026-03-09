@@ -1,44 +1,50 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-// Seguridad
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+
+// Seguridad: Solo el gerente puede editar
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
 $id = $_GET['id'] ?? null;
-$producto = buscaProducto($id);
+// Buscamos el producto usando el método estático (devuelve un Objeto Producto)
+$producto = Producto::buscaProducto($id);
 
 if (!$producto) {
     echo "Producto no encontrado.";
     exit;
 }
 
-$tituloPagina = "Editar Producto: " . htmlspecialchars($producto['nombre']);
+$tituloPagina = "Editar Producto: " . htmlspecialchars($producto->getNombre());
 
 // Selector de categorías
-$categorias = listaCategorias();
+$categorias = Producto::listaCategorias();
 $opcionesCategoria = "";
 foreach ($categorias as $cat) {
-    $selected = ($cat['id'] == $producto['id_categoria']) ? "selected" : "";
+    $selected = ($cat['id'] == $producto->getIdCategoria()) ? "selected" : "";
     $opcionesCategoria .= "<option value='{$cat['id']}' $selected>{$cat['nombre']}</option>";
 }
 
 // Selector de IVA
 $ivaOpciones = "";
 foreach ([4, 10, 21] as $tipoIva) {
-    $selected = ($producto['iva'] == $tipoIva) ? "selected" : "";
+    $selected = ($producto->getIva() == $tipoIva) ? "selected" : "";
     $ivaOpciones .= "<option value='$tipoIva' $selected>$tipoIva%</option>";
 }
 
-$checkedDisponible = $producto['disponible'] ? "checked" : "";
+$checkedDisponible = $producto->getDisponible() ? "checked" : "";
 
 // Mostrar imágenes actuales con opción a borrar
 $galeriaHTML = "<div style='display:flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;'>";
-if (!empty($producto['imagenes'])) {
-    foreach ($producto['imagenes'] as $img) {
+$imagenesActuales = $producto->getImagenes();
+
+if (!empty($imagenesActuales)) {
+    foreach ($imagenesActuales as $img) {
         $galeriaHTML .= "
         <div style='text-align: center; background: #fff; padding: 5px; border: 1px solid #ddd; border-radius: 5px;'>
             <img src='../img/productos/{$img['ruta_imagen']}' width='80' height='80' style='object-fit:cover; border-radius: 5px; display: block; margin-bottom: 5px;'>
@@ -62,18 +68,18 @@ $contenidoPrincipal = "
     <h1>Editar Producto</h1>
     {$mensaje}
     <form action='../productos/admin_editar_producto.php' method='POST' enctype='multipart/form-data'>
-        <input type='hidden' name='id' value='{$producto['id']}'>
+        <input type='hidden' name='id' value='{$producto->getId()}'>
         
         <fieldset>
             <legend>Datos básicos</legend>
             <div style='margin-bottom: 10px;'>
                 <label>Nombre:</label> 
-                <input type='text' name='nombre' value='" . htmlspecialchars($producto['nombre']) . "' required style='width: 100%;'>
+                <input type='text' name='nombre' value='" . htmlspecialchars($producto->getNombre()) . "' required style='width: 100%;'>
             </div>
             
             <div style='margin-bottom: 10px;'>
                 <label>Descripción:</label><br>
-                <textarea name='descripcion' required rows='4' style='width: 100%;'>" . htmlspecialchars($producto['descripcion']) . "</textarea>
+                <textarea name='descripcion' required rows='4' style='width: 100%;'>" . htmlspecialchars($producto->getNombre()) . "</textarea>
             </div>
             
             <div style='margin-bottom: 10px;'>
@@ -89,7 +95,7 @@ $contenidoPrincipal = "
             
             <div style='margin-bottom: 10px;'>
                 <label>Precio Base (€):</label> 
-                <input type='number' name='precio_base' id='precio_base' value='{$producto['precio_base']}' step='0.01' min='0' required>
+                <input type='number' name='precio_base' id='precio_base' value='{$producto->getPrecioBase()}' step='0.01' min='0' required>
             </div>
             
             <div style='margin-bottom: 10px;'>
@@ -141,10 +147,9 @@ $contenidoPrincipal = "
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
         document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
-        actualizarPrecioFinal(); // Calcula el precio inicial al cargar la página con los datos de la BD
+        actualizarPrecioFinal(); 
     });
     </script>
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
-?>

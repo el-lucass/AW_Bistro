@@ -1,9 +1,11 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-// Seguridad
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos la clase Usuario para la comprobación de seguridad
+use es\ucm\fdi\aw\Usuario;
+
+// Seguridad: Solo el gerente puede acceder
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
@@ -45,4 +47,3 @@ $contenidoPrincipal = "
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
-?>

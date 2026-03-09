@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/cocina.php';
 
-//para visualizar el avatar bien
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Cocina;
+
+// Función para visualizar el avatar bien
 function rutaAvatar($avatarFile) {
-
     $avatarFile = $avatarFile ?: 'default.png';
-
     $base = __DIR__ . '/../img/avatares/';
 
     if (file_exists($base . 'usuarios/' . $avatarFile)) {
@@ -24,15 +25,16 @@ function rutaAvatar($avatarFile) {
     return '../img/avatares/default.png';
 }
 
-// Seguridad: solo admin
-if (!isset($_SESSION['login']) || $_SESSION['rol'] !== 'gerente') {
+// Seguridad: solo admin usando el método de Usuario
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../login.php');
     exit();
 }
 
 $tituloPagina = 'Pedidos pendientes';
 
-$pedidos = listaPedidosPendientesGerente();
+// LLAMADA ESTÁTICA: Usamos el método de la clase Cocina
+$pedidos = Cocina::listaPedidosPendientesGerente();
 
 $contenidoPrincipal = "<div style='max-width: 1100px; margin: 0 auto; padding: 20px;'>
 <h1 style='margin-top:0;'>Pedidos pendientes</h1>
@@ -58,7 +60,6 @@ if (empty($pedidos)) {
       <tbody>";
 
     foreach ($pedidos as $p) {
-
         $num = htmlspecialchars($p['numero_dia']);
         $fecha = date('d/m/Y H:i', strtotime($p['fecha_hora']));
         $estado = htmlspecialchars($p['estado']);
@@ -68,7 +69,6 @@ if (empty($pedidos)) {
         $cocineroHtml = "<span style='color:#999;'>Sin asignar</span>";
 
         if (!empty($p['cocinero_user'])) {
-
             $avatar = htmlspecialchars($p['cocinero_avatar'] ?? 'default.png');
             $avatarSrc = rutaAvatar($avatar);
 

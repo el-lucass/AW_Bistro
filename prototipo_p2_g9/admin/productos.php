@@ -1,10 +1,13 @@
 <?php
-// Subimos un nivel para encontrar los archivos necesarios
+// Subimos un nivel para encontrar la configuración y el autoloader
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-// Verificación de seguridad: solo el gerente puede gestionar productos
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases que vamos a usar
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+
+// Verificación de seguridad usando el método estático de Usuario
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
@@ -12,9 +15,10 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
 $tituloPagina = 'Gestión de Productos - Bistro FDI';
 
 // Obtenemos todos los productos (pasamos 'false' para que traiga también los retirados/borrados)
-$productos = listaProductos(false);
+// ¡Ahora esto nos devuelve un array de OBJETOS Producto!
+$productos = Producto::listaProductos(false);
 
-// Gestión de mensajes de estado (éxito al crear, editar o borrar)
+// Gestión de mensajes de estado
 $mensaje = "";
 if (isset($_GET['status'])) {
     if ($_GET['status'] === 'deleted') {
@@ -42,42 +46,52 @@ $tabla = '<table border="1" style="width:100%; text-align:left; border-collapse:
     </tr>';
 
 if (!empty($productos)) {
-    foreach ($productos as $row) {
-        $id = $row['id'];
+    // Cambiamos $row por $prod para tener claro que es un objeto
+    foreach ($productos as $prod) {
         
-        // 1. Mostrar miniatura de la imagen principal o una por defecto
-        $rutaImagen = $row['imagen_principal'] ? "../img/productos/" . $row['imagen_principal'] : "../img/productos/default_food.png";
+        // Extraemos los datos usando los GETTERS de la clase Producto
+        $id = $prod->getId();
+        $imagenPrincipal = $prod->getImagenPrincipal();
+        $nombre = htmlspecialchars($prod->getNombre());
+        $categoria = htmlspecialchars($prod->getNombreCategoria());
+        $precioBase = $prod->getPrecioBase();
+        $iva = $prod->getIva();
+        $disponible = $prod->getDisponible();
+        $ofertado = $prod->getOfertado();
+        
+        // 1. Mostrar miniatura
+        $rutaImagen = $imagenPrincipal ? "../img/productos/" . $imagenPrincipal : "../img/productos/default_food.png";
         $imgTag = "<img src='{$rutaImagen}' width='50' height='50' style='object-fit: cover; border-radius: 5px;'>";
         
-        // 2. Cálculo del precio final (Precio Base + IVA)
-        $precioFinal = $row['precio_base'] * (1 + ($row['iva'] / 100));
+        // 2. Cálculo del precio final usando el Getter inteligente que creamos en la clase
+        $precioFinal = $prod->getPrecioTotal();
         $precioFormateado = number_format($precioFinal, 2, ',', '.') . " €";
         
-        // 3. Etiquetas visuales para Stock (Disponible) y Carta (Ofertado)
-        $stockBadge = $row['disponible'] 
+        // 3. Etiquetas visuales
+        $stockBadge = $disponible 
             ? "<span style='color: green; font-weight: bold;'>Disponible</span>" 
             : "<span style='color: red; font-weight: bold;'>Agotado</span>";
             
-        $estadoBadge = $row['ofertado'] 
+        $estadoBadge = $ofertado 
             ? "<span style='color: #2980b9; font-weight: bold;'>En Carta</span>" 
             : "<span style='color: gray; font-style: italic;'>Retirado</span>";
 
         $tabla .= "<tr id='fila-producto-{$id}'>
             <td style='padding: 10px;'>{$id}</td>
             <td style='padding: 10px; text-align:center;'>{$imgTag}</td>
-            <td style='padding: 10px;'><strong>{$row['nombre']}</strong></td>
-            <td style='padding: 10px;'>{$row['nombre_categoria']}</td>
+            <td style='padding: 10px;'><strong>{$nombre}</strong></td>
+            <td style='padding: 10px;'>{$categoria}</td>
             <td style='padding: 10px;'>
                 {$precioFormateado}<br>
-                <small style='color: #666;'>(Base: {$row['precio_base']}€ + {$row['iva']}% IVA)</small>
+                <small style='color: #666;'>(Base: {$precioBase}€ + {$iva}% IVA)</small>
             </td>
             <td style='padding: 10px;'>{$stockBadge}</td>
             <td style='padding: 10px;'>{$estadoBadge}</td>
             <td style='padding: 10px;'>
                 <a href='editar_producto.php?id=$id'><button style='background-color:#f39c12; color:white; border:none; padding:5px; cursor:pointer; margin-bottom: 5px;'>Editar</button></a>";
         
-        // Botón dinámico: si está ofertado mostramos "Retirar", si no, "Restaurar"
-        if ($row['ofertado']) {
+        // Botón dinámico
+        if ($ofertado) {
             $tabla .= " <form action='../productos/admin_borrar_producto.php' method='POST' style='display:inline;'>
                             <input type='hidden' name='id' value='$id'>
                             <input type='hidden' name='accion' value='retirar'>
@@ -100,6 +114,7 @@ $tabla .= '</table>';
 
 $contenidoPrincipal = <<<EOS
     <h1>Panel de Control: Gestión de Productos</h1>
+    $mensaje
     
     <div style='margin-bottom: 20px; display: flex; gap: 15px;'>
         <a href='crear_producto.php'>

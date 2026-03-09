@@ -1,9 +1,12 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-// 1. Seguridad
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+
+// 1. Seguridad: Solo el gerente puede procesar esto
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
@@ -41,28 +44,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 3. Procesar eliminacion de imagenes exteranas (checkboxes)
+    // 3. Procesar eliminación de imágenes (checkboxes) usando métodos estáticos
     if (isset($_POST['eliminar_imagenes']) && is_array($_POST['eliminar_imagenes'])) {
         foreach ($_POST['eliminar_imagenes'] as $id_img_borrar) {
-            // 1. Obtener los datos de la imagen para saber su nombre de archivo
-            $img_data = buscaImagen($id_img_borrar);
+            // 1. Obtener los datos de la imagen (Clase Producto)
+            $img_data = Producto::buscaImagen($id_img_borrar);
             
             if ($img_data) {
-                // 2. Borrar el archivo físico de la carpeta img/productos/
+                // 2. Borrar el archivo físico
                 $ruta_fisica = '../img/productos/' . $img_data['ruta_imagen'];
                 if (file_exists($ruta_fisica)) {
-                    @unlink($ruta_fisica); // @ evita warnings si el archivo no existe
+                    @unlink($ruta_fisica);
                 }
                 
                 // 3. Borrar el registro de la base de datos
-                borraImagen($id_img_borrar);
+                Producto::borraImagen($id_img_borrar);
             }
         }
     }
     
-    // 3. Llamar al modelo
-    if (actualizaProducto($id, $nombre, $descripcion, $id_categoria, $precio_base, $iva, $disponible, $rutas_imagenes)) {
-        // Redirigimos al panel de productos con éxito
+    // 4. Llamar al modelo mediante la clase estática
+    if (Producto::actualizaProducto($id, $nombre, $descripcion, $id_categoria, $precio_base, $iva, $disponible, $rutas_imagenes)) {
         header('Location: ../admin/productos.php?status=updated');
         exit;
     } else {

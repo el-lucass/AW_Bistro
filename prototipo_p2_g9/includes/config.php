@@ -1,23 +1,48 @@
 <?php
-session_start();
+/**
+ * Función para autocargar clases
+ */
+spl_autoload_register(function ($class) {
+    $prefix = 'es\\ucm\\fdi\\aw\\';
+    $base_dir = __DIR__ . '/clases/';
+    
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+    
+    $relative_class = substr($class, $len);
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+    
+    if (file_exists($file)) {
+        require $file;
+    }
+});
 
-// Configuración de la Base de Datos
+// Importamos la clase Aplicacion (que ahora sí tiene su namespace)
+use es\ucm\fdi\aw\Aplicacion;
+
+/**
+ * Parámetros de conexión a la BD
+ */
 define('BD_HOST', 'localhost');
 define('BD_NAME', 'awp2');
-define('BD_USER', 'awp2');
-define('BD_PASS', 'awpass');
+define('BD_USER', 'awp2'); // Recuerda usar 'root' si te daba Access Denied
+define('BD_PASS', 'awpass'); // Vacío '' si usas 'root' en XAMPP
 
 // Configuración de Rutas
 define('RAIZ_APP', __DIR__);
-// IMPORTANTE: Este nombre debe ser IGUAL al de tu carpeta en htdocs
 define('RUTA_APP', '/Proyectos/AW_Bistro/prototipo_p2_g9');
 define('RUTA_IMGS', RUTA_APP . '/img/');
 define('RUTA_CSS', RUTA_APP . '/css/');
 define('RUTA_JS', RUTA_APP . '/js/');
 
-/**
- * Configuración del soporte de UTF-8, localización (idioma y país) y zona horaria
- */
 ini_set('default_charset', 'UTF-8');
 setLocale(LC_ALL, 'es_ES.UTF.8');
 date_default_timezone_set('Europe/Madrid');
+
+// Inicializa la aplicación (¡Sin barra invertida porque hemos usado 'use' arriba!)
+$app = Aplicacion::getInstance();
+$app->init(['host'=>BD_HOST, 'bd'=>BD_NAME, 'user'=>BD_USER, 'pass'=>BD_PASS]);
+
+register_shutdown_function([$app, 'shutdown']);

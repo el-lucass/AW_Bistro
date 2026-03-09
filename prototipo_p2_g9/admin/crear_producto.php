@@ -1,18 +1,23 @@
 <?php
+// Subimos un nivel para encontrar el autoloader
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
+
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
 
 // Protección de acceso: solo el gerente puede crear productos
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
 $tituloPagina = "Añadir Nuevo Producto";
 
-// Obtenemos las categorías de la base de datos para rellenar el selector (dropdown)
-$categorias = listaCategorias();
+// Obtenemos las categorías llamando al método estático de Producto
+$categorias = Producto::listaCategorias();
 $opcionesCategoria = "";
+
 if (empty($categorias)) {
     $opcionesCategoria = "<option value=''>-- No hay categorías disponibles --</option>";
 } else {

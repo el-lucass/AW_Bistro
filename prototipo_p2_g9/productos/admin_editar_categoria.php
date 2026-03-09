@@ -1,21 +1,26 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-// Seguridad
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases necesarias para que el Autoloader sepa qué buscar
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+
+// Seguridad: Solo el gerente puede procesar cambios en categorías
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? null;
-    $nombre = $_POST['nombre'] ?? '';
-    $descripcion = $_POST['descripcion'] ?? '';
+    $nombre = trim($_POST['nombre'] ?? '');
+    $descripcion = trim($_POST['descripcion'] ?? '');
 
     // Validamos que haya datos
     if ($id && !empty($nombre) && !empty($descripcion)) {
-        if (actualizaCategoria($id, $nombre, $descripcion)) {
+        
+        // LLAMADA ACTUALIZADA: Usamos el método estático de la clase Producto
+        if (Producto::actualizaCategoria($id, $nombre, $descripcion)) {
             // Éxito -> Volvemos a la tabla de categorías
             header('Location: ../admin/categorias.php?status=updated');
             exit;
@@ -30,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 } else {
+    // Si se intenta acceder sin POST, redirigimos a la tabla
     header('Location: ../admin/categorias.php');
     exit;
 }

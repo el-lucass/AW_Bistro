@@ -1,6 +1,8 @@
 <?php
 require_once 'includes/config.php';
-require_once 'includes/pedidos.php'; 
+
+// Importamos la clase Pedido
+use es\ucm\fdi\aw\Pedido;
 
 // Seguridad básica
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente' || !isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
@@ -24,8 +26,8 @@ $ticketProductos = $_SESSION['carrito']['productos'];
 $metodoPago = $_POST['metodo_pago'] ?? 'camarero';
 $estadoInicial = ($metodoPago === 'tarjeta') ? 'en preparación' : 'recibido';
 
-// 2. Guardar en BD
-$resultadoBD = creaPedido($_SESSION['id'], $tipoPedido, $totalPedido, $_SESSION['carrito'], $estadoInicial);
+// 2. Guardar en BD - ¡CAMBIADO A LLAMADA ESTÁTICA!
+$resultadoBD = Pedido::creaPedido($_SESSION['id'], $tipoPedido, $totalPedido, $_SESSION['carrito'], $estadoInicial);
 
 // 3. Comprobar si ha ido bien
 $tituloPagina = 'Procesando... - Bistro FDI';
@@ -42,7 +44,7 @@ if ($resultadoBD['exito']) {
     $textoTipo = ($tipoPedido == 'local') ? 'Consumir en Local' : 'Para Llevar';
     $totalFormateado = number_format($totalPedido, 2);
     
-    // Pantalla de éxito (Sin font-family para que herede la fuente global)
+    // Pantalla de éxito
     $contenidoPrincipal = "
     <div style='max-width: 600px; margin: 40px auto; text-align: center;'>
 
@@ -106,12 +108,12 @@ if ($resultadoBD['exito']) {
 
         <div style='display: flex; gap: 15px; margin-top: 30px;'>
             <a href='historial_pedidos.php' style='flex: 1; text-decoration: none;'>
-                <button style='width: 100%; padding: 12px; font-size: 14px; background: white; color: black; border: 1px solid #ccc; cursor: pointer; transition: 0.2s;'>
+                <button style='width: 100%; padding: 12px; font-size: 14px; background: white; color: black; border: 1px solid #ccc; cursor: pointer;'>
                     Ver Historial
                 </button>
             </a>
             <a href='catalogo.php' style='flex: 1; text-decoration: none;'>
-                <button style='width: 100%; padding: 12px; font-size: 14px; background: black; color: white; border: 1px solid black; cursor: pointer; display: flex; justify-content: center; align-items: center;'>
+                <button style='width: 100%; padding: 12px; font-size: 14px; background: black; color: white; border: 1px solid black; cursor: pointer;'>
                     Volver al Inicio
                 </button>
             </a>

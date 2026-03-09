@@ -1,15 +1,19 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/productos.php';
 
-// Seguridad
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases necesarias
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+
+// Seguridad: Usamos el método de la clase Usuario
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../index.php');
     exit;
 }
 
 $id = $_GET['id'] ?? null;
-$categoria = buscaCategoria($id);
+// LLAMADA ACTUALIZADA: Usamos el método estático de la clase Producto
+$categoria = Producto::buscaCategoria($id);
 
 if (!$categoria) {
     echo "Categoría no encontrada.";
@@ -56,4 +60,3 @@ $contenidoPrincipal = "
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
-?>

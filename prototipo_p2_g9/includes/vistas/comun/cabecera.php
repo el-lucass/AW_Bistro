@@ -1,6 +1,7 @@
 <?php
-// Nos aseguramos de tener el archivo de usuarios disponible si no se cargó antes
-require_once __DIR__ . '/../../usuarios.php'; 
+// ¡FUERA EL REQUIRE_ONCE! Ya no existe usuarios.php
+// Ahora le decimos que vamos a usar la clase Usuario de nuestro namespace
+use es\ucm\fdi\aw\Usuario; 
 
 // Verificamos de forma segura si el usuario está logueado
 $estaLogueado = isset($_SESSION["login"]) && $_SESSION["login"] === true;
@@ -42,7 +43,7 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
         
         <?php $estiloBoton = "text-decoration: none; color: #333; background-color: white; border: 1px solid #bbb; padding: 8px 15px; border-radius: 5px; font-size: 14px; transition: 0.2s;"; ?>
         
-        <?php if (tieneRol('gerente')): ?>
+        <?php if (Usuario::tieneRol('gerente')): ?>
                 <a href="<?= RUTA_APP ?>/admin/usuarios.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Usuarios</a>
                 <a href="<?= RUTA_APP ?>/admin/productos.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Productos</a>
                 <a href="<?= RUTA_APP ?>/admin/pedidos_pendientes.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Pedidos pendientes</a>
@@ -52,19 +53,18 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
 
         <?php if ($estaLogueado): ?>
             
-            <?php if (tieneRol('cliente')): ?>
+            <?php if (Usuario::tieneRol('cliente')): ?>
                 <a href="<?= RUTA_APP ?>/historial_pedidos.php" style="<?= $estiloBoton ?>">🧾 Mis pedidos</a>
             <?php endif; ?>
                 
-            <?php if (tieneRol('cocinero')): ?>
+            <?php if (Usuario::tieneRol('cocinero')): ?>
                 <a href="<?= RUTA_APP ?>/cocinero/cocinero_pedidos.php" style="<?= $estiloBoton ?>">🧾 Pedidos pendientes</a>
             <?php endif; ?>
 
-            <?php if (tieneRol('camarero')): ?>
+            <?php if (Usuario::tieneRol('camarero')): ?>
                 <a href="<?= RUTA_APP ?>/camarero/camarero_pedidos.php" style="<?= $estiloBoton ?>">🧾 Vista Camarero</a>
             <?php endif; ?>
             
-
             <a href="<?= RUTA_APP ?>/perfil.php" style="<?= $estiloBoton ?>">👤 Mi Perfil</a>
             
             <a href="<?= RUTA_APP ?>/logout.php" style="text-decoration: none; color: #c0392b; background-color: #fdf2f0; border: 1px solid #c0392b; padding: 8px 15px; border-radius: 5px; font-size: 14px; margin-left: 10px;">🚪 Salir</a>

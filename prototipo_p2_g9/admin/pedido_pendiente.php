@@ -1,9 +1,12 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/cocina.php';
 
-// Seguridad: solo admin
-if (!isset($_SESSION['login']) || $_SESSION['rol'] !== 'gerente') {
+// Importamos las clases
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Cocina;
+
+// Seguridad: solo admin usando el método de Usuario
+if (!Usuario::tieneRol('gerente')) {
     header('Location: ../login.php');
     exit();
 }
@@ -14,12 +17,14 @@ if ($id_pedido <= 0) {
     exit();
 }
 
-$pedido = obtenerPedido($id_pedido);
+// LLAMADA ESTÁTICA: Usamos la clase Cocina
+$pedido = Cocina::obtenerPedido($id_pedido);
 if (!$pedido) {
     die("Pedido no encontrado");
 }
 
-$lineas = detallesPedidoGerente($id_pedido);
+// LLAMADA ESTÁTICA: Usamos la clase Cocina
+$lineas = Cocina::detallesPedidoGerente($id_pedido);
 
 $tituloPagina = "Detalle Pedido #{$pedido['numero_dia']}";
 
@@ -39,7 +44,6 @@ if (empty($lineas)) {
 } else {
 
     foreach ($lineas as $l) {
-
         $nombre = htmlspecialchars($l['nombre']);
         $cant = (int)$l['cantidad'];
         $prep = (int)$l['preparado'] === 1;

@@ -1,8 +1,11 @@
 <?php
 require_once 'includes/config.php';
 
+// Importamos la clase Usuario
+use es\ucm\fdi\aw\Usuario;
+
 // Seguridad: Solo los clientes logueados pueden ver el carrito
-if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {
+if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {
     header('Location: login.php');
     exit();
 }
@@ -108,7 +111,7 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
         $contenidoPrincipal .= "
             <tr style='border-bottom: 1px solid #eee;'>
                 <td style='padding: 20px 10px;'>
-                    <strong style='font-size: 16px;'>{$item['nombre']}</strong>
+                    <strong style='font-size: 16px;'>" . htmlspecialchars($item['nombre']) . "</strong>
                 </td>
                 <td style='padding: 20px 10px; text-align: center;'>{$precioFormateado} €</td>
                 <td style='padding: 20px 10px; text-align: center;'>
