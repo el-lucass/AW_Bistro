@@ -1,6 +1,8 @@
 <?php
 namespace es\ucm\fdi\aw;
 
+// Importamos explícitamente la clase Usuario por si acaso
+use es\ucm\fdi\aw\Usuario;
 
 class FormularioAdminCrear extends FormularioUsuarioBase
 {
@@ -17,15 +19,21 @@ class FormularioAdminCrear extends FormularioUsuarioBase
         // 2. Añadimos el SELECT de Rol y el botón
         $rol = $datos['rol'] ?? 'cliente';
         
+        // Preparamos los atributos 'selected' ANTES del heredoc para no romper el HTML
+        $selCliente  = ($rol == 'cliente')  ? 'selected' : '';
+        $selCamarero = ($rol == 'camarero') ? 'selected' : '';
+        $selCocinero = ($rol == 'cocinero') ? 'selected' : '';
+        $selGerente  = ($rol == 'gerente')  ? 'selected' : '';
+        
         $html .= <<<EOF
         <fieldset>
             <legend>Permisos de empleado</legend>
             <label>Rol:</label>
             <select name="rol">
-                <option value="cliente" . ($rol == 'cliente' ? 'selected' : '') . >Cliente</option>
-                <option value="camarero" . ($rol == 'camarero' ? 'selected' : '') . >Camarero</option>
-                <option value="cocinero" . ($rol == 'cocinero' ? 'selected' : '') . >Cocinero</option>
-                <option value="gerente" . ($rol == 'gerente' ? 'selected' : '') . >Gerente</option>
+                <option value="cliente" $selCliente>Cliente</option>
+                <option value="camarero" $selCamarero>Camarero</option>
+                <option value="cocinero" $selCocinero>Cocinero</option>
+                <option value="gerente" $selGerente>Gerente</option>
             </select>
         </fieldset>
 
@@ -38,8 +46,8 @@ EOF;
 
     protected function insertaUsuario($datos)
     {
-        // Aquí pasamos el ROL que viene del formulario
-        if (creaUsuario($datos['nombre_usuario'], $datos['password'], $datos['nombre'], $datos['apellidos'], $datos['email'], $datos['rol'])) {
+        // LLAMADA ACTUALIZADA: Usamos el método estático de la clase Usuario
+        if (Usuario::creaUsuario($datos['nombre_usuario'], $datos['password'], $datos['nombre'], $datos['apellidos'], $datos['email'], $datos['rol'])) {
             return $this->urlRedireccion;
         }
         
