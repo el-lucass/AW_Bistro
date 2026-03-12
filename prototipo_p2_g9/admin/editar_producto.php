@@ -79,7 +79,7 @@ $contenidoPrincipal = "
             
             <div style='margin-bottom: 10px;'>
                 <label>Descripción:</label><br>
-                <textarea name='descripcion' required rows='4' style='width: 100%;'>" . htmlspecialchars($producto->getNombre()) . "</textarea>
+                <textarea name='descripcion' required rows='4' style='width: 100%;'>" . htmlspecialchars($producto->getDescripcion()) . "</textarea>
             </div>
             
             <div style='margin-bottom: 10px;'>

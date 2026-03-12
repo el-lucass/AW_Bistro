@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 
-// Importamos las clases
+
 use es\ucm\fdi\aw\Usuario;
 use es\ucm\fdi\aw\Pedido;
 
-// Solo camareros (y roles superiores) pueden acceder
+
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('camarero')) {
     header('Location: ' . RUTA_APP . '/login.php');
     exit();
@@ -13,8 +13,7 @@ if (!isset($_SESSION['login']) || !Usuario::tieneRol('camarero')) {
 
 $tituloPagina = 'Vista Camarero - Bistro FDI';
 
-// Obtenemos el objeto del usuario logueado para sacar el avatar y nombre
-$user = Usuario::buscaUsuario($_SESSION['id']);
+
 
 if ($user) {
     $avatarActual = $user->getAvatar();
@@ -24,7 +23,7 @@ if ($user) {
     $nombreUsuario = 'Camarero';
 }
 
-// Lógica de ruta del avatar (mantenemos tu estructura)
+
 if (strpos($avatarActual, 'predefinidos/') !== false) {
     $rutaAvatar = RUTA_IMGS . "avatares/" . $avatarActual;
 } elseif ($avatarActual == 'default.png') {
@@ -33,18 +32,18 @@ if (strpos($avatarActual, 'predefinidos/') !== false) {
     $rutaAvatar = RUTA_IMGS . "avatares/usuarios/" . $avatarActual;
 }
 
-// Pedidos por cobrar y por entregar (AHORA DEVUELVE ARRAYS DE OBJETOS)
-$porCobrar   = Pedido::listaPedidosPorEstados(['recibido']);
-$porEntregar = Pedido::listaPedidosPorEstados(['listo cocina']);
+
+$porCobrar    = Pedido::listaPedidosPorEstados(['recibido']);
+$porTerminar  = Pedido::listaPedidosPorEstados(['listo cocina']);
+$porEntregar  = Pedido::listaPedidosPorEstados(['terminado']);
 
 $tipo_map = ['local' => 'Local', 'llevar' => 'Para Llevar'];
 
-// ── Helper: pintar una tarjeta de pedido con un botón de acción ──────────────
-// AHORA $pedido ES UN OBJETO, NO UN ARRAY
+
 function tarjetaPedido($pedido, $nuevo_estado, $texto_boton, $tipo_map) {
     $id_pedido = $pedido->getId();
     
-    // Los detalles siguen siendo un array asociativo
+   
     $detalles  = Pedido::buscaDetallesPedido($id_pedido);
     
     $total     = number_format($pedido->getTotalIva(), 2);
@@ -84,8 +83,7 @@ function tarjetaPedido($pedido, $nuevo_estado, $texto_boton, $tipo_map) {
     </div>";
 }
 
-// ── Construir contenido ───────────────────────────────────────────────────────
-$contenidoPrincipal = "
+
 <div style='padding:20px; max-width:1100px; margin:0 auto;'>
 
     <div style='display:flex; align-items:center; gap:15px; margin-bottom:30px;'>
@@ -117,8 +115,23 @@ if (empty($porCobrar)) {
 }
 
 $contenidoPrincipal .= "
+    <h2>Por Revisar
+        <span style='font-size:15px; color:#666; font-weight:normal;'>(listos en cocina, pendientes de revisión del camarero)</span>
+    </h2>";
+
+if (empty($porTerminar)) {
+    $contenidoPrincipal .= "<p style='color:#888;'>No hay pedidos listos en cocina.</p>";
+} else {
+    $contenidoPrincipal .= "<div style='display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:15px; margin-bottom:40px;'>";
+    foreach ($porTerminar as $pedido) {
+        $contenidoPrincipal .= tarjetaPedido($pedido, 'terminado', 'Revisado ✓', $tipo_map);
+    }
+    $contenidoPrincipal .= "</div>";
+}
+
+$contenidoPrincipal .= "
     <h2>Por Entregar
-        <span style='font-size:15px; color:#666; font-weight:normal;'>(pedidos listos para el cliente)</span>
+        <span style='font-size:15px; color:#666; font-weight:normal;'>(pedidos revisados, listos para el cliente)</span>
     </h2>";
 
 if (empty($porEntregar)) {

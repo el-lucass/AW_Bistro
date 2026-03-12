@@ -183,7 +183,7 @@ class Cocina
                 FROM pedidos p
                 JOIN usuarios uc ON uc.id = p.id_usuario
                 LEFT JOIN usuarios uco ON uco.id = p.id_cocinero
-                WHERE p.estado IN ('recibido','en preparación','cocinando')
+                WHERE p.estado IN ('recibido','en preparación','cocinando','listo cocina','terminado')
                 ORDER BY p.fecha_hora ASC";
 
         $res = $conn->query($sql);
