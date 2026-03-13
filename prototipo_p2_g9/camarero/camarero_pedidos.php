@@ -14,7 +14,7 @@ if (!isset($_SESSION['login']) || !Usuario::tieneRol('camarero')) {
 $tituloPagina = 'Vista Camarero - Bistro FDI';
 
 
-
+$user = Usuario::buscaUsuario($_SESSION['id']);
 if ($user) {
     $avatarActual = $user->getAvatar();
     $nombreUsuario = htmlspecialchars($user->getNombre());
@@ -83,7 +83,7 @@ function tarjetaPedido($pedido, $nuevo_estado, $texto_boton, $tipo_map) {
     </div>";
 }
 
-
+$contenidoPrincipal = "
 <div style='padding:20px; max-width:1100px; margin:0 auto;'>
 
     <div style='display:flex; align-items:center; gap:15px; margin-bottom:30px;'>
