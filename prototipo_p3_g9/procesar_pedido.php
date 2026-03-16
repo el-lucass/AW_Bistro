@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/config.php';
+require_once __DIR__.'/includes/config.php';
 
 // Importamos la clase Pedido
-use es\ucm\fdi\aw\Pedido;
+use es\ucm\fdi\aw\pedidos\Pedido;
 
 // Seguridad básica
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente' || !isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {

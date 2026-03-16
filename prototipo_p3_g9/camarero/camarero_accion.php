@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../includes/config.php';
 
 
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Pedido;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\pedidos\Pedido;
 
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('camarero')) {
     header('Location: ' . RUTA_APP . '/index.php');

@@ -1,5 +1,9 @@
 <?php
-namespace es\ucm\fdi\aw;
+namespace es\ucm\fdi\aw\usuarios;
+
+use es\ucm\fdi\aw\usuarios\FormularioUsuarioBase;
+use es\ucm\fdi\aw\usuarios\Usuario;
+
 
 // Importamos explícitamente la clase Usuario por si acaso
 use es\ucm\fdi\aw\Usuario;

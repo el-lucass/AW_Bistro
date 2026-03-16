@@ -1,6 +1,7 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/usuarios.php';
+
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 // 1. Seguridad: Solo el gerente puede crear usuarios
 if (!tieneRol('gerente')) {

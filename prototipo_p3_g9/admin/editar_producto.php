@@ -2,8 +2,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases necesarias
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\productos\Producto;
 
 // Seguridad: Solo el gerente puede editar
 if (!Usuario::tieneRol('gerente')) {

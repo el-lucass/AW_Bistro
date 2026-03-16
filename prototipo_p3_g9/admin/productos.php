@@ -3,8 +3,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases que vamos a usar
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\productos\Producto;
 
 // Verificación de seguridad usando el método estático de Usuario
 if (!Usuario::tieneRol('gerente')) {

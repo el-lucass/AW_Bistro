@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../includes/config.php';
 
 // Importamos las clases
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Cocina;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\cocinero\Cocina;
 
 // Seguridad: solo admin usando el método de Usuario
 if (!Usuario::tieneRol('gerente')) {

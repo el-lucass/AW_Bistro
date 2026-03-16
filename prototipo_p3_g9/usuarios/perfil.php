@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/usuarios.php'; // Incluye el modelo con las funciones buscaUsuario y actualizaUsuario
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['login'])) {
     $id = $_SESSION['id'];

@@ -1,5 +1,7 @@
 <?php
-namespace es\ucm\fdi\aw;
+namespace es\ucm\fdi\aw\cocineros;
+
+use es\ucm\fdi\aw\Aplicacion;
 
 class Cocina
 {

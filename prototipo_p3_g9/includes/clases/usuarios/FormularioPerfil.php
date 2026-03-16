@@ -1,7 +1,8 @@
 <?php
-namespace es\ucm\fdi\aw;
+namespace es\ucm\fdi\aw\usuarios;
 
-// Ya no necesitamos require_once '../usuarios.php' gracias al Autoloader y al namespace
+use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 class FormularioPerfil extends Formulario
 {

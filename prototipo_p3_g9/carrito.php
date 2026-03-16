@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/config.php';
+require_once __DIR__.'/includes/config.php';
 
 // Importamos la clase Usuario
-use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 // Seguridad: Solo los clientes logueados pueden ver el carrito
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {

@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/config.php';
+require_once __DIR__.'/includes/config.php';
 
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\FormularioPago;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\pedidos\FormularioPago;
 
 // Seguridad: Solo clientes logueados
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {

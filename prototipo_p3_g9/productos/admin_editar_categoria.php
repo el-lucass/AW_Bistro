@@ -2,8 +2,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases necesarias para que el Autoloader sepa qué buscar
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\productos\Producto;
 
 // Seguridad: Solo el gerente puede procesar cambios en categorías
 if (!Usuario::tieneRol('gerente')) {

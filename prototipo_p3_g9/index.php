@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/config.php';
+require_once __DIR__.'/includes/config.php';
 
 // Le decimos a PHP que vamos a usar la clase Usuario
-use es\ucm\fdi\aw\Usuario; 
+use es\ucm\fdi\aw\usuarios\Usuario; 
 
 $tituloPagina = 'Inicio - Bistro FDI';
 

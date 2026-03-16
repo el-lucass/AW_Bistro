@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/config.php';
-use es\ucm\fdi\aw\FormularioAdminCrear;
+use es\ucm\fdi\aw\usuarios\FormularioAdminCrear;
 
 // Verificación de seguridad (Rol)
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'gerente') {

@@ -3,7 +3,7 @@
 require_once '../includes/config.php';
 
 // ¡NUEVO! Importamos la clase Usuario
-use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 // 2. Verificamos permisos (Usuario::tieneRol) y que no se borre a sí mismo
 if (Usuario::tieneRol('gerente') && isset($_POST['id']) && $_POST['id'] != $_SESSION['id']) {

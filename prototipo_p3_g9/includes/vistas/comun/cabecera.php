@@ -1,7 +1,7 @@
 <?php
 // ¡FUERA EL REQUIRE_ONCE! Ya no existe usuarios.php
 // Ahora le decimos que vamos a usar la clase Usuario de nuestro namespace
-use es\ucm\fdi\aw\Usuario; 
+use es\ucm\fdi\aw\usuarios\Usuario; 
 
 // Verificamos de forma segura si el usuario está logueado
 $estaLogueado = isset($_SESSION["login"]) && $_SESSION["login"] === true;

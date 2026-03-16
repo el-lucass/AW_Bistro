@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Cocina;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\cocineros\Cocina;
 
 // Seguridad: solo cocinero usando el método de Usuario
 if (!Usuario::tieneRol('cocinero')) {

@@ -1,6 +1,5 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/mysql/bd.php';
 
 // Verificación de seguridad: solo el gerente puede procesar esto
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['rol']) && $_SESSION['rol'] === 'gerente') {

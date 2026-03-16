@@ -2,8 +2,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases necesarias del namespace
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\productos\Producto;
 
 // 1. Seguridad: Solo el gerente puede procesar esto (usando el método estático de Usuario)
 if (!Usuario::tieneRol('gerente')) {

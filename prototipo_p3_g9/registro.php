@@ -1,6 +1,6 @@
 <?php
-require_once 'includes/config.php';
-use es\ucm\fdi\aw\FormularioRegistro;
+require_once __DIR__.'/includes/config.php';
+use es\ucm\fdi\aw\usuarios\FormularioRegistro;
 
 $tituloPagina = 'Registro';
 

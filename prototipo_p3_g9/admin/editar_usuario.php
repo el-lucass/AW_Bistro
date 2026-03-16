@@ -2,8 +2,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases necesarias
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\FormularioAdminEditar;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\usuarios\FormularioAdminEditar;
 
 // 1. SEGURIDAD: Solo gerentes pueden entrar
 if (!Usuario::tieneRol('gerente')) {

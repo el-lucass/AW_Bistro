@@ -2,8 +2,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases necesarias
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Pedido;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\pedidos\Pedido;
 
 // 1. Seguridad básica: hay que estar logueado
 if (!isset($_SESSION['login'])) {

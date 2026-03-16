@@ -1,10 +1,10 @@
 <?php
 // 1. Declaramos el espacio de nombres (namespace)
-namespace es\ucm\fdi\aw;
+namespace es\ucm\fdi\aw\usuarios;
 
 // 2. Incluimos las clases que necesitamos
-require_once __DIR__ . '/Formulario.php';
-require_once __DIR__ . '/Usuario.php';
+use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 class FormularioLogin extends Formulario
 {

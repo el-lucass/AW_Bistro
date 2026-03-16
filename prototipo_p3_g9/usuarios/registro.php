@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/config.php';
-require_once '../includes/usuarios.php';
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 // Recogemos los datos del formulario
 $user = $_POST['nombre_usuario'] ?? null;

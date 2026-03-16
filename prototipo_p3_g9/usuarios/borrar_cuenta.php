@@ -3,7 +3,7 @@
 require_once '../includes/config.php';
 
 // 2. Usamos el namespace de la clase Usuario
-use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 // 3. Verificamos que el usuario esté logueado
 if (isset($_SESSION['login'])) {

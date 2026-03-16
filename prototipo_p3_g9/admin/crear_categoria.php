@@ -2,7 +2,7 @@
 require_once '../includes/config.php';
 
 // Importamos la clase Usuario para la comprobación de seguridad
-use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 
 // Seguridad: Solo el gerente puede acceder
 if (!Usuario::tieneRol('gerente')) {

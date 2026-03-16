@@ -26,8 +26,8 @@ use es\ucm\fdi\aw\Aplicacion;
  * Parámetros de conexión a la BD
  */
 define('BD_HOST', 'localhost');
-define('BD_NAME', 'awp2');
-define('BD_USER', 'awp2'); // Recuerda usar 'root' si te daba Access Denied
+define('BD_NAME', 'awp3');
+define('BD_USER', 'awp3'); // Recuerda usar 'root' si te daba Access Denied
 define('BD_PASS', 'awpass'); // Vacío '' si usas 'root' en XAMPP
 
 // Configuración de Rutas

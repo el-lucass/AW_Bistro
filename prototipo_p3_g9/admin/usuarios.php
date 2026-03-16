@@ -2,7 +2,7 @@
 require_once '../includes/config.php';
 
 // Importamos las clases modernas
-use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\Aplicacion;
 
 // Verificación de seguridad usando el método de clase

@@ -1,7 +1,7 @@
 <?php
-namespace es\ucm\fdi\aw;
+namespace es\ucm\fdi\aw\pedidos;
 
-require_once __DIR__ . '/Formulario.php';
+use es\ucm\fdi\aw\Formulario;
 
 class FormularioPago extends Formulario
 {

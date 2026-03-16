@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/config.php';
+require_once __DIR__.'/includes/config.php';
 
 // Importamos la clase Producto
-use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\productos\Producto;
 
 // Seguridad: Solo los clientes logueados pueden hacer pedidos
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {

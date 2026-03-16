@@ -2,8 +2,8 @@
 require_once '../includes/config.php';
 
 // Importamos las clases necesarias para el Autoloader
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\productos\Producto;
 
 // 1. Seguridad: Solo el gerente puede borrar categorías
 if (!Usuario::tieneRol('gerente')) {
