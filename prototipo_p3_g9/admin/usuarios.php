@@ -3,7 +3,6 @@ require_once '../includes/config.php';
 
 // Importamos las clases modernas
 use es\ucm\fdi\aw\usuarios\Usuario;
-use es\ucm\fdi\aw\Aplicacion;
 
 // Verificación de seguridad usando el método de clase
 if (!Usuario::tieneRol('gerente')) {
@@ -13,13 +12,8 @@ if (!Usuario::tieneRol('gerente')) {
 
 $tituloPagina = 'Gestión de Usuarios - Bistro FDI';
 
-// Obtenemos la conexión con el Singleton de la Aplicación (adiós conectarBD)
-$conn = Aplicacion::getInstance()->getConexionBd();
-
-// Consulta con el orden jerárquico
-$sql = "SELECT * FROM usuarios 
-        ORDER BY FIELD(rol, 'cliente', 'camarero', 'cocinero', 'gerente') ASC";
-$result = $conn->query($sql);
+// Obtenemos los usuarios ordenados usando el método de la clase
+$listaUsuarios = Usuario::listaUsuariosOrdenados();
 
 $tabla = '<table border="1" style="width:100%; text-align:left; border-collapse: collapse;">
     <tr style="background-color: #f2f2f2;">
@@ -31,8 +25,8 @@ $tabla = '<table border="1" style="width:100%; text-align:left; border-collapse:
         <th style="padding: 10px;">Acciones</th>
     </tr>';
 
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+if (!empty($listaUsuarios)) {
+    foreach ($listaUsuarios as $row) {
         $id = $row['id'];
         $esMismoUsuario = ($id == $_SESSION['id']);
         

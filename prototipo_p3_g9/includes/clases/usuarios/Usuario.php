@@ -144,4 +144,36 @@ class Usuario
     {
         return isset($_SESSION['rol']) && $_SESSION['rol'] === $rolRequerido;
     }
+
+    public static function listaUsuariosOrdenados() {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $sql = "SELECT * FROM usuarios ORDER BY FIELD(rol, 'cliente', 'camarero', 'cocinero', 'gerente') ASC";
+        $result = $conn->query($sql);
+        
+        $usuarios = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $usuarios[] = $row;
+            }
+        }
+        return $usuarios;
+    }
+
+    public static function actualizaUsuarioAdmin($id, $nombre, $email, $rol) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $sql = "UPDATE usuarios SET nombre = ?, email = ?, rol = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssi", $nombre, $email, $rol, $id);
+        
+        return $stmt->execute();
+    }
+
+    public static function cambiaRol($id, $nuevo_rol) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $sql = "UPDATE usuarios SET rol = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $nuevo_rol, $id);
+        
+        return $stmt->execute();
+    }
 }
