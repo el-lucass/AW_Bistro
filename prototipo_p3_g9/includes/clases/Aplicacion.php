@@ -134,4 +134,19 @@ class Aplicacion
 		}
 		return $this->conn;
 	}
+
+	public function resuelve($path = '')
+    {
+        $this->compruebaInstanciaInicializada();
+        $rutaAppLongitudPrefijo = mb_strlen($this->rutaRaizApp);
+        if (mb_substr($path, 0, $rutaAppLongitudPrefijo) === $this->rutaRaizApp) {
+            return $path;
+        }
+
+        if (mb_strlen($path) > 0 && mb_substr($path, 0, 1) !== '/') {
+            $path = '/' . $path;
+        }
+
+        return $this->rutaRaizApp . $path;
+    }
 }

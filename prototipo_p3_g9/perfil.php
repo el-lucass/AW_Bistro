@@ -22,11 +22,11 @@ $avatarActual = $user->getAvatar();
 $rutaImagen = '';
 
 if (strpos($avatarActual, 'predefinidos/') !== false) {
-    $rutaImagen = "img/avatares/" . $avatarActual;
+    $rutaImagen = resuelve("/img/avatares/" . $avatarActual);
 } elseif ($avatarActual == 'default.png') {
-    $rutaImagen = "img/avatares/default.png";
+    $rutaImagen = resuelve("/img/avatares/default.png");
 } else {
-    $rutaImagen = "img/avatares/usuarios/" . $avatarActual;
+    $rutaImagen = resuelve("/img/avatares/usuarios/" . $avatarActual);
 }
 
 // 3. Gestionar el formulario de edición
