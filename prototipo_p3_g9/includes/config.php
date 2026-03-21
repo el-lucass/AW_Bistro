@@ -43,7 +43,7 @@ date_default_timezone_set('Europe/Madrid');
 
 // Inicializa la aplicación (¡Sin barra invertida porque hemos usado 'use' arriba!)
 $app = Aplicacion::getInstance();
-$app->init(['host'=>BD_HOST, 'bd'=>BD_NAME, 'user'=>BD_USER, 'pass'=>BD_PASS]);
+$app->init(array('host'=>BD_HOST, 'bd'=>BD_NAME, 'user'=>BD_USER, 'pass'=>BD_PASS), RUTA_APP, RAIZ_APP);
 
 register_shutdown_function([$app, 'shutdown']);
 

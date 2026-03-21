@@ -22,7 +22,7 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
 
         // Local
         $contenidoPrincipal .= "<div style='border: 1px solid #ccc; padding: 30px; width: 250px;'>";
-        $contenidoPrincipal .= "<div style='margin-bottom: 15px;'><img src='". resuelve('/img/iconos/Icono_durum.jpg') . "' alt='Local' style='width: 60px; height: 60px; object-fit: contain;'></div>";
+        $contenidoPrincipal .= "<div style='margin-bottom: 15px;'><img src='" . resuelve('img/iconos/Icono_durum.jpg') . "' alt='Local' style='width: 60px; height: 60px; object-fit: contain;'></div>";
         $contenidoPrincipal .= "<h3>Consumir en Local</h3>";
         $contenidoPrincipal .= "<a href='" . resuelve('/catalogo.php?tipo=local') . "'><button style='{$estiloBoton}'>Elegir Local</button></a>";
         $contenidoPrincipal .= "</div>";

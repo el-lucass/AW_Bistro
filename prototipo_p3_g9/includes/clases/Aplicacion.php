@@ -24,6 +24,18 @@ class Aplicacion
 	 */
 	private $bdDatosConexion;
 	
+
+	    /**
+     * @var string Ruta donde se encuentra instalada la aplicación. Por ejemplo, si
+     *             la aplicación está accesible en http://localhost/miApp/, este
+     *             parámetro debería de tomar el valor "/miApp".
+     */
+    private $rutaRaizApp;
+
+    /**
+     * @var string Ruta absoluta al directorio "includes" de la aplicación.
+     */
+    private $dirInstalacion;
 	/**
 	 * Almacena si la Aplicacion ya ha sido inicializada.
 	 * 
@@ -76,14 +88,22 @@ class Aplicacion
 	 * 
 	 * @param array $bdDatosConexion datos de configuración de la BD
 	 */
-	public function init($bdDatosConexion)
-	{
-        if ( ! $this->inicializada ) {
-    	    $this->bdDatosConexion = $bdDatosConexion;
-    		$this->inicializada = true;
-    		session_start();
+	public function init($bdDatosConexion, $rutaApp = '/', $dirInstalacion = __DIR__) {
+        if (!$this->inicializada) {
+            $this->bdDatosConexion = $bdDatosConexion;
+            $this->rutaRaizApp = $rutaApp;
+            $this->dirInstalacion = $dirInstalacion;
+
+            // Limpieza de barras en la ruta (copiado de la estructura nueva)
+            $tamRutaRaizApp = mb_strlen($this->rutaRaizApp);
+            if ($tamRutaRaizApp > 0 && mb_substr($this->rutaRaizApp, $tamRutaRaizApp-1, 1) === '/') {
+                $this->rutaRaizApp = mb_substr($this->rutaRaizApp, 0, $tamRutaRaizApp - 1);
+            }
+
+            $this->inicializada = true;
+            session_start();
         }
-	}
+    }
 	
 	/**
 	 * Cierre de la aplicación.
@@ -137,7 +157,6 @@ class Aplicacion
 
 	public function resuelve($path = '')
     {
-        $this->compruebaInstanciaInicializada();
         $rutaAppLongitudPrefijo = mb_strlen($this->rutaRaizApp);
         if (mb_substr($path, 0, $rutaAppLongitudPrefijo) === $this->rutaRaizApp) {
             return $path;

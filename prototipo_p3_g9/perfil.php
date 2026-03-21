@@ -7,7 +7,7 @@ use es\ucm\fdi\aw\usuarios\Usuario;
 
 // Seguridad
 if (!isset($_SESSION['login'])) {
-    header('Location: login.php');
+    header('Location: " . resuelve(/login.php) ." ');
     exit;
 }
 
@@ -44,6 +44,7 @@ $nombreUsuarioVista = htmlspecialchars($user->getNombreUsuario());
 // NOTA SOBRE BISTROCOINS: Como no lo añadimos a las propiedades de la clase Usuario antes, 
 // puedes ponerlo temporalmente a 0, o si lo has añadido a tu clase, usar $user->getBistrocoins().
 $bistrocoinsVista = 0; 
+$urlBorrarCuenta = resuelve('/usuarios/borrar_cuenta.php');
 
 // 4. Construcción de la página
 $contenidoPrincipal = <<<EOS
@@ -68,7 +69,7 @@ $msg
     <h3 style="color: #c0392b; margin-top: 0;">⚠️ Zona de Peligro</h3>
     <p>Si eliminas tu cuenta, no podrás recuperar tus BistroCoins ni tus pedidos. Esta acción es irreversible.</p>
     
-    <form action="usuarios/borrar_cuenta.php" method="POST" onsubmit="return confirm('¿Estás COMPLETAMENTE seguro?');">
+    <form action="$urlBorrarCuenta" method="POST" onsubmit="return confirm('¿Estás COMPLETAMENTE seguro?');">
         <button type="submit" style="background: #e74c3c; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">
             🗑️ Eliminar mi cuenta permanentemente
         </button>

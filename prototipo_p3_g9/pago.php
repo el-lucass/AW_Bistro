@@ -12,7 +12,7 @@ if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {
 
 // Si el carrito está vacío, volvemos al catálogo
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
-    header('Location: catalogo.php');
+    header('Location: " . resuelve(/catalogo.php) ."');
     exit();
 }
 
@@ -24,7 +24,7 @@ $contenidoPrincipal = "
 <div style='padding: 20px; max-width: 800px; margin: 0 auto;'>
 
     <div style='margin-bottom: 20px; display: flex; justify-content: flex-start;'>
-        <a href='carrito.php' style='text-decoration: none;'>
+        <a href='" . resuelve('carrito.php') . "' style='text-decoration: none;'>
             <button type='button' style='background-color: white; color: #333; border: 1px solid #bbb; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer;'>
                 ← Volver al carrito
             </button>
