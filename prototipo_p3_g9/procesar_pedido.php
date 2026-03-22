@@ -10,11 +10,15 @@ if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente' || !isset($_SESS
     exit();
 }
 
-// 1. Recopilar datos del carrito
-$totalPedido = 0;
+// Recopilar datos del carrito
+$subtotalPedido = 0;
 foreach ($_SESSION['carrito']['productos'] as $item) {
-    $totalPedido += $item['precio'] * $item['cantidad'];
+    $subtotalPedido += $item['precio'] * $item['cantidad'];
 }
+
+// Recuperamos el total con descuento que calculamos en carrito.php
+$totalFinal = $_SESSION['carrito']['total_final'] ?? $subtotalPedido;
+$descuentoTotal = $subtotalPedido - $totalFinal;
 
 // Sacamos el tipo de pedido que tienes guardado en tu sesión
 $tipoPedido = $_SESSION['carrito']['tipo'];
@@ -26,10 +30,18 @@ $ticketProductos = $_SESSION['carrito']['productos'];
 $metodoPago = $_POST['metodo_pago'] ?? 'camarero';
 $estadoInicial = ($metodoPago === 'tarjeta') ? 'en preparación' : 'recibido';
 
-// 2. Guardar en BD - ¡CAMBIADO A LLAMADA ESTÁTICA!
-$resultadoBD = Pedido::creaPedido($_SESSION['id'], $tipoPedido, $totalPedido, $_SESSION['carrito'], $estadoInicial);
+// Guardar en BD
+$resultadoBD = Pedido::creaPedido(
+    $_SESSION['id'], 
+    $tipoPedido, 
+    $subtotalPedido,  
+    $descuentoTotal,  
+    $totalFinal,      
+    $_SESSION['carrito'], 
+    $estadoInicial
+);
 
-// 3. Comprobar si ha ido bien
+// Comprobar si ha ido bien
 $tituloPagina = 'Procesando... - Bistro FDI';
 
 if ($resultadoBD['exito']) {
@@ -42,7 +54,10 @@ if ($resultadoBD['exito']) {
     $fechaFormat = date('d/m/Y, H:i:s', strtotime($resultadoBD['fecha_hora']));
     $nombreCliente = $_SESSION['nombre']; 
     $textoTipo = ($tipoPedido == 'local') ? 'Consumir en Local' : 'Para Llevar';
-    $totalFormateado = number_format($totalPedido, 2);
+    
+    $subtotalFormateado = number_format($subtotalPedido, 2);
+    $descuentoFormateado = number_format($descuentoTotal, 2);
+    $totalFinalFormateado = number_format($totalFinal, 2);
     
     // Pantalla de éxito
     $contenidoPrincipal = "
@@ -98,11 +113,25 @@ if ($resultadoBD['exito']) {
     $contenidoPrincipal .= "
             </div>
 
-            <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
+            <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>";
 
-            <div style='display: flex; justify-content: space-between; font-size: 16px;'>
-                <strong>Total:</strong>
-                <strong>{$totalFormateado} €</strong>
+            // Si se aplicó algún descuento, lo mostramos antes del total
+            if ($descuentoTotal > 0) {
+                $contenidoPrincipal .= "
+                <div style='display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #666;'>
+                    <span>Subtotal:</span>
+                    <span>{$subtotalFormateado} €</span>
+                </div>
+                <div style='display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px; color: #27ae60; font-weight: bold;'>
+                    <span>Descuento aplicado:</span>
+                    <span>- {$descuentoFormateado} €</span>
+                </div>";
+            }
+
+    $contenidoPrincipal .= "
+            <div style='display: flex; justify-content: space-between; font-size: 18px;'>
+                <strong>Total Pagado:</strong>
+                <strong>{$totalFinalFormateado} €</strong>
             </div>
         </div>
 

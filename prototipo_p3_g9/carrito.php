@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__.'/includes/config.php';
 
-// Importamos la clase Usuario
+// Importamos las clases
 use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\ofertas\Oferta;
 
 // Seguridad: Solo los clientes logueados pueden ver el carrito
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {
@@ -84,7 +85,7 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
     <p style='color: #666; margin-top: 0; margin-bottom: 30px;'>Tipo: {$tipoTexto}</p>
     ";
 
-    // --- TABLA DEL CARRITO ---
+    // TABLA DEL CARRITO
     $contenidoPrincipal .= "
     <table style='width: 100%; border-collapse: collapse; margin-bottom: 30px;'>
         <thead>
@@ -99,14 +100,14 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
         <tbody>
     ";
 
-    $totalCarrito = 0;
+    $subtotalCarrito = 0;
 
     foreach ($_SESSION['carrito']['productos'] as $item) {
-        $subtotal = $item['precio'] * $item['cantidad'];
-        $totalCarrito += $subtotal;
+        $subtotalLinea = $item['precio'] * $item['cantidad'];
+        $subtotalCarrito += $subtotalLinea;
 
         $precioFormateado = number_format($item['precio'], 2);
-        $subtotalFormateado = number_format($subtotal, 2);
+        $subtotalFormateado = number_format($subtotalLinea, 2);
 
         $contenidoPrincipal .= "
             <tr style='border-bottom: 1px solid #eee;'>
@@ -140,17 +141,47 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
     </table>
     ";
 
-    $totalFormateado = number_format($totalCarrito, 2);
+    // LÓGICA DE OFERTAS
+    $resultadoOfertas = Oferta::aplicarOfertasAlCarrito($_SESSION['carrito']['productos']);
+    $totalDescuento = $resultadoOfertas['total_descuento'];
+    $detallesDescuento = $resultadoOfertas['detalles'];
+    
+    $totalFinal = $subtotalCarrito - $totalDescuento;
+    if ($totalFinal < 0) $totalFinal = 0; // Por seguridad
 
-    // --- TOTAL ---
+    // Guardamos el total final en la sesión para que pago.php sepa cuánto cobrar
+    $_SESSION['carrito']['total_final'] = $totalFinal;
+
     $contenidoPrincipal .= "
-    <div style='background-color: #f9f9f9; border: 1px solid #eee; padding: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px;'>
-        <h2 style='margin: 0; font-size: 20px;'>Total (IVA incluido):</h2>
-        <h2 style='margin: 0; font-size: 20px;'>{$totalFormateado} €</h2>
+    <div style='background-color: #f9f9f9; border: 1px solid #eee; padding: 20px; margin-bottom: 30px; border-radius: 5px; max-width: 400px; margin-left: auto;'>
+        
+        <div style='display: flex; justify-content: space-between; margin-bottom: 10px; color: #666;'>
+            <span>Subtotal:</span>
+            <span>" . number_format($subtotalCarrito, 2) . " €</span>
+        </div>";
+
+    // Mostramos las ofertas aplicadas si las hay
+    if ($totalDescuento > 0) {
+        foreach ($detallesDescuento as $desc) {
+            $vecesTexto = ($desc['veces'] > 1) ? " (x{$desc['veces']})" : "";
+            $contenidoPrincipal .= "
+            <div style='display: flex; justify-content: space-between; margin-bottom: 5px; color: #27ae60; font-weight: bold;'>
+                <span>(Oferta) " . htmlspecialchars($desc['nombre']) . $vecesTexto . ":</span>
+                <span>- " . number_format($desc['ahorro'], 2) . " €</span>
+            </div>";
+        }
+    }
+
+    $contenidoPrincipal .= "
+        <hr style='border: 0; border-top: 1px solid #ddd; margin: 15px 0;'>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+            <h2 style='margin: 0; font-size: 20px;'>Total a pagar:</h2>
+            <h2 style='margin: 0; font-size: 24px; color: #2c3e50;'>" . number_format($totalFinal, 2) . " €</h2>
+        </div>
     </div>
     ";
 
-    // --- BOTONES DE ACCIÓN
+    //BOTONES DE ACCIÓN 
     $contenidoPrincipal .= "
     <div style='display: flex; gap: 15px; justify-content: flex-end;'>
         <a href='carrito.php?accion=vaciar' style='padding: 10px 20px; font-size: 14px; background: white; border: 1px solid black; color: black; text-decoration: none; cursor: pointer; border-radius: 5px; text-align: center;'>

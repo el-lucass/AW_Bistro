@@ -52,7 +52,12 @@ CREATE TABLE pedidos (
     fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     estado ENUM('nuevo', 'recibido', 'en preparación', 'cocinando', 'listo cocina', 'terminado', 'entregado', 'cancelado') DEFAULT 'nuevo',
     tipo ENUM('local', 'llevar') NOT NULL,
-    total_iva DECIMAL(10, 2) NOT NULL,
+    
+    -- Nuevos campos para la F4 (Gestión de ofertas):
+    total_sin_descuento DECIMAL(10, 2) NOT NULL, 
+    descuento_aplicado DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    
+    total_iva DECIMAL(10, 2) NOT NULL, -- El total final a pagar (con IVA y con descuento ya aplicado)
     
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
 );
@@ -67,4 +72,25 @@ CREATE TABLE pedido_productos (
     PRIMARY KEY (id_pedido, id_producto),
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES productos(id)
+);
+
+-- Para la funcionalidad 4, (Gestión de ofertas)
+
+CREATE TABLE ofertas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    fecha_inicio DATETIME NOT NULL,
+    fecha_fin DATETIME NOT NULL,
+    porcentaje_descuento DECIMAL(5,2) NOT NULL -- Guarda el porcentaje
+);
+
+CREATE TABLE oferta_productos (
+    id_oferta INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad_requerida INT NOT NULL DEFAULT 1,
+    
+    PRIMARY KEY (id_oferta, id_producto),
+    FOREIGN KEY (id_oferta) REFERENCES ofertas(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
 );

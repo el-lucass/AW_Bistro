@@ -47,6 +47,7 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
                 <a href="<?= RUTA_APP ?>/admin/usuarios.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Usuarios</a>
                 <a href="<?= RUTA_APP ?>/admin/productos.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Productos</a>
                 <a href="<?= RUTA_APP ?>/admin/pedidos_pendientes.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Pedidos pendientes</a>
+                <a href="<?= RUTA_APP ?>/admin/ofertas.php" style="text-decoration: none; color: #d35400; background-color: white; border: 1px solid #d35400; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: bold;">⚙️ Ofertas</a>
         <?php endif; ?> 
 
         <a href="<?= RUTA_APP ?>/index.php" style="<?= $estiloBoton ?>">Inicio</a>
@@ -55,6 +56,7 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
             
             <?php if (Usuario::tieneRol('cliente')): ?>
                 <a href="<?= RUTA_APP ?>/historial_pedidos.php" style="<?= $estiloBoton ?>">🧾 Mis pedidos</a>
+                <a href="<?= RUTA_APP ?>/ofertas_disponibles.php" style="<?= $estiloBoton ?>">🔥 Ofertones!</a>
             <?php endif; ?>
                 
             <?php if (Usuario::tieneRol('cocinero')): ?>
@@ -75,4 +77,4 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
         <?php endif; ?>
         
     </nav>
-</header>
+</header> 

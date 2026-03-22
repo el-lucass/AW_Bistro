@@ -72,10 +72,10 @@ class FormularioPago extends Formulario
         <div style='border: 1px solid #eee; padding: 25px; margin-bottom: 25px; border-radius: 5px;'>
             <h3 style='margin-top: 0; margin-bottom: 20px; font-size: 16px;'>Resumen del Pedido</h3>";
 
-        $total = 0;
+        $subtotalSinDescuento = 0;
         foreach ($this->carrito['productos'] as $item) {
             $subtotal = $item['precio'] * $item['cantidad'];
-            $total   += $subtotal;
+            $subtotalSinDescuento += $subtotal;
             $html .= "
             <div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;'>
                 <span>" . htmlspecialchars($item['nombre']) . " x{$item['cantidad']}</span>
@@ -83,12 +83,25 @@ class FormularioPago extends Formulario
             </div>";
         }
 
-        $totalFmt = number_format($total, 2);
+        $totalFinal = $this->carrito['total_final'] ?? $subtotalSinDescuento;
+        $descuentoAplicado = $subtotalSinDescuento - $totalFinal;
+
+        $html .= "<hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>";
+
+        // Si hay descuento, lo mostramos en verde
+        if ($descuentoAplicado > 0) {
+            $html .= "
+            <div style='display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #27ae60;'>
+                <strong>Descuento por ofertas aplicadas:</strong>
+                <strong>- " . number_format($descuentoAplicado, 2) . " €</strong>
+            </div>";
+        }
+
+        //Total Final a cobrar
         $html .= "
-            <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
             <div style='display: flex; justify-content: space-between; font-size: 18px;'>
-                <strong>Total:</strong>
-                <strong>{$totalFmt} €</strong>
+                <strong>Total a Pagar:</strong>
+                <strong>" . number_format($totalFinal, 2) . " €</strong>
             </div>
         </div>";
 

@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 26, 2026 at 07:33 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 22-03-2026 a las 19:26:50
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `awp3`
+-- Base de datos: `awp3`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categorias`
+-- Estructura de tabla para la tabla `categorias`
 --
 
 CREATE TABLE `categorias` (
@@ -35,7 +35,7 @@ CREATE TABLE `categorias` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `categorias`
+-- Volcado de datos para la tabla `categorias`
 --
 
 INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imagen`) VALUES
@@ -48,7 +48,106 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imagen`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `productos`
+-- Estructura de tabla para la tabla `ofertas`
+--
+
+CREATE TABLE `ofertas` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text NOT NULL,
+  `fecha_inicio` datetime NOT NULL,
+  `fecha_fin` datetime NOT NULL,
+  `porcentaje_descuento` decimal(5,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ofertas`
+--
+
+INSERT INTO `ofertas` (`id`, `nombre`, `descripcion`, `fecha_inicio`, `fecha_fin`, `porcentaje_descuento`) VALUES
+(1, 'Menú Matrimonio Mixto 🌯💍🌯', 'Dicen que el amor engorda, pero con este pedazo de menú doble, ¿a quién le importa? Dos señores Durums mixtos y dos cervezas Mahou para compartir con tu persona favorita (o para comértelo todo tú, aquí no juzgamos a nadie).', '2026-03-22 15:00:00', '2026-05-20 12:00:00', 26.18);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `oferta_productos`
+--
+
+CREATE TABLE `oferta_productos` (
+  `id_oferta` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `cantidad_requerida` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `oferta_productos`
+--
+
+INSERT INTO `oferta_productos` (`id_oferta`, `id_producto`, `cantidad_requerida`) VALUES
+(1, 6, 2),
+(1, 11, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedidos`
+--
+
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `id_cocinero` int(11) DEFAULT NULL,
+  `numero_dia` int(11) NOT NULL,
+  `fecha_hora` datetime DEFAULT current_timestamp(),
+  `estado` enum('nuevo','recibido','en preparación','cocinando','listo cocina','terminado','entregado','cancelado') DEFAULT 'nuevo',
+  `tipo` enum('local','llevar') NOT NULL,
+  `total_sin_descuento` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `descuento_aplicado` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total_iva` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `id_usuario`, `id_cocinero`, `numero_dia`, `fecha_hora`, `estado`, `tipo`, `total_sin_descuento`, `descuento_aplicado`, `total_iva`) VALUES
+(1, 3, NULL, 1, '2026-03-22 18:07:28', 'cancelado', 'llevar', 0.00, 0.00, 3.00),
+(2, 3, NULL, 2, '2026-03-22 18:56:47', 'recibido', 'llevar', 0.00, 0.00, 18.29),
+(3, 3, NULL, 3, '2026-03-22 19:04:36', 'cancelado', 'llevar', 0.00, 0.00, 5.50),
+(4, 3, NULL, 4, '2026-03-22 19:23:06', 'cancelado', 'llevar', 11.39, 2.98, 8.41);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedido_productos`
+--
+
+CREATE TABLE `pedido_productos` (
+  `id_pedido` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_unitario_historico` decimal(10,2) NOT NULL,
+  `preparado` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedido_productos`
+--
+
+INSERT INTO `pedido_productos` (`id_pedido`, `id_producto`, `cantidad`, `precio_unitario_historico`, `preparado`) VALUES
+(1, 7, 1, 1.50, 0),
+(1, 9, 1, 1.50, 0),
+(2, 6, 3, 4.50, 0),
+(2, 11, 4, 1.20, 0),
+(3, 4, 1, 4.00, 0),
+(3, 7, 1, 1.50, 0),
+(4, 6, 2, 4.50, 0),
+(4, 11, 2, 1.20, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `productos`
 --
 
 CREATE TABLE `productos` (
@@ -63,7 +162,7 @@ CREATE TABLE `productos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `productos`
+-- Volcado de datos para la tabla `productos`
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `id_categoria`, `precio_base`, `iva`, `disponible`, `ofertado`) VALUES
@@ -82,7 +181,7 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `id_categoria`, `precio_
 -- --------------------------------------------------------
 
 --
--- Table structure for table `producto_imagenes`
+-- Estructura de tabla para la tabla `producto_imagenes`
 --
 
 CREATE TABLE `producto_imagenes` (
@@ -92,7 +191,7 @@ CREATE TABLE `producto_imagenes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `producto_imagenes`
+-- Volcado de datos para la tabla `producto_imagenes`
 --
 
 INSERT INTO `producto_imagenes` (`id`, `id_producto`, `ruta_imagen`) VALUES
@@ -111,7 +210,7 @@ INSERT INTO `producto_imagenes` (`id`, `id_producto`, `ruta_imagen`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `usuarios`
+-- Estructura de tabla para la tabla `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -127,7 +226,7 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `usuarios`
+-- Volcado de datos para la tabla `usuarios`
 --
 
 INSERT INTO `usuarios` (`id`, `nombre_usuario`, `email`, `nombre`, `apellidos`, `password`, `rol`, `avatar`, `bistrocoins`) VALUES
@@ -135,118 +234,140 @@ INSERT INTO `usuarios` (`id`, `nombre_usuario`, `email`, `nombre`, `apellidos`, 
 (3, 'a', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cliente', 'default.png', 0);
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `categorias`
+-- Indices de la tabla `categorias`
 --
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `productos`
+-- Indices de la tabla `ofertas`
+--
+ALTER TABLE `ofertas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `oferta_productos`
+--
+ALTER TABLE `oferta_productos`
+  ADD PRIMARY KEY (`id_oferta`,`id_producto`),
+  ADD KEY `id_producto` (`id_producto`);
+
+--
+-- Indices de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `fk_pedidos_cocinero` (`id_cocinero`);
+
+--
+-- Indices de la tabla `pedido_productos`
+--
+ALTER TABLE `pedido_productos`
+  ADD PRIMARY KEY (`id_pedido`,`id_producto`),
+  ADD KEY `id_producto` (`id_producto`);
+
+--
+-- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_categoria` (`id_categoria`);
 
 --
--- Indexes for table `producto_imagenes`
+-- Indices de la tabla `producto_imagenes`
 --
 ALTER TABLE `producto_imagenes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_producto` (`id_producto`);
 
 --
--- Indexes for table `usuarios`
+-- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre_usuario` (`nombre_usuario`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `categorias`
+-- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `productos`
+-- AUTO_INCREMENT de la tabla `ofertas`
+--
+ALTER TABLE `ofertas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `producto_imagenes`
+-- AUTO_INCREMENT de la tabla `producto_imagenes`
 --
 ALTER TABLE `producto_imagenes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `usuarios`
+-- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Constraints for dumped tables
+-- Restricciones para tablas volcadas
 --
 
 --
--- Constraints for table `productos`
+-- Filtros para la tabla `oferta_productos`
+--
+ALTER TABLE `oferta_productos`
+  ADD CONSTRAINT `oferta_productos_ibfk_1` FOREIGN KEY (`id_oferta`) REFERENCES `ofertas` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `oferta_productos_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `fk_pedidos_cocinero` FOREIGN KEY (`id_cocinero`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `pedido_productos`
+--
+ALTER TABLE `pedido_productos`
+  ADD CONSTRAINT `pedido_productos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedido_productos_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`);
+
+--
+-- Filtros para la tabla `productos`
 --
 ALTER TABLE `productos`
   ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `producto_imagenes`
+-- Filtros para la tabla `producto_imagenes`
 --
 ALTER TABLE `producto_imagenes`
   ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
-COMMIT;
-
--- Para la funcionalidad 2 (Gestión de Pedidos)
-
--- Tabla principal de pedidos
-CREATE TABLE pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT(11) NOT NULL,
-    numero_dia INT NOT NULL, 
-    fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    estado ENUM('nuevo', 'recibido', 'en preparación', 'cocinando', 'listo cocina', 'terminado', 'entregado', 'cancelado') DEFAULT 'nuevo',
-    tipo ENUM('local', 'llevar') NOT NULL,
-    total_iva DECIMAL(10, 2) NOT NULL,
-    
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Tabla de qué productos tiene cada pedido
-CREATE TABLE pedido_productos (
-    id_pedido INT NOT NULL,
-    id_producto INT(11) NOT NULL,
-    cantidad INT NOT NULL,
-    precio_unitario_historico DECIMAL(10, 2) NOT NULL, 
-    
-    PRIMARY KEY (id_pedido, id_producto),
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_producto) REFERENCES productos(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- para la funcionalidad de gestion de pedidos cocinero
-ALTER TABLE pedidos
-  ADD COLUMN id_cocinero INT(11) NULL AFTER id_usuario,
-  ADD CONSTRAINT fk_pedidos_cocinero
-    FOREIGN KEY (id_cocinero) REFERENCES usuarios(id)
-    ON DELETE SET NULL;
-
-ALTER TABLE pedido_productos
-  ADD COLUMN preparado TINYINT(1) NOT NULL DEFAULT 0;
-  
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

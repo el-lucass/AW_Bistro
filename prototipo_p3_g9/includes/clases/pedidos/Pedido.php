@@ -3,28 +3,30 @@ namespace es\ucm\fdi\aw\pedidos;
 
 use es\ucm\fdi\aw\Aplicacion;
 
-
-
 class Pedido
 {
-    // 1. Propiedades privadas del Pedido
+    // Propiedades privadas del Pedido
     private $id;
     private $id_usuario;
-    private $nombre_usuario; // Obtenido con el JOIN
-    private $avatar_usuario; // Obtenido con el JOIN (útil para la vista del cocinero)
+    private $nombre_usuario; 
+    private $avatar_usuario; 
     private $numero_dia;
     private $tipo;
-    private $total_iva;
+    private $total_sin_descuento; 
+    private $descuento_aplicado;  
+    private $total_iva;      
     private $estado;
     private $fecha_hora;
 
-    // 2. Constructor privado
-    private function __construct($id, $id_usuario, $numero_dia, $tipo, $total_iva, $estado, $fecha_hora, $nombre_usuario = null, $avatar_usuario = null)
+    //Constructor privado 
+    private function __construct($id, $id_usuario, $numero_dia, $tipo, $total_sin_descuento, $descuento_aplicado, $total_iva, $estado, $fecha_hora, $nombre_usuario = null, $avatar_usuario = null)
     {
         $this->id = $id;
         $this->id_usuario = $id_usuario;
         $this->numero_dia = $numero_dia;
         $this->tipo = $tipo;
+        $this->total_sin_descuento = $total_sin_descuento;
+        $this->descuento_aplicado = $descuento_aplicado;
         $this->total_iva = $total_iva;
         $this->estado = $estado;
         $this->fecha_hora = $fecha_hora;
@@ -32,31 +34,29 @@ class Pedido
         $this->avatar_usuario = $avatar_usuario;
     }
 
-    // 3. GETTERS
+    // GETTERS
     public function getId() { return $this->id; }
     public function getIdUsuario() { return $this->id_usuario; }
     public function getNombreUsuario() { return $this->nombre_usuario; }
     public function getAvatarUsuario() { return $this->avatar_usuario; }
     public function getNumeroDia() { return $this->numero_dia; }
     public function getTipo() { return $this->tipo; }
+    public function getTotalSinDescuento() { return $this->total_sin_descuento; } 
+    public function getDescuentoAplicado() { return $this->descuento_aplicado; }   
     public function getTotalIva() { return $this->total_iva; }
     public function getEstado() { return $this->estado; }
     public function getFechaHora() { return $this->fecha_hora; }
 
-    // =========================================================
-    // MÉTODOS ESTÁTICOS DE INTERACCIÓN CON LA BD
-    // =========================================================
 
-    /**
-     * Crea un pedido nuevo con sus productos mediante una transacción.
-     */
-    public static function creaPedido($id_usuario, $tipo, $total_iva, $carrito, $estado = 'recibido')
+
+    //Crea un pedido nuevo con sus productos mediante una transacción.
+    public static function creaPedido($id_usuario, $tipo, $total_sin_descuento, $descuento_aplicado, $total_iva, $carrito, $estado = 'recibido')
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $conn->begin_transaction();
 
         try {
-            // 1.1 Calcular el número de pedido del día
+            // Calcular el número de pedido del día
             $sql_num = "SELECT MAX(numero_dia) as max_dia FROM pedidos WHERE DATE(fecha_hora) = CURDATE()";
             $result_num = $conn->query($sql_num);
             $row_num = $result_num->fetch_assoc();
@@ -66,14 +66,14 @@ class Pedido
                 $numero_dia = $row_num['max_dia'] + 1;
             }
 
-            // 1.2 Insertar el pedido en la tabla principal
-            $stmt = $conn->prepare("INSERT INTO pedidos (id_usuario, numero_dia, tipo, total_iva, estado) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("iisds", $id_usuario, $numero_dia, $tipo, $total_iva, $estado);
+            // Insertar el pedido en la tabla principal (Nombres de columnas de tu BD)
+            $stmt = $conn->prepare("INSERT INTO pedidos (id_usuario, numero_dia, tipo, total_sin_descuento, descuento_aplicado, total_iva, estado) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("iisddds", $id_usuario, $numero_dia, $tipo, $total_sin_descuento, $descuento_aplicado, $total_iva, $estado);
             $stmt->execute();
             
             $id_pedido = $conn->insert_id;
             
-            // 1.3 Insertar cada línea de producto
+            // Insertar cada línea de producto
             $stmt_prod = $conn->prepare("INSERT INTO pedido_productos (id_pedido, id_producto, cantidad, precio_unitario_historico) VALUES (?, ?, ?, ?)");
             
             foreach ($carrito['productos'] as $item) {
@@ -84,7 +84,7 @@ class Pedido
                 $stmt_prod->execute();
             }
             
-            // 1.4 Obtener la fecha_hora generada
+            // Obtener la fecha_hora generada
             $stmt_fecha = $conn->prepare("SELECT fecha_hora FROM pedidos WHERE id = ?");
             $stmt_fecha->bind_param("i", $id_pedido);
             $stmt_fecha->execute();
@@ -105,10 +105,7 @@ class Pedido
         }
     }
 
-    /**
-     * Obtener el historial de pedidos de un usuario concreto.
-     * Devuelve un array de objetos Pedido.
-     */
+    // Obtener el historial de pedidos de un usuario concreto.
     public static function listaPedidosUsuario($id_usuario)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -123,16 +120,14 @@ class Pedido
             while ($row = $result->fetch_assoc()) {
                 $pedidos[] = new Pedido(
                     $row['id'], $row['id_usuario'], $row['numero_dia'], 
-                    $row['tipo'], $row['total_iva'], $row['estado'], $row['fecha_hora']
+                    $row['tipo'], $row['total_sin_descuento'], $row['descuento_aplicado'], $row['total_iva'], $row['estado'], $row['fecha_hora']
                 );
             }
         }
         return $pedidos;
     }
 
-    /**
-     * Actualiza el estado de un pedido (ej: de 'recibido' a 'en_preparacion').
-     */
+    // Actualiza el estado de un pedido.
     public static function actualizaEstadoPedido($id_pedido, $nuevo_estado)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -141,10 +136,7 @@ class Pedido
         return $stmt->execute();
     }
 
-    /**
-     * Obtiene pedidos filtrados por estados (ej: ['recibido', 'en_preparacion']).
-     * Muy útil para la vista del cocinero. Devuelve array de objetos Pedido.
-     */
+    //Obtiene pedidos filtrados por estados.
     public static function listaPedidosPorEstados($estados)
     {
         if (empty($estados)) return [];
@@ -169,7 +161,7 @@ class Pedido
             while ($row = $result->fetch_assoc()) {
                 $pedidos[] = new Pedido(
                     $row['id'], $row['id_usuario'], $row['numero_dia'], 
-                    $row['tipo'], $row['total_iva'], $row['estado'], 
+                    $row['tipo'], $row['total_sin_descuento'], $row['descuento_aplicado'], $row['total_iva'], $row['estado'], 
                     $row['fecha_hora'], $row['nombre_usuario'], $row['avatar']
                 );
             }
@@ -177,10 +169,7 @@ class Pedido
         return $pedidos;
     }
 
-    /**
-     * Obtiene todos los pedidos activos (que no estén entregados ni cancelados).
-     * Devuelve array de objetos Pedido.
-     */
+    // Obtiene todos los pedidos activos.
     public static function listaTodosLosPedidosActivos()
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -199,7 +188,7 @@ class Pedido
             while ($row = $result->fetch_assoc()) {
                 $pedidos[] = new Pedido(
                     $row['id'], $row['id_usuario'], $row['numero_dia'], 
-                    $row['tipo'], $row['total_iva'], $row['estado'], 
+                    $row['tipo'], $row['total_sin_descuento'], $row['descuento_aplicado'], $row['total_iva'], $row['estado'], 
                     $row['fecha_hora'], $row['nombre_usuario'], $row['avatar']
                 );
             }
@@ -207,9 +196,7 @@ class Pedido
         return $pedidos;
     }
 
-    /**
-     * Busca un pedido concreto por ID. Devuelve un objeto Pedido.
-     */
+    // Busca un pedido concreto por ID.
     public static function buscaPedido($id_pedido)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -226,17 +213,14 @@ class Pedido
         if ($row) {
             return new Pedido(
                 $row['id'], $row['id_usuario'], $row['numero_dia'], 
-                $row['tipo'], $row['total_iva'], $row['estado'], 
+                $row['tipo'], $row['total_sin_descuento'], $row['descuento_aplicado'], $row['total_iva'], $row['estado'], 
                 $row['fecha_hora'], $row['nombre_usuario'], $row['avatar']
             );
         }
         return false;
     }
 
-    /**
-     * Obtiene los productos (líneas) de un pedido concreto.
-     * Nota: Devuelve un array asociativo por simplicidad (no una clase DetallePedido).
-     */
+    //Obtiene los productos (líneas) de un pedido concreto.
     public static function buscaDetallesPedido($id_pedido)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -260,3 +244,4 @@ class Pedido
         return $detalles;
     }
 }
+?>

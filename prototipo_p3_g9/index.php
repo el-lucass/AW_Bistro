@@ -47,6 +47,7 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
         $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='".resuelve('/admin/usuarios.php') ."'\">F0: Administrar Usuarios</button> ";
         $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='".resuelve('/admin/productos.php')."'\">F1: Gestión Productos</button> ";
         $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='".resuelve('admin/pedidos_pendientes.php')."'\">F3: Pedidos pendientes</button> ";
+        $contenidoPrincipal .= "<button style='background-color: orange;' onclick=\"location.href='".resuelve('/admin/ofertas.php')."'\">F4: Gestión Ofertas</button> ";
         $contenidoPrincipal .= "</div>";
     }
 
