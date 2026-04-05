@@ -1,8 +1,10 @@
 <?php
 require_once __DIR__.'/includes/config.php';
 
+// Importamos la clase Pedido
 use es\ucm\fdi\aw\pedidos\Pedido;
 
+// Seguridad: solo clientes logueados
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {
     header('Location: login.php');
     exit();
@@ -39,10 +41,13 @@ $clase_estado = [
 
 $estados_activos = ['recibido', 'en preparación', 'cocinando', 'listo cocina', 'terminado'];
 
+// --- OBTENER PEDIDOS USANDO LA CLASE ---
+
 $pedidos         = Pedido::listaPedidosUsuario($user_id);
 $pedidosActivos  = array_filter($pedidos, fn($p) => in_array($p->getEstado(), $estados_activos));
 $pedidosHistorial = array_filter($pedidos, fn($p) => !in_array($p->getEstado(), $estados_activos));
 
+// Helper para renderizar una tarjeta de pedido
 $renderPedido = function($pedido) use (&$estado_map, &$tipo_map, &$clase_estado, $user_id) {
     $id_pedido    = $pedido->getId();
     $totalFormateado = number_format($pedido->getTotalIva(), 2);
@@ -95,7 +100,9 @@ $renderPedido = function($pedido) use (&$estado_map, &$tipo_map, &$clase_estado,
 };
 
 $contenidoPrincipal = "
-<a href='index.php' class='nav-link btn-flotante-inicio'>← Inicio</a>
+<div class='mb-20'>
+    <a href='index.php' class='nav-link'>← Volver al inicio</a>
+</div>
 <h1 class='mt-0 mb-30'>Historial de Pedidos</h1>";
 
 if (empty($pedidos)) {
