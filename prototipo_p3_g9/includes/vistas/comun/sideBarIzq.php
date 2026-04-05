@@ -1,2 +1,2 @@
-<nav id="menu" style="display: none;">
-    </nav>
+<nav id="menu">
+</nav>

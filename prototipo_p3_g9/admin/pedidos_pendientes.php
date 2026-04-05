@@ -36,70 +36,52 @@ $tituloPagina = 'Pedidos pendientes';
 // LLAMADA ESTÁTICA: Usamos el método de la clase Cocina
 $pedidos = Cocina::listaPedidosPendientesGerente();
 
-$contenidoPrincipal = "<div style='max-width: 1100px; margin: 0 auto; padding: 20px;'>
-<h1 style='margin-top:0;'>Pedidos pendientes</h1>
-
-<div style='border:1px solid #eee; border-radius:6px; overflow:hidden; background:#fff;'>";
+$contenidoPrincipal = "<h1 class='mt-0'>Pedidos pendientes</h1>";
 
 if (empty($pedidos)) {
-    $contenidoPrincipal .= "<div style='padding:20px; color:#666;'>No hay pedidos pendientes.</div>";
+    $contenidoPrincipal .= "<div class='panel-tabla'><div class='panel-vacio'>No hay pedidos pendientes.</div></div>";
 } else {
-
     $contenidoPrincipal .= "
-    <table style='width:100%; border-collapse:collapse; font-size:14px;'>
-      <thead>
-        <tr style='background:#fafafa; border-bottom:1px solid #eee;'>
-          <th style='padding:12px; text-align:left;'>#</th>
-          <th style='padding:12px; text-align:left;'>Fecha</th>
-          <th style='padding:12px; text-align:left;'>Estado</th>
-          <th style='padding:12px; text-align:left;'>Cliente</th>
-          <th style='padding:12px; text-align:left;'>Cocinero</th>
-          <th style='padding:12px; text-align:center;'>Detalle</th>
-        </tr>
-      </thead>
-      <tbody>";
+    <div class='panel-tabla'>
+    <table>
+        <thead><tr>
+            <th>#</th><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Cocinero</th>
+            <th class='texto-centro'>Detalle</th>
+        </tr></thead>
+        <tbody>";
 
     foreach ($pedidos as $p) {
-        $num = htmlspecialchars($p['numero_dia']);
-        $fecha = date('d/m/Y H:i', strtotime($p['fecha_hora']));
+        $num    = htmlspecialchars($p['numero_dia']);
+        $fecha  = date('d/m/Y H:i', strtotime($p['fecha_hora']));
         $estado = htmlspecialchars($p['estado']);
         $cliente = htmlspecialchars($p['cliente_user']);
 
-        // Avatar cocinero si existe
-        $cocineroHtml = "<span style='color:#999;'>Sin asignar</span>";
-
+        $cocineroHtml = "<span class='cocinero-sin-asignar'>Sin asignar</span>";
         if (!empty($p['cocinero_user'])) {
-            $avatar = htmlspecialchars($p['cocinero_avatar'] ?? 'default.png');
-            $avatarSrc = rutaAvatar($avatar);
-
+            $avatarSrc = rutaAvatar(htmlspecialchars($p['cocinero_avatar'] ?? 'default.png'));
             $cocineroHtml = "
-                <div style='display:flex; align-items:center; gap:10px;'>
-                    <img src='{$avatarSrc}' 
-                         style='width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #ddd;'>
-                    <span>".htmlspecialchars($p['cocinero_user'])."</span>
+                <div class='flex-fila gap-10'>
+                    <img src='{$avatarSrc}' class='avatar-mini'>
+                    <span>" . htmlspecialchars($p['cocinero_user']) . "</span>
                 </div>";
         }
 
         $contenidoPrincipal .= "
-        <tr style='border-bottom:1px solid #f2f2f2;'>
-          <td style='padding:12px;'>#{$num}</td>
-          <td style='padding:12px;'>{$fecha}</td>
-          <td style='padding:12px;'>{$estado}</td>
-          <td style='padding:12px;'>{$cliente}</td>
-          <td style='padding:12px;'>{$cocineroHtml}</td>
-          <td style='padding:12px; text-align:center;'>
-            <a href='pedido_pendiente.php?id={$p['id']}'>
-              <button style='padding:8px 12px; background:black; color:white; border:none; border-radius:5px; cursor:pointer;'>
-                Ver
-              </button>
-            </a>
-          </td>
+        <tr>
+            <td>#{$num}</td>
+            <td>{$fecha}</td>
+            <td>{$estado}</td>
+            <td>{$cliente}</td>
+            <td>{$cocineroHtml}</td>
+            <td class='texto-centro'>
+                <a href='pedido_pendiente.php?id={$p['id']}'>
+                    <button class='btn-oscuro btn-sm'>Ver</button>
+                </a>
+            </td>
         </tr>";
     }
 
-    $contenidoPrincipal .= "</tbody></table>";
+    $contenidoPrincipal .= "</tbody></table></div>";
 }
-
-$contenidoPrincipal .= "</div></div>";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';

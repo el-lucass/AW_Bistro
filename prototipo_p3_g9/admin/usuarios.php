@@ -15,62 +15,52 @@ $tituloPagina = 'Gestión de Usuarios - Bistro FDI';
 // Obtenemos los usuarios ordenados usando el método de la clase
 $listaUsuarios = Usuario::listaUsuariosOrdenados();
 
-$tabla = '<table border="1" style="width:100%; text-align:left; border-collapse: collapse;">
-    <tr style="background-color: #f2f2f2;">
-        <th style="padding: 10px;">ID</th>
-        <th style="padding: 10px;">Usuario</th>
-        <th style="padding: 10px;">Nombre</th>
-        <th style="padding: 10px;">Email</th>
-        <th style="padding: 10px;">Rol (Prioridad)</th>
-        <th style="padding: 10px;">Acciones</th>
-    </tr>';
+$tabla = '<table>
+    <thead><tr>
+        <th>ID</th><th>Usuario</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th>
+    </tr></thead>
+    <tbody>';
 
 if (!empty($listaUsuarios)) {
     foreach ($listaUsuarios as $row) {
-        $id = $row['id'];
+        $id             = $row['id'];
         $esMismoUsuario = ($id == $_SESSION['id']);
-        
-        $colorRol = '#16a085';
-        if ($row['rol'] === 'gerente') $colorRol = '#d35400';
-        elseif ($row['rol'] === 'cocinero') $colorRol = '#8e44ad';
-        elseif ($row['rol'] === 'camarero') $colorRol = '#2980b9';
+        $claseRol       = 'rol-badge-' . $row['rol'];
 
         $tabla .= "<tr>
-            <td style='padding: 10px;'>{$id}</td>
-            <td style='padding: 10px;'>" . htmlspecialchars($row['nombre_usuario']) . "</td>
-            <td style='padding: 10px;'>" . htmlspecialchars($row['nombre'] . ' ' . $row['apellidos']) . "</td>
-            <td style='padding: 10px;'>" . htmlspecialchars($row['email']) . "</td>
-            <td style='padding: 10px;'><span style='color: $colorRol; font-weight: bold;'> " . strtoupper($row['rol']) . "</span></td>
-            <td style='padding: 10px;'>
-                <a href='editar_usuario.php?id=$id'><button style='background-color:#f39c12; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:3px;'>Editar</button></a>";
-        
+            <td>{$id}</td>
+            <td>" . htmlspecialchars($row['nombre_usuario']) . "</td>
+            <td>" . htmlspecialchars($row['nombre'] . ' ' . $row['apellidos']) . "</td>
+            <td>" . htmlspecialchars($row['email']) . "</td>
+            <td><span class='{$claseRol}'>" . strtoupper($row['rol']) . "</span></td>
+            <td>
+                <a href='editar_usuario.php?id={$id}'>
+                    <button class='btn-editar btn-sm'>Editar</button>
+                </a>";
+
         if (!$esMismoUsuario) {
-            $tabla .= " <form action='../usuarios/admin_borrar.php' method='POST' style='display:inline;' onsubmit='return confirm(\"¿Estás seguro de borrar a este usuario?\")'>
-                            <input type='hidden' name='id' value='$id'>
-                            <button type='submit' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:3px;'>Borrar</button>
+            $tabla .= " <form action='../usuarios/admin_borrar.php' method='POST' class='inline'
+                              onsubmit='return confirm(\"¿Estás seguro de borrar a este usuario?\")'>
+                            <input type='hidden' name='id' value='{$id}'>
+                            <button type='submit' class='btn-peligro btn-sm'>Borrar</button>
                         </form>";
         }
         $tabla .= "</td></tr>";
     }
 } else {
-    $tabla .= "<tr><td colspan='6' style='padding: 10px; text-align:center;'>No hay usuarios registrados.</td></tr>";
+    $tabla .= "<tr><td colspan='6' class='texto-centro'>No hay usuarios registrados.</td></tr>";
 }
-$tabla .= '</table>';
+$tabla .= '</tbody></table>';
 
-$contenidoPrincipal = <<<EOS
-    <h1>Panel de Control: Gestión de Usuarios</h1>
-    <p>Lista de usuarios ordenada por jerarquía (Menos a más prioridad).</p>
-    
-    <div style="margin-bottom: 20px;">
-        <a href='crear_usuario.php'>
-            <button style='background-color:#2ecc71; color:white; padding:10px; cursor:pointer; border:none; border-radius:5px;'>
-                + Añadir Nuevo Usuario / Empleado
-            </button>
-        </a>
-    </div>
-
-    $tabla
-EOS;
+$contenidoPrincipal = "
+<h1>Panel de Control: Gestión de Usuarios</h1>
+<p>Lista de usuarios ordenada por jerarquía.</p>
+<div class='admin-toolbar'>
+    <a href='crear_usuario.php'>
+        <button class='btn-crear btn-lg'>+ Añadir Nuevo Usuario / Empleado</button>
+    </a>
+</div>
+{$tabla}";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
 ?>

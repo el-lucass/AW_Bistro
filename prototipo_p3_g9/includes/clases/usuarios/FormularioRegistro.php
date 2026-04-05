@@ -19,7 +19,7 @@ class FormularioRegistro extends FormularioUsuarioBase
 
         // 2. Añadimos solo el botón
         $html .= <<<EOF
-        <div style="margin-top: 20px;">
+        <div class="mt-20">
             <button type="submit">Registrarse</button>
         </div>
 EOF;

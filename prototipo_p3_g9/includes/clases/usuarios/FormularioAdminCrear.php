@@ -37,7 +37,7 @@ class FormularioAdminCrear extends FormularioUsuarioBase
             </select>
         </fieldset>
 
-        <div style="margin-top: 20px;">
+        <div class="mt-20">
             <button type="submit">Crear Usuario</button>
         </div>
 EOF;

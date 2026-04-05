@@ -27,10 +27,10 @@ class FormularioPago extends Formulario
 
     protected function generaCamposFormulario(&$datos)
     {
-        $html = $this->generaResumenPedido();
+        $html  = $this->generaResumenPedido();
         $html .= $this->generaMetodoPago($datos);
         $html .= $this->generaCamposTarjeta($datos);
-        $html .= $this->generaInfoCamarero();
+        $html .= $this->generaInfoCamarero($datos);
         $html .= $this->generaBotonConfirmar();
         $html .= $this->generaScript();
 
@@ -69,37 +69,35 @@ class FormularioPago extends Formulario
     private function generaResumenPedido(): string
     {
         $html = "
-        <div style='border: 1px solid #eee; padding: 25px; margin-bottom: 25px; border-radius: 5px;'>
-            <h3 style='margin-top: 0; margin-bottom: 20px; font-size: 16px;'>Resumen del Pedido</h3>";
+        <div class='pago-seccion'>
+            <h3 class='mt-0 mb-20'>Resumen del Pedido</h3>";
 
         $subtotalSinDescuento = 0;
         foreach ($this->carrito['productos'] as $item) {
-            $subtotal = $item['precio'] * $item['cantidad'];
+            $subtotal              = $item['precio'] * $item['cantidad'];
             $subtotalSinDescuento += $subtotal;
             $html .= "
-            <div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;'>
+            <div class='pago-item'>
                 <span>" . htmlspecialchars($item['nombre']) . " x{$item['cantidad']}</span>
                 <span>" . number_format($subtotal, 2) . " €</span>
             </div>";
         }
 
-        $totalFinal = $this->carrito['total_final'] ?? $subtotalSinDescuento;
-        $descuentoAplicado = $subtotalSinDescuento - $totalFinal;
+        $totalFinal         = $this->carrito['total_final'] ?? $subtotalSinDescuento;
+        $descuentoAplicado  = $subtotalSinDescuento - $totalFinal;
 
-        $html .= "<hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>";
+        $html .= "<hr class='hr-sep'>";
 
-        // Si hay descuento, lo mostramos en verde
         if ($descuentoAplicado > 0) {
             $html .= "
-            <div style='display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #27ae60;'>
+            <div class='pago-descuento'>
                 <strong>Descuento por ofertas aplicadas:</strong>
                 <strong>- " . number_format($descuentoAplicado, 2) . " €</strong>
             </div>";
         }
 
-        //Total Final a cobrar
         $html .= "
-            <div style='display: flex; justify-content: space-between; font-size: 18px;'>
+            <div class='pago-total'>
                 <strong>Total a Pagar:</strong>
                 <strong>" . number_format($totalFinal, 2) . " €</strong>
             </div>
@@ -112,19 +110,17 @@ class FormularioPago extends Formulario
     {
         $metodo = $datos['metodo_pago'] ?? 'camarero';
 
-        $borderTarjeta  = ($metodo === 'tarjeta')  ? '2px solid black' : '1px solid #ccc';
-        $borderCamarero = ($metodo === 'camarero') ? '2px solid black' : '1px solid #ccc';
+        $claseTarjeta  = 'pago-opcion' . ($metodo === 'tarjeta'  ? ' pago-opcion-activa' : '');
+        $claseCamarero = 'pago-opcion' . ($metodo === 'camarero' ? ' pago-opcion-activa' : '');
 
         return "
-        <div style='border: 1px solid #eee; padding: 25px; margin-bottom: 25px; border-radius: 5px;'>
-            <h3 style='margin-top: 0; margin-bottom: 20px; font-size: 16px;'>Método de Pago</h3>
-            <div style='display: flex; gap: 20px;'>
-                <div id='btn_tarjeta' onclick=\"seleccionarMetodo('tarjeta')\"
-                     style='flex: 1; border: {$borderTarjeta}; padding: 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px;'>
+        <div class='pago-seccion'>
+            <h3 class='mt-0 mb-20'>Método de Pago</h3>
+            <div class='pago-opciones'>
+                <div id='btn_tarjeta'  onclick=\"seleccionarMetodo('tarjeta')\"  class='{$claseTarjeta}'>
                     💳 <span>Tarjeta de Crédito/Débito</span>
                 </div>
-                <div id='btn_camarero' onclick=\"seleccionarMetodo('camarero')\"
-                     style='flex: 1; border: {$borderCamarero}; padding: 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px;'>
+                <div id='btn_camarero' onclick=\"seleccionarMetodo('camarero')\" class='{$claseCamarero}'>
                     👤 <span>Pagar al Camarero</span>
                 </div>
             </div>
@@ -134,71 +130,68 @@ class FormularioPago extends Formulario
 
     private function generaCamposTarjeta(array &$datos): string
     {
-        $metodo  = $datos['metodo_pago'] ?? 'camarero';
-        $display = ($metodo === 'tarjeta') ? 'block' : 'none';
+        $metodo      = $datos['metodo_pago'] ?? 'camarero';
+        $claseOculto = ($metodo === 'tarjeta') ? '' : ' oculto';
 
-        $titular = htmlspecialchars($datos['titular_tarjeta'] ?? '');
-        $num     = htmlspecialchars($datos['num_tarjeta']     ?? '');
-        $cad     = htmlspecialchars($datos['caducidad_tarjeta'] ?? '');
-        $cvv     = htmlspecialchars($datos['cvv_tarjeta']     ?? '');
+        $titular = htmlspecialchars($datos['titular_tarjeta']   ?? '');
+        $num     = htmlspecialchars($datos['num_tarjeta']        ?? '');
+        $cad     = htmlspecialchars($datos['caducidad_tarjeta']  ?? '');
+        $cvv     = htmlspecialchars($datos['cvv_tarjeta']        ?? '');
 
-        $errNum = self::createMensajeError($this->errores, 'num_tarjeta',      'span', ['style' => 'color:red; font-size:0.85em; display:block;']);
-        $errCad = self::createMensajeError($this->errores, 'caducidad_tarjeta','span', ['style' => 'color:red; font-size:0.85em; display:block;']);
-        $errCvv = self::createMensajeError($this->errores, 'cvv_tarjeta',      'span', ['style' => 'color:red; font-size:0.85em; display:block;']);
+        $errNum = self::createMensajeError($this->errores, 'num_tarjeta',       'span', ['class' => 'error']);
+        $errCad = self::createMensajeError($this->errores, 'caducidad_tarjeta', 'span', ['class' => 'error']);
+        $errCvv = self::createMensajeError($this->errores, 'cvv_tarjeta',       'span', ['class' => 'error']);
 
         return "
-        <div id='formulario_tarjeta' style='display: {$display}; border: 1px solid #eee; padding: 25px; margin-bottom: 30px; border-radius: 5px; background-color: #fafafa;'>
-            <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 16px;'>Datos de la Tarjeta</h3>
+        <div id='formulario_tarjeta' class='pago-tarjeta-box{$claseOculto}'>
+            <h3 class='mt-0 mb-15'>Datos de la Tarjeta</h3>
 
-            <div style='margin-bottom: 15px;'>
-                <label style='display: block; margin-bottom: 5px; font-size: 14px;'>Titular de la tarjeta</label>
-                <input type='text' name='titular_tarjeta' value='{$titular}' placeholder='Ej. Juan Pérez'
-                       style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;'>
+            <div class='mb-15'>
+                <label>Titular de la tarjeta</label>
+                <input type='text' name='titular_tarjeta' value='{$titular}' placeholder='Ej. Juan Pérez' class='input-full'>
             </div>
 
-            <div style='margin-bottom: 15px;'>
-                <label style='display: block; margin-bottom: 5px; font-size: 14px;'>Número de tarjeta</label>
+            <div class='mb-15'>
+                <label>Número de tarjeta</label>
                 <input type='text' id='num_tarjeta' name='num_tarjeta' value='{$num}'
-                       placeholder='1234567891011121' maxlength='16'
-                       style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;'>
+                       placeholder='1234567891011121' maxlength='16' class='input-full'>
                 {$errNum}
             </div>
 
-            <div style='display: flex; gap: 15px;'>
-                <div style='flex: 1;'>
-                    <label style='display: block; margin-bottom: 5px; font-size: 14px;'>Caducidad (MM/AA)</label>
+            <div class='flex-fila gap-15'>
+                <div class='flex-1'>
+                    <label>Caducidad (MM/AA)</label>
                     <input type='text' id='cad_tarjeta' name='caducidad_tarjeta' value='{$cad}'
-                           placeholder='MM/AA'
-                           style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;'>
+                           placeholder='MM/AA' class='input-full'>
                     {$errCad}
                 </div>
-                <div style='flex: 1;'>
-                    <label style='display: block; margin-bottom: 5px; font-size: 14px;'>CVV</label>
+                <div class='flex-1'>
+                    <label>CVV</label>
                     <input type='text' id='cvv_tarjeta' name='cvv_tarjeta' value='{$cvv}'
-                           placeholder='123' maxlength='4'
-                           style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;'>
+                           placeholder='123' maxlength='4' class='input-full'>
                     {$errCvv}
                 </div>
             </div>
         </div>";
     }
 
-    private function generaInfoCamarero(): string
+    private function generaInfoCamarero(array &$datos): string
     {
+        $metodo      = $datos['metodo_pago'] ?? 'camarero';
+        $claseOculto = ($metodo === 'camarero') ? '' : ' oculto';
+
         return "
-        <div id='info_camarero' style='border: 1px solid #eee; padding: 25px; margin-bottom: 30px; border-radius: 5px; background-color: #fafafa;'>
-            <h3 style='margin-top: 0; margin-bottom: 10px; font-size: 16px;'>Pago al Camarero</h3>
-            <p style='color: #666; font-size: 14px; margin: 0;'>Tu pedido se procesará y podrás realizar el pago directamente al camarero cuando recojas o recibas tu pedido.</p>
+        <div id='info_camarero' class='pago-tarjeta-box{$claseOculto}'>
+            <h3 class='mt-0 mb-10'>Pago al Camarero</h3>
+            <p class='texto-gris texto-14 mb-0'>Tu pedido se procesará y podrás realizar el pago directamente al camarero cuando recojas o recibas tu pedido.</p>
         </div>";
     }
 
     private function generaBotonConfirmar(): string
     {
         return "
-        <div style='display: flex; justify-content: flex-end;'>
-            <button type='submit' style='padding: 10px 30px; font-size: 14px; background: black; color: white; border: none; cursor: pointer; border-radius: 5px;'>
-                Confirmar Pago
-            </button>
+        <div class='flex-fin mt-10'>
+            <button type='submit' class='btn-oscuro btn-lg'>Confirmar Pago</button>
         </div>";
     }
 
@@ -245,23 +238,23 @@ class FormularioPago extends Formulario
         function seleccionarMetodo(metodo) {
             document.getElementById('input_metodo').value = metodo;
 
-            const btnTarjeta  = document.getElementById('btn_tarjeta');
-            const btnCamarero = document.getElementById('btn_camarero');
-            const formTarjeta = document.getElementById('formulario_tarjeta');
+            const btnTarjeta   = document.getElementById('btn_tarjeta');
+            const btnCamarero  = document.getElementById('btn_camarero');
+            const formTarjeta  = document.getElementById('formulario_tarjeta');
             const infoCamarero = document.getElementById('info_camarero');
             const inputsTarjeta = formTarjeta.querySelectorAll('input');
 
             if (metodo === 'tarjeta') {
-                btnTarjeta.style.border  = '2px solid black';
-                btnCamarero.style.border = '1px solid #ccc';
-                formTarjeta.style.display  = 'block';
-                infoCamarero.style.display = 'none';
+                btnTarjeta.classList.add('pago-opcion-activa');
+                btnCamarero.classList.remove('pago-opcion-activa');
+                formTarjeta.classList.remove('oculto');
+                infoCamarero.classList.add('oculto');
                 inputsTarjeta.forEach(input => input.required = true);
             } else {
-                btnCamarero.style.border = '2px solid black';
-                btnTarjeta.style.border  = '1px solid #ccc';
-                formTarjeta.style.display  = 'none';
-                infoCamarero.style.display = 'block';
+                btnCamarero.classList.add('pago-opcion-activa');
+                btnTarjeta.classList.remove('pago-opcion-activa');
+                formTarjeta.classList.add('oculto');
+                infoCamarero.classList.remove('oculto');
                 inputsTarjeta.forEach(input => input.required = false);
             }
         }

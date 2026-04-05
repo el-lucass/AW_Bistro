@@ -48,22 +48,22 @@ class FormularioAdminEditar extends Formulario
             <legend>Datos del Empleado/Cliente</legend>
             <input type="hidden" name="id" value="{$this->idUsuarioEditar}">
             
-            <div style="margin-bottom: 10px;">
+            <div class="mb-10">
                 <label>Nombre:</label>
                 <input type="text" name="nombre" value="$nombre" required>
             </div>
             
-            <div style="margin-bottom: 10px;">
+            <div class="mb-10">
                 <label>Apellidos:</label>
                 <input type="text" name="apellidos" value="$apellidos">
             </div>
             
-            <div style="margin-bottom: 10px;">
+            <div class="mb-10">
                 <label>Email:</label>
                 <input type="email" name="email" value="$email" required>
             </div>
             
-            <div style="margin-bottom: 15px;">
+            <div class="mb-15">
                 <label>Rol:</label>
                 <select name="rol">
                     <option value="cliente" $selCliente>Cliente</option>

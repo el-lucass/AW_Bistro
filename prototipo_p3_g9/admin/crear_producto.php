@@ -13,7 +13,6 @@ if (!Usuario::tieneRol('gerente')) {
 }
 
 $tituloPagina = "Añadir Nuevo Producto";
-
 // Obtenemos las categorías llamando al método estático de Producto
 $categorias = Producto::listaCategorias();
 $opcionesCategoria = "";
@@ -30,101 +29,89 @@ if (empty($categorias)) {
 $mensaje = "";
 if (isset($_GET['error'])) {
     if ($_GET['error'] === 'db') {
-        $mensaje = "<div style='background: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px;'>Error al guardar el producto en la base de datos.</div>";
+        $mensaje = "<div class='alerta-error'>Error al guardar el producto en la base de datos.</div>";
     } elseif ($_GET['error'] === 'img') {
-        $mensaje = "<div style='background: #fff3cd; color: #856404; padding: 10px; margin-bottom: 15px;'>El producto se guardó, pero hubo un error al subir alguna imagen.</div>";
+        $mensaje = "<div class='alerta-warning'>El producto se guardó, pero hubo un error al subir alguna imagen.</div>";
     }
 }
 
 // Importante: enctype="multipart/form-data" es obligatorio para poder subir archivos (imágenes)
 $contenidoPrincipal = <<<EOS
-    <h1>Añadir nuevo producto a la carta</h1>
-    {$mensaje}
-    <form action="../productos/admin_crear_producto.php" method="POST" enctype="multipart/form-data">
-        <fieldset>
-            <legend>Datos básicos del producto</legend>
-            
-            <div style="margin-bottom: 10px;">
-                <label>Nombre del producto:</label> 
-                <input type="text" name="nombre" required style="width: 100%;">
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <label>Descripción:</label><br>
-                <textarea name="descripcion" required rows="4" style="width: 100%;"></textarea>
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <label>Categoría:</label>
-                <select name="id_categoria" required>
-                    {$opcionesCategoria}
-                </select>
-            </div>
-        </fieldset>
-        
-        <fieldset style="margin-top:10px;">
-            <legend>Precios y Disponibilidad</legend>
-            
-            <div style="margin-bottom: 10px;">
-                <label>Precio Base (sin IVA) en €:</label> 
-                <input type="number" name="precio_base" id="precio_base" step="0.01" min="0" required>
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <label>IVA Aplicable:</label>
-                <select name="iva" id="iva" required>
-                    <option value="4">4% (Superreducido)</option>
-                    <option value="10" selected>10% (Reducido - Hostelería)</option>
-                    <option value="21">21% (General)</option>
-                </select>
-            </div>
-
-            <div style="margin-bottom: 15px; padding: 10px; background-color: #ecf0f1; border-radius: 5px;">
-                <span style="font-size: 1.1em; color: #2c3e50;">
-                    <strong>Precio Final de Venta: <span id="precio_final_display" style="color: #27ae60; font-size: 1.2em;">0.00 €</span></strong>
-                </span>
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <label>
-                    <input type="checkbox" name="disponible" value="1" checked>
-                    El producto está disponible actualmente (hay stock para prepararlo)
-                </label>
-            </div>
-        </fieldset>
-
-        <fieldset style="margin-top:10px;">
-            <legend>Imágenes (Opcional pero recomendado)</legend>
-            <p style="font-size: 0.9em; color: #666;">Puedes seleccionar varias imágenes a la vez manteniendo pulsada la tecla Ctrl/Cmd. La primera imagen se usará como portada.</p>
-            <input type="file" name="imagenes[]" accept="image/jpeg, image/png, image/webp" multiple>
-        </fieldset>
-
-        <div style="margin-top: 15px;">
-            <button type="submit" style="padding:10px 20px; background:#d35400; color:white; border:none; cursor: pointer; border-radius: 5px; font-weight: bold;">
-                Guardar Producto
-            </button>
-            <a href="productos.php" style="margin-left: 10px; text-decoration: none;">
-                <button type="button" style="padding:10px 20px; background:#7f8c8d; color:white; border:none; cursor: pointer; border-radius: 5px;">
-                    Cancelar
-                </button>
-            </a>
+<h1>Añadir nuevo producto a la carta</h1>
+{$mensaje}
+<form action="../productos/admin_crear_producto.php" method="POST" enctype="multipart/form-data">
+    <fieldset>
+        <legend>Datos básicos del producto</legend>
+        <div class="form-div">
+            <label>Nombre del producto:</label>
+            <input type="text" name="nombre" required class="input-full">
         </div>
-    </form>
+        <div class="form-div">
+            <label>Descripción:</label>
+            <textarea name="descripcion" required rows="4"></textarea>
+        </div>
+        <div class="form-div">
+            <label>Categoría:</label>
+            <select name="id_categoria" required>{$opcionesCategoria}</select>
+        </div>
+    </fieldset>
 
-    <script>
-    function actualizarPrecioFinal() {
-        let base = parseFloat(document.getElementById('precio_base').value) || 0;
-        let iva = parseFloat(document.getElementById('iva').value) || 0;
-        let total = base + (base * (iva / 100));
-        document.getElementById('precio_final_display').innerText = total.toFixed(2) + ' €';
-    }
+    <fieldset class="fieldset-mt">
+        <legend>Precios y Disponibilidad</legend>
+        <div class="form-div">
+            <label>Precio Base (sin IVA) en €:</label>
+            <input type="number" name="precio_base" id="precio_base" step="0.01" min="0" required>
+        </div>
+        <div class="form-div">
+            <label>IVA Aplicable:</label>
+            <select name="iva" id="iva" required>
+                <option value="4">4% (Superreducido)</option>
+                <option value="10" selected>10% (Reducido - Hostelería)</option>
+                <option value="21">21% (General)</option>
+            </select>
+        </div>
+        <div class="precio-calculado-box">
+            <span class="precio-calculado-label">
+                <strong>Precio Final de Venta:
+                    <span id="precio_final_display" class="precio-calculado-valor">0.00 €</span>
+                </strong>
+            </span>
+        </div>
+        <div class="form-div">
+            <label>
+                <input type="checkbox" name="disponible" value="1" checked>
+                El producto está disponible actualmente (hay stock para prepararlo)
+            </label>
+        </div>
+    </fieldset>
 
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
-        document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
-        actualizarPrecioFinal(); // Calcula el 0 inicial
-    });
-    </script>
+    <fieldset class="fieldset-mt">
+        <legend>Imágenes (Opcional)</legend>
+        <p class="texto-sm texto-gris">Puedes seleccionar varias imágenes. La primera se usará como portada.</p>
+        <input type="file" name="imagenes[]" accept="image/jpeg, image/png, image/webp" multiple>
+    </fieldset>
+
+    <div class="mt-15">
+        <button type="submit" class="btn-admin btn-lg">Guardar Producto</button>
+        <a href="productos.php" class="ml-10">
+            <button type="button" class="btn-secundario btn-lg">Cancelar</button>
+        </a>
+    </div>
+</form>
+
+<script>
+function actualizarPrecioFinal() {
+    let base = parseFloat(document.getElementById('precio_base').value) || 0;
+    let iva  = parseFloat(document.getElementById('iva').value) || 0;
+    let total = base + (base * (iva / 100));
+    document.getElementById('precio_final_display').innerText = total.toFixed(2) + ' €';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
+    document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
+    actualizarPrecioFinal();
+});
+</script>
 EOS;
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';

@@ -19,86 +19,71 @@ $categorias = Producto::listaCategoriasConConteo();
 // Mensajes
 $mensaje = "";
 if (isset($_GET['status'])) {
-    if ($_GET['status'] === 'success') {
-        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>¡Categoría creada correctamente!</div>";
-    } elseif ($_GET['status'] === 'deleted') {
-        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Categoría eliminada correctamente.</div>";
-    } elseif ($_GET['status'] === 'updated') {
-        $mensaje = "<div style='background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;'>Categoría actualizada correctamente.</div>";
+    $msgs = [
+        'success' => '¡Categoría creada correctamente!',
+        'deleted' => 'Categoría eliminada correctamente.',
+        'updated' => 'Categoría actualizada correctamente.',
+    ];
+    if (isset($msgs[$_GET['status']])) {
+        $mensaje = "<div class='alerta-exito'>" . $msgs[$_GET['status']] . "</div>";
     }
 } elseif (isset($_GET['error'])) {
-    $mensaje = "<div style='background: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px;'>Error al procesar la categoría. Revisa los datos.</div>";
+    $mensaje = "<div class='alerta-error'>Error al procesar la categoría. Revisa los datos.</div>";
 }
 
-// Generamos la tabla
-$tabla = "<table border='1' style='width:100%; text-align:left; border-collapse: collapse;'>
-    <tr style='background-color: #f2f2f2;'>
-        <th style='padding: 10px;'>ID</th>
-        <th style='padding: 10px;'>Nombre</th>
-        <th style='padding: 10px;'>Descripción</th>
-        <th style='padding: 10px; text-align:center;'>Productos Asociados</th>
-        <th style='padding: 10px;'>Acciones</th>
-    </tr>";
+$tabla = '<table>
+    <thead><tr>
+        <th>ID</th><th>Nombre</th><th>Descripción</th>
+        <th class="texto-centro">Productos Asociados</th><th>Acciones</th>
+    </tr></thead>
+    <tbody>';
 
 if (!empty($categorias)) {
     foreach ($categorias as $cat) {
         $total = $cat['total_productos'];
-        
-        $badge = $total > 0 
-            ? "<span style='color: #2980b9; font-weight: bold;'>{$total} productos</span>"
-            : "<span style='color: #7f8c8d; font-style: italic;'>0 productos</span>";
-            
-        $tabla .= "<tr>";
-        $tabla .= "<td style='padding: 10px;'>{$cat['id']}</td>";
-        $tabla .= "<td style='padding: 10px;'><strong>" . htmlspecialchars($cat['nombre']) . "</strong></td>";
-        $tabla .= "<td style='padding: 10px;'>" . htmlspecialchars($cat['descripcion']) . "</td>";
-        $tabla .= "<td style='padding: 10px; text-align:center;'>{$badge}</td>";
-        
-        $tabla .= "<td style='padding: 10px;'>";
-        $tabla .= "<div style='display: flex; gap: 5px; align-items: center;'>";
-        
-        $tabla .= "<a href='editar_categoria.php?id={$cat['id']}' style='text-decoration: none;'>
-                        <button type='button' style='background-color:#f39c12; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Editar</button>
-                   </a>";
-            
+        $badge = $total > 0
+            ? "<span class='texto-azul texto-negrita'>{$total} productos</span>"
+            : "<span class='texto-gris texto-cursiva'>0 productos</span>";
+
+        $tabla .= "<tr>
+            <td>{$cat['id']}</td>
+            <td><strong>" . htmlspecialchars($cat['nombre']) . "</strong></td>
+            <td>" . htmlspecialchars($cat['descripcion']) . "</td>
+            <td class='texto-centro'>{$badge}</td>
+            <td>
+                <div class='flex-fila gap-5'>
+                    <a href='editar_categoria.php?id={$cat['id']}'>
+                        <button class='btn-editar btn-sm'>Editar</button>
+                    </a>";
+
         if ($total == 0) {
-            $tabla .= "<form action='../productos/admin_borrar_categoria.php' method='POST' style='margin: 0;' onsubmit='return confirm(\"¿Seguro que quieres borrar esta categoría?\")'>
+            $tabla .= "<form action='../productos/admin_borrar_categoria.php' method='POST' class='inline'
+                              onsubmit='return confirm(\"¿Seguro que quieres borrar esta categoría?\")'>
                             <input type='hidden' name='id' value='{$cat['id']}'>
-                            <button type='submit' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Borrar</button>
+                            <button type='submit' class='btn-peligro btn-sm'>Borrar</button>
                        </form>";
         } else {
-            $tabla .= "<button type='button' onclick='alert(\"No se puede borrar esta categoría porque contiene productos.\\n\\nPor favor, cambia de categoría los productos asociados primero.\");' style='background-color:#c0392b; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius: 3px;'>Borrar</button>";
+            $tabla .= "<button type='button' class='btn-peligro btn-sm'
+                               onclick='alert(\"No se puede borrar esta categoría porque contiene productos.\\n\\nCambia de categoría los productos primero.\")'>
+                           Borrar
+                       </button>";
         }
-        
-        $tabla .= "</div>";
-        $tabla .= "</td>";
-        $tabla .= "</tr>";
+
+        $tabla .= "</div></td></tr>";
     }
 } else {
-    $tabla .= "<tr><td colspan='5' style='padding: 10px; text-align:center;'>No hay categorías creadas.</td></tr>";
+    $tabla .= "<tr><td colspan='5' class='texto-centro'>No hay categorías creadas.</td></tr>";
 }
-$tabla .= "</table>";
+$tabla .= '</tbody></table>';
 
 $contenidoPrincipal = "
-    <h1>Gestión de Categorías</h1>
-    {$mensaje}
-    
-    <div style='margin-bottom: 20px; display: flex; gap: 15px;'>
-        <a href='crear_categoria.php'>
-            <button style='background-color:#2ecc71; color:white; padding:10px 15px; cursor:pointer; border:none; border-radius:5px; font-weight:bold;'>
-                + Añadir Nueva Categoría
-            </button>
-        </a>
-        <a href='productos.php'>
-            <button style='background-color:#7f8c8d; color:white; padding:10px 15px; cursor:pointer; border:none; border-radius:5px; font-weight:bold;'>
-                ← Volver a Productos
-            </button>
-        </a>
-    </div>
-    
-    <div>
-        $tabla
-    </div>
-";
+<h1>Gestión de Categorías</h1>
+{$mensaje}
+<div class='admin-toolbar'>
+    <a href='crear_categoria.php'><button class='btn-crear btn-lg'>+ Añadir Nueva Categoría</button></a>
+    <a href='productos.php'><button class='btn-secundario btn-lg'>← Volver a Productos</button></a>
+</div>
+{$tabla}";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
+?>
