@@ -933,6 +933,14 @@ table tr:nth-child(even):hover td { background-color: #FBF0E6; }
     box-shadow: 0 4px 14px rgba(0,0,0,0.2);
     border-radius: 6px;
     text-decoration: none !important;
+    flex: none !important;
+    display: inline-block !important;
+    padding: 8px 18px !important;
+    background-color: #2C2C2C !important;
+    color: white !important;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
 }
 .cocina-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px; }
 .cocina-estado-info { color: #666; font-size: 14px; margin-top: 6px; }

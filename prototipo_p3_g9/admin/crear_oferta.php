@@ -17,7 +17,7 @@ $form = new FormularioCrearOferta();
 $htmlFormulario = $form->gestiona();
 
 $contenidoPrincipal = "
-<a href='ofertas.php' class='nav-link mb-20' style='display:inline-block;'>← Volver a Ofertas</a>
+<a href='ofertas.php' class='nav-link mb-20'>← Volver a Ofertas</a>
 <h1>Crear Nueva Oferta</h1>
 <div class='pagina-formulario'>
     {$htmlFormulario}

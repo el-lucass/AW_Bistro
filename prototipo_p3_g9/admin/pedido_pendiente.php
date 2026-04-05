@@ -43,7 +43,7 @@ if (empty($lineas)) {
         $cant      = (int)$l['cantidad'];
         $estadoProd = ((int)$l['preparado'] === 1) ? "✅ Preparado" : "⏳ Pendiente";
         $contenidoPrincipal .= "
-        <div class='flex-entre' style='border-bottom:1px solid #f2f2f2; padding:10px 14px;'>
+        <div class='flex-entre fila-linea-pedido'>
             <div>{$nombre} x{$cant}</div>
             <div>{$estadoProd}</div>
         </div>";

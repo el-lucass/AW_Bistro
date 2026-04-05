@@ -100,9 +100,7 @@ $renderPedido = function($pedido) use (&$estado_map, &$tipo_map, &$clase_estado,
 };
 
 $contenidoPrincipal = "
-<div class='mb-20'>
-    <a href='index.php' class='nav-link'>← Volver al inicio</a>
-</div>
+<a href='index.php' class='nav-link btn-flotante-inicio'>← Inicio</a>
 <h1 class='mt-0 mb-30'>Historial de Pedidos</h1>";
 
 if (empty($pedidos)) {

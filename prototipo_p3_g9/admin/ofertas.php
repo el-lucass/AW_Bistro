@@ -31,7 +31,7 @@ if (!empty($ofertas)) {
         $fechaFin    = (new \DateTime($oferta->getFechaFin()))->format('d/m/Y');
         $activa      = ($hoy >= new \DateTime($oferta->getFechaInicio()) && $hoy <= new \DateTime($oferta->getFechaFin()));
 
-        $productosHtml = "<ul style='margin:0; padding-left:16px;'>";
+        $productosHtml = "<ul class='lista-ul-compacta'>";
         foreach ($oferta->getProductos() as $prod) {
             $productosHtml .= "<li>" . htmlspecialchars($prod['nombre']) . " x{$prod['cantidad_requerida']}</li>";
         }

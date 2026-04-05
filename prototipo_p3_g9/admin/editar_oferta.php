@@ -25,7 +25,7 @@ $htmlFormulario = $form->gestiona();
 
 $contenidoPrincipal = "
 <div class='pagina-formulario'>
-    <a href='ofertas.php' class='nav-link mb-15' style='display:inline-block;'>← Volver a la lista de ofertas</a>
+    <a href='ofertas.php' class='nav-link mb-15'>← Volver a la lista de ofertas</a>
     <h1>Editar Oferta Promocional</h1>
     <p class='texto-gris mb-20'>Modifica los datos principales o los productos asociados a la oferta.</p>
     {$htmlFormulario}

@@ -81,7 +81,7 @@ $contenidoPrincipal = "
         <div class='camarero-nombre'>Hola, {$nombreUsuario} 👋</div>
         <div class='camarero-rol-label'>Vista Camarero</div>
     </div>
-    <a href='" . RUTA_APP . "/index.php' class='nav-link ml-auto'>← Inicio</a>
+    <a href='" . RUTA_APP . "/index.php' class='nav-link btn-flotante-inicio'>← Inicio</a>
 </div>
 
 <h2 class='mt-0'>Por Cobrar

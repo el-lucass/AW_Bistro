@@ -13,7 +13,7 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
 
     <div class="cabecera-izq">
         <div class="logo">
-            <img src="<?= RUTA_IMGS ?>logo.jpg" alt="Logo Bistro FDI" width="80">
+            <img src="<?= RUTA_IMGS ?>logo.png" alt="Logo Bistro FDI" width="80">
         </div>
 
         <?php if ($estaLogueado): ?>

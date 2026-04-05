@@ -13,9 +13,7 @@ $tituloPagina = 'Ofertones Disponibles - Bistro FDI';
 $ofertas = Oferta::listaOfertasActivas();
 
 $contenidoPrincipal = "
-<div class='mb-20'>
-    <a href='index.php' class='nav-link'>← Volver al inicio</a>
-</div>
+<a href='index.php' class='nav-link btn-flotante-inicio'>← Inicio</a>
 <h1 class='mt-0 mb-10'>🔥 Ofertas Exclusivas</h1>
 <p class='texto-gris mb-30'>Descubre nuestros mejores packs y menús con descuento. ¡Añade estos productos a tu carrito y disfruta del ahorro!</p>";
 

@@ -154,8 +154,8 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
     </div>
 
     <div class='carrito-acciones'>
-        <a href='carrito.php?accion=vaciar' class='btn-contorno btn-lg' style='text-decoration:none; display:inline-block;'>Cancelar Pedido</a>
-        <a href='pago.php' class='btn-oscuro btn-lg' style='text-decoration:none; display:inline-block;'>Confirmar y Pagar</a>
+        <a href='carrito.php?accion=vaciar' class='btn-contorno btn-lg'>Cancelar Pedido</a>
+        <a href='pago.php' class='btn-oscuro btn-lg'>Confirmar y Pagar</a>
     </div>";
 }
 
