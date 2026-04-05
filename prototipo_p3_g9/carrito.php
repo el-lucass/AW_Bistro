@@ -1,20 +1,24 @@
 <?php
 require_once __DIR__.'/includes/config.php';
 
+// Importamos las clases
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\ofertas\Oferta;
 
+// Seguridad: Solo los clientes logueados pueden ver el carrito
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {
     header('Location: login.php');
     exit();
 }
 
+// Lógica para vaciar/cancelar el carrito
 if (isset($_GET['accion']) && $_GET['accion'] == 'vaciar') {
     unset($_SESSION['carrito']);
     header('Location: index.php');
     exit();
 }
 
+// Lógica para eliminar un solo producto
 if (isset($_GET['eliminar'])) {
     $id_a_eliminar = $_GET['eliminar'];
     foreach ($_SESSION['carrito']['productos'] as $key => $item) {
@@ -23,14 +27,17 @@ if (isset($_GET['eliminar'])) {
             break;
         }
     }
+    // Reindexar el array para evitar huecos
     $_SESSION['carrito']['productos'] = array_values($_SESSION['carrito']['productos']);
     header('Location: carrito.php');
     exit();
 }
 
+// Lógica para actualizar cantidades 
 if (isset($_GET['actualizar']) && isset($_GET['id'])) {
     $id = $_GET['id'];
     $op = $_GET['actualizar'];
+    
     foreach ($_SESSION['carrito']['productos'] as &$item) {
         if ($item['id_producto'] == $id) {
             if ($op == 'sumar') {
@@ -51,11 +58,13 @@ if (isset($_GET['actualizar']) && isset($_GET['id'])) {
 
 $tituloPagina = 'Carrito de Compra - Bistro FDI';
 
+// BOTÓN DE VOLVER 
 $botonVolver = "
 <div class='mb-20'>
     <a href='catalogo.php' class='nav-link'>← Volver al catálogo</a>
 </div>";
 
+// Verificamos si hay un carrito activo
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
     $contenidoPrincipal = $botonVolver . "
     <h1>Carrito de Compra</h1>
@@ -145,8 +154,8 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
     </div>
 
     <div class='carrito-acciones'>
-        <a href='carrito.php?accion=vaciar' class='btn-contorno btn-lg'>Cancelar Pedido</a>
-        <a href='pago.php' class='btn-oscuro btn-lg'>Confirmar y Pagar</a>
+        <a href='carrito.php?accion=vaciar' class='btn-contorno btn-lg' style='text-decoration:none; display:inline-block;'>Cancelar Pedido</a>
+        <a href='pago.php' class='btn-oscuro btn-lg' style='text-decoration:none; display:inline-block;'>Confirmar y Pagar</a>
     </div>";
 }
 
