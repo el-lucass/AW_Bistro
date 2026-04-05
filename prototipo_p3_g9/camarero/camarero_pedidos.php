@@ -28,19 +28,27 @@ if (strpos($avatarActual, 'predefinidos/') !== false) {
     $rutaAvatar = RUTA_IMGS . "avatares/usuarios/" . $avatarActual;
 }
 
-$porCobrar   = Pedido::listaPedidosPorEstados(['recibido']);
-$porTerminar = Pedido::listaPedidosPorEstados(['listo cocina']);
-$porEntregar = Pedido::listaPedidosPorEstados(['terminado']);
-$tipo_map    = ['local' => 'Local', 'llevar' => 'Para Llevar'];
+
+$porCobrar    = Pedido::listaPedidosPorEstados(['recibido']);
+$porTerminar  = Pedido::listaPedidosPorEstados(['listo cocina']);
+$porEntregar  = Pedido::listaPedidosPorEstados(['terminado']);
+
+$tipo_map = ['local' => 'Local', 'llevar' => 'Para Llevar'];
+
 
 function tarjetaPedido($pedido, $nuevo_estado, $texto_boton, $tipo_map) {
-    $id_pedido     = $pedido->getId();
-    $detalles      = Pedido::buscaDetallesPedido($id_pedido);
-    $total         = number_format($pedido->getTotalIva(), 2);
-    $tipo          = $tipo_map[$pedido->getTipo()] ?? $pedido->getTipo();
-    $hora          = date('H:i', strtotime($pedido->getFechaHora()));
+    $id_pedido = $pedido->getId();
+    
+   
+    $detalles  = Pedido::buscaDetallesPedido($id_pedido);
+    
+    $total     = number_format($pedido->getTotalIva(), 2);
+    $tipoRaw   = $pedido->getTipo();
+    $tipo      = $tipo_map[$tipoRaw] ?? $tipoRaw;
+    $hora      = date('H:i', strtotime($pedido->getFechaHora()));
+    
     $nombreCliente = htmlspecialchars($pedido->getNombreUsuario());
-    $numDia        = htmlspecialchars($pedido->getNumeroDia());
+    $numDia = htmlspecialchars($pedido->getNumeroDia());
 
     $productos = '';
     foreach ($detalles as $d) {
@@ -73,7 +81,7 @@ $contenidoPrincipal = "
         <div class='camarero-nombre'>Hola, {$nombreUsuario} 👋</div>
         <div class='camarero-rol-label'>Vista Camarero</div>
     </div>
-    <a href='" . RUTA_APP . "/index.php' class='nav-link btn-flotante-inicio'>← Inicio</a>
+    <a href='" . RUTA_APP . "/index.php' class='nav-link ml-auto'>← Inicio</a>
 </div>
 
 <h2 class='mt-0'>Por Cobrar
