@@ -40,8 +40,11 @@ class FormularioEditarOferta extends Formulario
         foreach ($todosLosProductos as $p) {
             $id      = $p->getId();
             $nombreP = htmlspecialchars($p->getNombre());
-            $precio  = $p->getPrecioBase();
-            $opcionesProductosJS .= "<option value='$id' data-precio='$precio'>$nombreP (Base: $precio €)</option>";
+            $precioBase = $p->getPrecioBase();
+            $iva = (float) $p->getIva(); 
+            $precioIva = round($precioBase * (1 + $iva / 100), 2);
+            $precio = number_format($precioIva, 2, '.', '');
+            $opcionesProductosJS .= "<option value='$id' data-precio='$precio'>$nombreP (Precio con IVA: $precio €)</option>";
         }
 
         $productosAsignados = $datos['productos'] ?? $ofertaActual->getProductos();
@@ -59,9 +62,12 @@ class FormularioEditarOferta extends Formulario
                 foreach ($todosLosProductos as $p) {
                     $pId     = $p->getId();
                     $pNombre = htmlspecialchars($p->getNombre());
-                    $pPrecio = $p->getPrecioBase();
+                    $pPrecioBase = $p->getPrecioBase();
+                    $pIva = (float) $p->getIva(); 
+                    $pPrecioIva = round($pPrecioBase * (1 + $pIva / 100), 2);
+                    $pPrecio = number_format($pPrecioIva, 2, '.', '');
                     $selected = ($pId == $idProd) ? "selected" : "";
-                    $selectHtml .= "<option value='$pId' data-precio='$pPrecio' $selected>$pNombre (Base: $pPrecio €)</option>";
+                    $selectHtml .= "<option value='$pId' data-precio='$pPrecio' $selected>$pNombre (Precio con IVA: $pPrecio €)</option>";
                 }
                 $selectHtml .= "</select>";
 
@@ -123,7 +129,7 @@ class FormularioEditarOferta extends Formulario
         <button type="button" onclick="agregarProducto()" class="btn-azul mt-5">+ Añadir otro producto</button>
 
         <div class="caja-resumen">
-            <p><strong>Valor original del pack:</strong> <span id="valor-original">0.00</span> €</p>
+            <p><strong>Valor original del pack con IVA:</strong> <span id="valor-original">0.00</span> €</p>
 
             <div class="form-group form-group-sm">
                 <label>Precio Final Deseado (€):</label>

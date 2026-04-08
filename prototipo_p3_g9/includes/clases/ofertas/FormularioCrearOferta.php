@@ -17,11 +17,16 @@ class FormularioCrearOferta extends Formulario
     {
         $todosLosProductos = Producto::listaProductos();
         $opcionesProductos = "<option value=''>Selecciona un producto...</option>";
+        
+        
         foreach ($todosLosProductos as $p) {
             $id     = $p->getId();
             $nombre = htmlspecialchars($p->getNombre());
-            $precio = $p->getPrecioBase();
-            $opcionesProductos .= "<option value='$id' data-precio='$precio'>$nombre (Base: $precio €)</option>";
+            $precioBase = $p->getPrecioBase();
+            $iva = (float) $p->getIva(); 
+            $precioIva = round($precioBase * (1 + $iva / 100), 2);
+            $precio = number_format($precioIva, 2, '.', '');
+            $opcionesProductos .= "<option value='$id' data-precio='$precio'>$nombre (Precio con IVA: $precio €)</option>";
         }
 
         $html = <<<EOF
@@ -63,7 +68,7 @@ class FormularioCrearOferta extends Formulario
         <button type="button" onclick="agregarProducto()" class="btn-azul mt-5">+ Añadir otro producto</button>
 
         <div class="caja-resumen">
-            <p><strong>Valor original del pack:</strong> <span id="valor-original">0.00</span> €</p>
+            <p><strong>Valor original del pack con IVA:</strong> <span id="valor-original">0.00</span> €</p>
 
             <div class="form-group form-group-sm">
                 <label>Precio Final Deseado (€):</label>
