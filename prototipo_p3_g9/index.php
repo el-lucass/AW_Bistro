@@ -41,7 +41,7 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
             <div class='grid-opciones'>
                 <div class='tarjeta-opcion'>
                     <div class='icono-opcion icono-pedidos'>
-                        <img src='" . resuelve('img/iconos/misPedidos.png') . "' alt='Mis Pedidos'>
+                        <img src='" . resuelve('img/iconos/MisPedidos.png') . "' alt='Mis Pedidos'>
                     </div>
                     <h3>Mis Pedidos</h3>
                     <a href='" . resuelve('/historial_pedidos.php') . "'>
