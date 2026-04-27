@@ -34,7 +34,7 @@ define('BD_PASS', 'awpass'); // Vacío '' si usas 'root' en XAMPP
 define('RAIZ_APP', __DIR__);
 define('RUTA_APP', '/Proyectos/AW_Bistro/prototipo_p3_g9');
 define('RUTA_IMGS', RUTA_APP . '/img/');
-define('RUTA_CSS', RUTA_APP . '/css/');
+define('RUTA_CSS', RUTA_APP . '/CSS/');
 define('RUTA_JS', RUTA_APP . '/js/');
 
 ini_set('default_charset', 'UTF-8');
