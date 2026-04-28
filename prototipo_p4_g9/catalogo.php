@@ -34,19 +34,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_producto'])) {
     $cantidad      = (int)$_POST['cantidad'];
 
     $encontrado = false;
+
     foreach ($_SESSION['carrito']['productos'] as &$item) {
-        if ($item['id_producto'] == $id_producto) {
+        $itemEsRecompensa = !empty($item['es_recompensa']);
+
+        if ($item['id_producto'] == $id_producto && !$itemEsRecompensa) {
             $item['cantidad'] += $cantidad;
             $encontrado = true;
             break;
         }
     }
+
+    unset($item);
+
     if (!$encontrado) {
         $_SESSION['carrito']['productos'][] = [
-            'id_producto' => $id_producto,
-            'nombre'      => $nombre_producto,
-            'precio'      => $precio_final,
-            'cantidad'    => $cantidad
+            'id_producto'    => $id_producto,
+            'nombre'         => $nombre_producto,
+            'precio'         => $precio_final,
+            'cantidad'       => $cantidad,
+            'es_recompensa'  => false
         ];
     }
     $catRedireccion = isset($_GET['categoria']) ? (int)$_GET['categoria'] : '';
