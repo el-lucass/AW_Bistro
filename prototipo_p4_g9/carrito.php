@@ -21,14 +21,19 @@ if (isset($_GET['accion']) && $_GET['accion'] == 'vaciar') {
 // Lógica para eliminar un solo producto
 if (isset($_GET['eliminar'])) {
     $id_a_eliminar = $_GET['eliminar'];
+    $esRecompensaUrl = isset($_GET['recompensa']) && $_GET['recompensa'] == '1';
+
     foreach ($_SESSION['carrito']['productos'] as $key => $item) {
-        if ($item['id_producto'] == $id_a_eliminar) {
+        $itemEsRecompensa = !empty($item['es_recompensa']);
+
+        if ($item['id_producto'] == $id_a_eliminar && $itemEsRecompensa == $esRecompensaUrl) {
             unset($_SESSION['carrito']['productos'][$key]);
             break;
         }
     }
-    // Reindexar el array para evitar huecos
+
     $_SESSION['carrito']['productos'] = array_values($_SESSION['carrito']['productos']);
+
     header('Location: carrito.php');
     exit();
 }
@@ -163,6 +168,8 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
 
     $nombre = htmlspecialchars($item['nombre']);
 
+    $paramRecompensa = $esRecompensa ? '1' : '0';
+
     if ($esRecompensa) {
         $nombre .= " (Recompensa)";
     }
@@ -184,7 +191,7 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
             </td>
             <td class='texto-derecha'>{$subtotalFormateado} €</td>
             <td class='texto-centro'>
-                <a href='carrito.php?eliminar={$item['id_producto']}'>
+                <a href='carrito.php?eliminar={$item['id_producto']}&recompensa={$paramRecompensa}'>
                     <button class='btn-contorno btn-sm'>🗑️</button>
                 </a>
             </td>
