@@ -1,0 +1,19 @@
+La práctica deberá entregarse antes de las 23:55 del 6 de marzo, a través del Campus
+Virtual. Debe entregarse un único archivo .zip que debe contener:
+     Un documento en formato PDF con la memoria tal cual se ha descrito en los
+    apartados anteriores. El nombre de este documento debe seguir la siguiente
+    notación “memoria_p2_g<numGrupo>.pdf”, donde “<numGrupo>” de debe
+    substituir por el número de grupo (el número de grupo se puede consultar en
+    el campus virtual).
+     Un archivo leeme.txt que indique de forma clara qué funcionalidades de la
+    aplicación están implementadas en esta entrega indicando el grado de
+    completitud.
+     Un fichero .zip con el prototipo funcional de la aplicación, incluyendo la
+    exportación de la base de datos. El nombre de este fichero debe seguir la
+    siguiente notación “prototipo_p2_g<numGrupo>.zip”.
+La práctica debe ser entregada por uno de los miembros del grupo. El nombre del
+archivo a entregar debe seguir la siguiente notación “p2_g<numGrupo>.zip”. Por
+ejemplo, el grupo 3 entregará el siguiente fichero “p2_g3.zip”. Una vez entregada la
+práctica no se podrán hacer cambios en el VPS producción. El proyecto se podrá
+continuar en el VPS beta.
+Se obtendrá una penalización si no se siguen las anteriores normas de entrega.
