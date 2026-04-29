@@ -75,14 +75,6 @@ class FormularioAdminEditar extends Formulario
             
             <button type="submit">Guardar Cambios</button>
         </fieldset>
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            activarValidacion('formAdminEditar', {
-                nombre: ['requerido', ['maxLen', 50]],
-                email:  ['requerido', 'email']
-            });
-        });
-        </script>
 EOF;
         return $html;
     }

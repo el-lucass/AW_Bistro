@@ -28,7 +28,7 @@ $contenidoPrincipal = "
     <h1>Editar Categoría</h1>
     {$mensaje}
 
-    <form id='formEditarCategoria' action='../productos/admin_editar_categoria.php' method='POST'>
+    <form action='../productos/admin_editar_categoria.php' method='POST'>
         <input type='hidden' name='id' value='{$categoria['id']}'>
 
         <fieldset>
@@ -50,14 +50,6 @@ $contenidoPrincipal = "
             </a>
         </div>
     </form>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        activarValidacion('formEditarCategoria', {
-            nombre:      ['requerido', ['minLen', 2], ['maxLen', 50]],
-            descripcion: ['requerido', ['minLen', 5], ['maxLen', 255]]
-        });
-    });
-    </script>
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';

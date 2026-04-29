@@ -65,7 +65,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'db') {
 $contenidoPrincipal = "
 <h1>Editar Producto</h1>
 {$mensaje}
-<form id='formEditarProducto' action='../productos/admin_editar_producto.php' method='POST' enctype='multipart/form-data'>
+<form action='../productos/admin_editar_producto.php' method='POST' enctype='multipart/form-data'>
     <input type='hidden' name='id' value='{$producto->getId()}'>
 
     <fieldset>
@@ -114,8 +114,7 @@ $contenidoPrincipal = "
         <p><strong>Imágenes actuales:</strong></p>
         {$galeriaHTML}
         <p class='mt-15'><strong>Añadir MÁS imágenes:</strong></p>
-        <input type='file' id='imagenes_input' name='imagenes[]' accept='image/*' multiple>
-        <div id='preview-imagenes'></div>
+        <input type='file' name='imagenes[]' accept='image/*' multiple>
     </fieldset>
 
     <div class='mt-15'>
@@ -137,18 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
     document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
     actualizarPrecioFinal();
-
-    activarValidacion('formEditarProducto', {
-        nombre:        ['requerido', ['minLen', 2], ['maxLen', 100]],
-        descripcion:   ['requerido', ['minLen', 5]],
-        id_categoria:  ['requerido'],
-        precio_base:   ['requerido', 'numeroPositivo'],
-        'imagenes[]':  [['imagenes', 5, 2]]
-    });
-    previsualizarImagenes(
-        document.getElementById('imagenes_input'),
-        document.getElementById('preview-imagenes')
-    );
 });
 </script>";
 

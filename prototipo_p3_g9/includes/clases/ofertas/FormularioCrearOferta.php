@@ -152,43 +152,6 @@ class FormularioCrearOferta extends Formulario
             vincularEventos();
             document.getElementById('precio-final').addEventListener('keyup',  calcularPorcentaje);
             document.getElementById('precio-final').addEventListener('change', calcularPorcentaje);
-
-            // Validación al enviar el formulario
-            document.getElementById('formCrearOferta').addEventListener('submit', function (e) {
-                const fIni = document.querySelector('[name="fecha_inicio"]');
-                const fFin = document.querySelector('[name="fecha_fin"]');
-                const precioFinal = document.getElementById('precio-final');
-                const valorOriginal = parseFloat(document.getElementById('valor-original').textContent) || 0;
-                const finalNum = parseFloat(precioFinal.value);
-                let ok = true;
-
-                limpiarErrorCampo(fIni); limpiarErrorCampo(fFin); limpiarErrorCampo(precioFinal);
-
-                if (!fIni.value || !fFin.value) {
-                    mostrarErrorCampo(fFin, 'Debes indicar las dos fechas.');
-                    ok = false;
-                } else if (new Date(fFin.value) <= new Date(fIni.value)) {
-                    mostrarErrorCampo(fFin, 'La fecha de fin debe ser posterior a la de inicio.');
-                    ok = false;
-                }
-
-                const seleccionados = Array.from(document.querySelectorAll('.sel-producto'))
-                    .filter(s => s.selectedIndex > 0).length;
-                if (seleccionados === 0) {
-                    alert('Debes añadir al menos un producto seleccionado.');
-                    ok = false;
-                }
-
-                if (isNaN(finalNum) || finalNum <= 0) {
-                    mostrarErrorCampo(precioFinal, 'El precio final debe ser mayor que 0.');
-                    ok = false;
-                } else if (valorOriginal > 0 && finalNum >= valorOriginal) {
-                    mostrarErrorCampo(precioFinal, 'El precio final debe ser menor que el valor original.');
-                    ok = false;
-                }
-
-                if (!ok) e.preventDefault();
-            });
         </script>
 EOF;
         return $html;

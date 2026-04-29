@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $tituloPagina ?></title>
     <link rel="stylesheet" type="text/css" href="<?= RUTA_CSS ?>estilo.css">
-    <script defer src="<?= RUTA_JS ?>validaciones.js"></script>
 </head>
 <body>
     <div id="contenedor">

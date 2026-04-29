@@ -79,8 +79,9 @@ class FormularioPerfil extends Formulario
 
             <div class="seccion-avatar">
                 <p><strong>B) Subir tu propia foto:</strong></p>
-                <input type="file" name="avatar_subida" accept="image/*">
+                <input type="file" id="avatar_subida" name="avatar_subida" accept="image/*">
                 $erroresFile
+                <div id="preview-avatar"></div>
             </div>
 
             <div class="seccion-avatar">
@@ -91,6 +92,18 @@ class FormularioPerfil extends Formulario
             <br>
             <button type="submit" class="btn-exito btn-lg">Guardar Cambios</button>
         </fieldset>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            activarValidacion('formPerfil', {
+                nombre:        ['requerido', ['maxLen', 50]],
+                email:         ['requerido', 'email'],
+                avatar_subida: [['imagen', 2]]
+            });
+            var inputFile = document.getElementById('avatar_subida');
+            var preview   = document.getElementById('preview-avatar');
+            previsualizarImagen(inputFile, preview);
+        });
+        </script>
 EOF;
         return $html;
     }

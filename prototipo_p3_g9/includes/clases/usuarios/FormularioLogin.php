@@ -38,14 +38,6 @@ class FormularioLogin extends Formulario
                 <button type="submit" class="btn-azul btn-lg">Entrar al Bistro</button>
             </div>
         </fieldset>
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            activarValidacion('formLogin', {
-                nombre_usuario: ['requerido'],
-                password:       ['requerido']
-            });
-        });
-        </script>
 EOF;
         return $html;
     }

@@ -118,11 +118,11 @@ foreach ($todosLosProductos as $prod) {
                 <h2 class='producto-precio'>{$precioFormateado} €</h2>
                 <p class='producto-iva'>IVA {$prod->getIva()}% incluido</p>
             </div>
-            <form method='POST' action='catalogo.php?categoria={$catActiva}' class='producto-form'>
+            <form method='POST' action='catalogo.php?categoria={$catActiva}' class='producto-form js-form-cantidad'>
                 <input type='hidden' name='id_producto'     value='{$prod->getId()}'>
                 <input type='hidden' name='nombre_producto' value='" . htmlspecialchars($prod->getNombre()) . "'>
                 <input type='hidden' name='precio_final'    value='{$precioFinal}'>
-                <input type='number' name='cantidad' value='1' min='1' class='producto-cantidad'>
+                <input type='number' name='cantidad' value='1' min='1' max='99' step='1' class='producto-cantidad'>
                 <button type='submit' class='btn-anadir'>+ Añadir</button>
             </form>
         </div>";
@@ -134,6 +134,18 @@ if (!$hayProductos) {
 }
 
 $contenidoPrincipal .= "</div>";
+
+$contenidoPrincipal .= <<<EOS
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.js-form-cantidad').forEach(function (form) {
+        activarValidacion(form, {
+            cantidad: ['requerido', ['enteroEntre', 1, 99]]
+        });
+    });
+});
+</script>
+EOS;
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
 ?>
