@@ -63,6 +63,10 @@ if (!empty($productos)) {
         $claseBtn = $ofertado ? 'btn-peligro' : 'btn-exito';
         $textoBtn = $ofertado ? 'Retirar'    : 'Restaurar';
 
+        // Escapamos primero para JS (apóstrofos) y luego para HTML (atributo)
+        $nombreJs   = htmlspecialchars(addslashes($prod->getNombre()), ENT_QUOTES);
+        $confirmMsg = "¿Seguro que quieres {$accion} «{$nombreJs}»?";
+
         $tabla .= "<tr>
             <td>{$id}</td>
             <td class='texto-centro'><img src='{$rutaImg}' width='50' height='50' class='avatar-mini'></td>
@@ -75,7 +79,7 @@ if (!empty($productos)) {
                 <a href='editar_producto.php?id={$id}'>
                     <button class='btn-editar btn-sm mb-5'>Editar</button>
                 </a>
-                <form action='../productos/admin_borrar_producto.php' method='POST' class='inline'>
+                <form action='../productos/admin_borrar_producto.php' method='POST' class='inline' onsubmit=\"return confirm('{$confirmMsg}');\">
                     <input type='hidden' name='id' value='{$id}'>
                     <input type='hidden' name='accion' value='{$accion}'>
                     <button type='submit' class='{$claseBtn} btn-sm'>{$textoBtn}</button>

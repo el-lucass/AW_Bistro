@@ -9,8 +9,9 @@ use es\ucm\fdi\aw\usuarios\Usuario;
  */
 abstract class FormularioUsuarioBase extends Formulario
 {
-    // Método que devuelve el HTML de los campos comunes
-    protected function generaCamposBasicos(&$datos)
+    // Método que devuelve el HTML de los campos comunes.
+    // $incluyePassword2 = true añade el campo "Confirmar contraseña" (registro / alta admin).
+    protected function generaCamposBasicos(&$datos, $incluyePassword2 = false)
     {
         // Recuperamos valores para mantenerlos si hay error
         $usuario = $datos['nombre_usuario'] ?? '';
@@ -19,36 +20,48 @@ abstract class FormularioUsuarioBase extends Formulario
         $email = $datos['email'] ?? '';
 
         // Gestión de errores específicos de campos usando la función de tu clase base
-        $erroresCampos = self::generaErroresCampos(['nombre_usuario', 'password', 'nombre', 'email'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['nombre_usuario', 'password', 'password2', 'nombre', 'email'], $this->errores, 'span', array('class' => 'error'));
+
+        $bloquePassword2 = '';
+        if ($incluyePassword2) {
+            $bloquePassword2 = <<<EOF
+            <div>
+                <label>Confirmar contraseña:</label>
+                <input type="password" name="password2" required />
+                {$erroresCampos['password2']}
+            </div>
+EOF;
+        }
 
         $html = <<<EOF
         <fieldset>
             <legend>Datos de la cuenta</legend>
             <div>
-                <label>Usuario:</label> 
+                <label>Usuario:</label>
                 <input type="text" name="nombre_usuario" value="$usuario" required />
                 {$erroresCampos['nombre_usuario']}
             </div>
             <div>
-                <label>Contraseña:</label> 
+                <label>Contraseña:</label>
                 <input type="password" name="password" required />
                 {$erroresCampos['password']}
             </div>
+            $bloquePassword2
         </fieldset>
 
         <fieldset>
             <legend>Datos personales</legend>
             <div>
-                <label>Nombre:</label> 
+                <label>Nombre:</label>
                 <input type="text" name="nombre" value="$nombre" required />
                 {$erroresCampos['nombre']}
             </div>
             <div>
-                <label>Apellidos:</label> 
+                <label>Apellidos:</label>
                 <input type="text" name="apellidos" value="$apellidos" />
             </div>
             <div>
-                <label>Email:</label> 
+                <label>Email:</label>
                 <input type="email" name="email" value="$email" required />
                 {$erroresCampos['email']}
             </div>
@@ -72,6 +85,14 @@ EOF;
         if (empty($pass)) { $this->errores['password'] = 'La contraseña es obligatoria.'; }
         if (empty($nombre)) { $this->errores['nombre'] = 'El nombre es obligatorio.'; }
         if (empty($email)) { $this->errores['email'] = 'El email es obligatorio.'; }
+
+        // 1b. Si el formulario envía confirmación de contraseña, debe coincidir.
+        if (isset($datos['password2'])) {
+            $pass2 = trim($datos['password2']);
+            if ($pass !== $pass2) {
+                $this->errores['password2'] = 'Las contraseñas no coinciden.';
+            }
+        }
 
         // 2. Verificar si usuario existe (usando tu modelo includes/usuarios.php)
         if (empty($this->errores) && Usuario::buscaUsuarioPorNombre($usuario)) {

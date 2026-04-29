@@ -13,8 +13,8 @@ class FormularioAdminCrear extends FormularioUsuarioBase
 
     protected function generaCamposFormulario(&$datos)
     {
-        // 1. Traemos los campos comunes del padre
-        $html = parent::generaCamposBasicos($datos);
+        // 1. Traemos los campos comunes del padre, incluyendo confirmar contraseña
+        $html = parent::generaCamposBasicos($datos, true);
 
         // 2. Añadimos el SELECT de Rol y el botón
         $rol = $datos['rol'] ?? 'cliente';
@@ -40,6 +40,17 @@ class FormularioAdminCrear extends FormularioUsuarioBase
         <div class="mt-20">
             <button type="submit">Crear Usuario</button>
         </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            activarValidacion('formAdminCrear', {
+                nombre_usuario: ['requerido', ['minLen', 3], ['maxLen', 30]],
+                password:       ['requerido', ['minLen', 6]],
+                password2:      ['requerido', ['coincideCon', 'password']],
+                nombre:         ['requerido', ['maxLen', 50]],
+                email:          ['requerido', 'email']
+            });
+        });
+        </script>
 EOF;
         return $html;
     }

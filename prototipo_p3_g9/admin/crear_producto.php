@@ -39,7 +39,7 @@ if (isset($_GET['error'])) {
 $contenidoPrincipal = <<<EOS
 <h1>Añadir nuevo producto a la carta</h1>
 {$mensaje}
-<form action="../productos/admin_crear_producto.php" method="POST" enctype="multipart/form-data">
+<form id="formCrearProducto" action="../productos/admin_crear_producto.php" method="POST" enctype="multipart/form-data">
     <fieldset>
         <legend>Datos básicos del producto</legend>
         <div class="form-div">
@@ -88,7 +88,8 @@ $contenidoPrincipal = <<<EOS
     <fieldset class="fieldset-mt">
         <legend>Imágenes (Opcional)</legend>
         <p class="texto-sm texto-gris">Puedes seleccionar varias imágenes. La primera se usará como portada.</p>
-        <input type="file" name="imagenes[]" accept="image/jpeg, image/png, image/webp" multiple>
+        <input type="file" id="imagenes_input" name="imagenes[]" accept="image/jpeg, image/png, image/webp" multiple>
+        <div id="preview-imagenes"></div>
     </fieldset>
 
     <div class="mt-15">
@@ -110,6 +111,18 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('precio_base').addEventListener('input', actualizarPrecioFinal);
     document.getElementById('iva').addEventListener('change', actualizarPrecioFinal);
     actualizarPrecioFinal();
+
+    activarValidacion('formCrearProducto', {
+        nombre:        ['requerido', ['minLen', 2], ['maxLen', 100]],
+        descripcion:   ['requerido', ['minLen', 5]],
+        id_categoria:  ['requerido'],
+        precio_base:   ['requerido', 'numeroPositivo'],
+        'imagenes[]':  [['imagenes', 5, 2]]
+    });
+    previsualizarImagenes(
+        document.getElementById('imagenes_input'),
+        document.getElementById('preview-imagenes')
+    );
 });
 </script>
 EOS;

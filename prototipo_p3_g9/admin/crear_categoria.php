@@ -19,7 +19,7 @@ $contenidoPrincipal = "
     <h1>Añadir Nueva Categoría</h1>
     {$mensaje}
 
-    <form action='../productos/admin_crear_categoria.php' method='POST'>
+    <form id='formCrearCategoria' action='../productos/admin_crear_categoria.php' method='POST'>
         <fieldset>
             <legend>Datos de la Categoría</legend>
             <div class='mb-15'>
@@ -39,6 +39,14 @@ $contenidoPrincipal = "
             </a>
         </div>
     </form>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        activarValidacion('formCrearCategoria', {
+            nombre:      ['requerido', ['minLen', 2], ['maxLen', 50]],
+            descripcion: ['requerido', ['minLen', 5], ['maxLen', 255]]
+        });
+    });
+    </script>
 ";
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
