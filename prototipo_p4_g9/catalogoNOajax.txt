@@ -26,7 +26,40 @@ if (!isset($_SESSION['carrito'])) {
     exit();
 }
 
+// LÓGICA DE AÑADIR PRODUCTOS AL CARRITO 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_producto'])) {
+    $id_producto   = $_POST['id_producto'];
+    $nombre_producto = $_POST['nombre_producto'];
+    $precio_final  = $_POST['precio_final'];
+    $cantidad      = (int)$_POST['cantidad'];
 
+    $encontrado = false;
+
+    foreach ($_SESSION['carrito']['productos'] as &$item) {
+        $itemEsRecompensa = !empty($item['es_recompensa']);
+
+        if ($item['id_producto'] == $id_producto && !$itemEsRecompensa) {
+            $item['cantidad'] += $cantidad;
+            $encontrado = true;
+            break;
+        }
+    }
+
+    unset($item);
+
+    if (!$encontrado) {
+        $_SESSION['carrito']['productos'][] = [
+            'id_producto'    => $id_producto,
+            'nombre'         => $nombre_producto,
+            'precio'         => $precio_final,
+            'cantidad'       => $cantidad,
+            'es_recompensa'  => false
+        ];
+    }
+    $catRedireccion = isset($_GET['categoria']) ? (int)$_GET['categoria'] : '';
+    header("Location: catalogo.php?categoria={$catRedireccion}");
+    exit();
+}
 
 $tituloPagina = 'Catálogo de Productos - Bistro FDI';
 
@@ -41,7 +74,6 @@ $categorias = Producto::listaCategorias();
 $catActiva  = isset($_GET['categoria']) ? (int)$_GET['categoria'] : (!empty($categorias) ? $categorias[0]['id'] : 0);
 
 // Cabecera del catálogo
-// El span de la linea 53 es para el AYAX
 $contenidoPrincipal = "
 <div class='catalogo-header'>
     <div>
@@ -49,9 +81,8 @@ $contenidoPrincipal = "
         <p class='catalogo-tipo'>Tipo: {$tipoTexto}</p>
     </div>
     <div>
-    <a href='carrito.php' class='nav-link'>🛒 Ver Carrito
-    (<span id='contador-carrito'>{$cantidadCarrito}</span>)</a> 
-    <a href='recompensas.php' class='nav-link'>🎁 Recompensas</a>
+        <a href='carrito.php' class='nav-link'>🛒 Ver Carrito ({$cantidadCarrito})</a>
+        <a href='recompensas.php' class='nav-link'>🎁 Recompensas</a>
     </div>
 </div>";
 
@@ -105,15 +136,16 @@ if (!$hayProductos) {
 $contenidoPrincipal .= "</div>";
 
 $contenidoPrincipal .= <<<EOS
-<!-- 1. Cargamos jQuery ANTES que tu código para que funcione el $ -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script src="JS/validaciones.js"></script>
-<script src="JS/catalogo.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.js-form-cantidad').forEach(function (form) {
+        activarValidacion(form, {
+            cantidad: ['requerido', ['enteroEntre', 1, 99]]
+        });
+    });
+});
+</script>
 EOS;
-
-require RAIZ_APP . '/vistas/plantillas/plantilla.php';
-?>
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
 ?>

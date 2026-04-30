@@ -22,11 +22,12 @@ class FormularioRegistro extends FormularioUsuarioBase
         <div class="mt-20">
             <button type="submit">Registrarse</button>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="JS/validaciones.js"></script>
         <script src="JS/registro.js"></script>
         
         </script>
-EOF;
+        EOF;
         return $html;
     }
 

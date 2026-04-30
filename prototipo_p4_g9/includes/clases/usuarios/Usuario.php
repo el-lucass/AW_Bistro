@@ -210,7 +210,7 @@ class Usuario
         $stmt->execute();
         $resultado = $stmt->get_result();
         
-        if ($resultado->num_rows == 1) {
+        if ($resultado->num_rows >= 1) {
             $fila = $resultado->fetch_assoc();
             return new Usuario(
                 $fila['id'], $fila['nombre_usuario'], $fila['password'], 
