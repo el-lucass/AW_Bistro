@@ -200,4 +200,24 @@ class Usuario
         $stmt->bind_param("iii", $cantidad, $idUsuario, $cantidad);
         return $stmt->execute();
     }
+
+
+    public static function buscaUsuarioPorEmail($email)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        
+        if ($resultado->num_rows == 1) {
+            $fila = $resultado->fetch_assoc();
+            return new Usuario(
+                $fila['id'], $fila['nombre_usuario'], $fila['password'], 
+                $fila['nombre'], $fila['apellidos'], $fila['email'], 
+                $fila['rol'], $fila['avatar']
+            );
+        }
+        return false;
+    }
 }

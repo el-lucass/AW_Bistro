@@ -22,43 +22,36 @@ class FormularioRegistro extends FormularioUsuarioBase
         <div class="mt-20">
             <button type="submit">Registrarse</button>
         </div>
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            activarValidacion('formRegistro', {
-                nombre_usuario: ['requerido', ['minLen', 3], ['maxLen', 30]],
-                password:       ['requerido', ['minLen', 6]],
-                password2:      ['requerido', ['coincideCon', 'password']],
-                nombre:         ['requerido', ['maxLen', 50]],
-                email:          ['requerido', 'email']
-            });
-            var inputPass = document.querySelector('#formRegistro input[name="password"]');
-            if (inputPass) {
-                var spanFortaleza = document.createElement('span');
-                spanFortaleza.className = 'fortaleza-password';
-                spanFortaleza.style.marginLeft = '8px';
-                inputPass.parentNode.appendChild(spanFortaleza);
-                inputPass.addEventListener('input', function () {
-                    if (!inputPass.value) { spanFortaleza.textContent = ''; return; }
-                    var f = fortalezaPassword(inputPass.value);
-                    spanFortaleza.textContent = f.mensaje;
-                    spanFortaleza.style.color = (f.nivel === 'débil') ? '#b00' : (f.nivel === 'media') ? '#a60' : '#0a0';
-                });
-            }
-        });
+        <script src="JS/validaciones.js"></script>
+        <script src="JS/registro.js"></script>
+        
         </script>
 EOF;
         return $html;
     }
 
     protected function insertaUsuario($datos)
-    {
-        // Llamamos al modelo con rol 'cliente' fijo
-        if (Usuario::creaUsuario($datos['nombre_usuario'], $datos['password'], $datos['nombre'], $datos['apellidos'], $datos['email'], 'cliente')) {
-            // Si devuelve true, retornamos la URL de redirección (login)
-            return $this->urlRedireccion;
+        {
+            // 1. DOBLE COMPROBACIÓN DE SEGURIDAD EN EL SERVIDOR
+            
+            // ¿Existe ya el nombre de usuario?
+            if (Usuario::buscaUsuarioPorNombre($datos['nombre_usuario'])) {
+                $this->errores['nombre_usuario'] = "Error: El nombre de usuario ya está en uso.";
+            }
+            
+            // ¿Existe ya el email?
+            if (Usuario::buscaUsuarioPorEmail($datos['email'])) {
+                $this->errores['email'] = "Error: Este email ya está registrado.";
+            }
+
+            // 2. Si la lista de errores está vacía, significa que todo es correcto
+            if (count($this->errores) === 0) {
+                // Llamamos al modelo para insertar
+                if (Usuario::creaUsuario($datos['nombre_usuario'], $datos['password'], $datos['nombre'], $datos['apellidos'], $datos['email'], 'cliente')) {
+                    return $this->urlRedireccion;
+                } else {
+                    $this->errores[] = "Error desconocido al crear el usuario en la base de datos.";
+                }
+            }
         }
-        
-        // Si falla la BD
-        $this->errores[] = "Error desconocido al crear el usuario en base de datos.";
-    }
 }
