@@ -82,6 +82,7 @@ class Producto
                     $row['disponible'], $row['ofertado'], $row['imagen_principal']
                 );
             }
+            $result->free();
         }
         return $productos;
     }
@@ -202,6 +203,7 @@ class Producto
             while ($row = $result->fetch_assoc()) {
                 $categorias[] = $row;
             }
+            $result->free();
         }
         return $categorias;
     }
@@ -220,6 +222,7 @@ class Producto
             while ($row = $result->fetch_assoc()) {
                 $categorias[] = $row;
             }
+            $result->free();
         }
         return $categorias;
     }

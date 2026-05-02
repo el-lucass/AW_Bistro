@@ -125,6 +125,7 @@ class Pedido
                     $row['tipo'], $row['total_sin_descuento'], $row['descuento_aplicado'], $row['total_iva'], $row['estado'], $row['fecha_hora']
                 );
             }
+            $result->free();
         }
         return $pedidos;
     }
@@ -167,6 +168,7 @@ class Pedido
                     $row['fecha_hora'], $row['nombre_usuario'], $row['avatar']
                 );
             }
+            $result->free();
         }
         return $pedidos;
     }
@@ -194,6 +196,7 @@ class Pedido
                     $row['fecha_hora'], $row['nombre_usuario'], $row['avatar']
                 );
             }
+            $result->free();
         }
         return $pedidos;
     }
@@ -242,6 +245,7 @@ class Pedido
             while ($row = $result->fetch_assoc()) {
                 $detalles[] = $row;
             }
+            $result->free();
         }
         return $detalles;
     }
