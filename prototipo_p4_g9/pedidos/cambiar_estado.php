@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } 
         elseif ($_SESSION['rol'] === 'gerente' || $_SESSION['rol'] === 'cocinero') {
             // El personal del restaurante tiene permiso para cambiar el estado libremente
-            Pedido::actualizaEstadoPedido($id_pedido, $nuevo_estado);
+            Pedido::actualizaEstadoPedido($id_pedido, $nuevo_estado);   
         }
 
         // 4. Redirigimos de vuelta a donde estábamos (ej: historial_pedidos.php)

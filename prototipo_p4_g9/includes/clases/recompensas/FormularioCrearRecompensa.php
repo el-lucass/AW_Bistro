@@ -15,6 +15,17 @@ class FormularioCrearRecompensa extends Formulario
 
     protected function generaCamposFormulario(&$datos)
     {
+
+        $htmlErrores = '';
+
+        if (!empty($this->errores)) {
+            $htmlErrores = "<div class='alerta-error mb-20'><ul>";
+            foreach ($this->errores as $error) {
+                $htmlErrores .= "<li>" . htmlspecialchars($error) . "</li>";
+            }
+        $htmlErrores .= "</ul></div>";
+        
+        }
         $productos = Producto::listaProductos(true);
 
         $opciones = "<option value=''>Selecciona un producto...</option>";
@@ -26,6 +37,7 @@ class FormularioCrearRecompensa extends Formulario
         }
 
         return <<<EOF
+        {$htmlErrores}
         <div class="form-group">
             <label>Producto de la carta:</label>
             <select name="id_producto" class="form-control" required>
@@ -57,6 +69,10 @@ EOF;
 
         if ($bistrocoins <= 0) {
             $this->errores[] = "Los BistroCoins deben ser mayores que 0.";
+        }
+
+        if (Recompensa::existeRecompensaProducto($idProducto)) {
+           $this->errores[] = "Este producto ya tiene una recompensa asociada.";
         }
 
         if (empty($this->errores)) {

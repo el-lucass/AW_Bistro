@@ -64,10 +64,12 @@ if ($resultadoBD['exito']) {
         Usuario::restaBistrocoins($_SESSION['id'], $bistrocoinsGastadas);
     }
 
-    $bistrocoinsGanadas = floor($totalFinal);
+    if ($estadoInicial === 'en preparación') {
+        $bistrocoinsGanadas = floor($totalFinal);
 
-    if ($bistrocoinsGanadas > 0) {
-        Usuario::sumaBistrocoins($_SESSION['id'], $bistrocoinsGanadas);
+        if ($bistrocoinsGanadas > 0) {
+            Usuario::sumaBistrocoins($_SESSION['id'], $bistrocoinsGanadas);
+        }
     }
 
     // Vaciamos el carrito

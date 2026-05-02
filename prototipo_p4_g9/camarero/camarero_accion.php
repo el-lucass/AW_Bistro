@@ -33,8 +33,19 @@ if ($id_pedido > 0 && $nuevo_estado !== '') {
         $estadoActual = $pedido->getEstado();
         
         if (isset($permitidas[$estadoActual]) && $permitidas[$estadoActual] === $nuevo_estado) {
-            Pedido::actualizaEstadoPedido($id_pedido, $nuevo_estado);
-        }
+            $actualizado = Pedido::actualizaEstadoPedido($id_pedido, $nuevo_estado);
+
+            if ($actualizado && $nuevo_estado === 'en preparación' && $estadoActual !== 'en preparación') {
+                $idUsuario = $pedido->getIdUsuario();
+                $total = $pedido->getTotalIva();
+
+                $bistrocoinsGanadas = floor($total);
+
+                if ($bistrocoinsGanadas > 0) {
+                    Usuario::sumaBistrocoins($idUsuario, $bistrocoinsGanadas);
+                }
+            }
+        }   
     }
 }
 

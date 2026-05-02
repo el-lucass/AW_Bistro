@@ -89,6 +89,21 @@ class Recompensa
         return $recompensas;
     }
 
+    public static function existeRecompensaProducto($id_producto, $id_excluir = null){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        if ($id_excluir !== null) {
+            $stmt = $conn->prepare("SELECT id FROM recompensas WHERE id_producto = ? AND id != ?");
+            $stmt->bind_param("ii", $id_producto, $id_excluir);
+        } else {
+            $stmt = $conn->prepare("SELECT id FROM recompensas WHERE id_producto = ?");
+            $stmt->bind_param("i", $id_producto);
+        }
+
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
     public static function buscaRecompensa($id)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();

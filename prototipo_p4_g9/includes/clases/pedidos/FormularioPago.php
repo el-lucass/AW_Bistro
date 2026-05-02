@@ -85,6 +85,7 @@ class FormularioPago extends Formulario
 
         $totalFinal         = $this->carrito['total_final'] ?? $subtotalSinDescuento;
         $descuentoAplicado  = $subtotalSinDescuento - $totalFinal;
+        $bistrocoinsGanadas = floor($totalFinal);
 
         $html .= "<hr class='hr-sep'>";
 
@@ -100,8 +101,17 @@ class FormularioPago extends Formulario
             <div class='pago-total'>
                 <strong>Total a Pagar:</strong>
                 <strong>" . number_format($totalFinal, 2) . " €</strong>
-            </div>
-        </div>";
+            </div>";
+
+        if ($bistrocoinsGanadas > 0) {
+            $html .= "
+            <div class='pago-coins'>
+                <strong>Ganará:</strong>
+                <strong>{$bistrocoinsGanadas} BistroCoins</strong>
+            </div>";
+        }
+
+        $html .= "</div>";
 
         return $html;
     }

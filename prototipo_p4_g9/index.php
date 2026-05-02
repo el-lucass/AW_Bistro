@@ -93,6 +93,15 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
                         <button class='btn-contorno'>Gestionar</button>
                     </a>
                 </div>
+                <div class='tarjeta-opcion'>
+                    <div class='icono-opcion'>
+                        <img src='" . resuelve('img/iconos/Recompensas.png') . "' alt='Recompensas'>
+                    </div>
+                    <h3>Recompensas</h3>
+                    <a href='" . resuelve('/admin/recompensas.php') . "'>
+                        <button class='btn-contorno'>Gestionar</button>
+                    </a>
+                </div>
             </div>
         </div>";
     }
