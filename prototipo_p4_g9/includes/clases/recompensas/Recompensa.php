@@ -56,6 +56,7 @@ class Recompensa
                     $row['activa']
                 );
             }
+            $result->free();
         }
 
         return $recompensas;
@@ -84,6 +85,7 @@ class Recompensa
                     $row['activa']
                 );
             }
+            $result->free();
         }
 
         return $recompensas;
