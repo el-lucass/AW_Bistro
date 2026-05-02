@@ -1,3 +1,0 @@
-cocinero_accion.php --> contiene la logica para las acciones que puede realizar un cocinero, coger pedido y marcar preparado
-cocinero_pedido.php --> como ser muestra los pedidos desde la vista del cocinero una vez seleccionados
-cocinero_pedidos --> vista principal, desde aqui puede ver sus pedidos activos (los que ya ha cogido y esta cocinando) y los que aun no han sido cogidos
