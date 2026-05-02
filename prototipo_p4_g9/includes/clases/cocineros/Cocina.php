@@ -26,6 +26,7 @@ class Cocina
             while ($row = $res->fetch_assoc()) {
                 $pedidos[] = $row;
             }
+            $res->free();
         }
         return $pedidos;
     }
@@ -89,6 +90,7 @@ class Cocina
             while ($row = $res->fetch_assoc()) {
                 $lineas[] = $row;
             }
+        $res->free();
         }
         return $lineas;
     }
@@ -165,6 +167,7 @@ class Cocina
             while ($row = $res->fetch_assoc()) {
                 $pedidos[] = $row;
             }
+            $res->free();
         }
         return $pedidos;
     }
@@ -195,6 +198,7 @@ class Cocina
             while ($row = $res->fetch_assoc()) {
                 $pedidos[] = $row;
             }
+            $res->free();
         }
         return $pedidos;
     }

@@ -86,6 +86,7 @@ class Oferta
                     $row['fecha_inicio'], $row['fecha_fin'], $row['porcentaje_descuento'], $productos
                 );
             }
+            $result->free();
         }
         return $ofertas;
     }
@@ -108,6 +109,7 @@ class Oferta
                     $row['fecha_inicio'], $row['fecha_fin'], $row['porcentaje_descuento'], $productos
                 );
             }
+            $result->free();
         }
         return $ofertas;
     }
@@ -194,6 +196,7 @@ class Oferta
             while ($row = $result->fetch_assoc()) {
                 $productos[] = $row;
             }
+            $result->free();
         }
         return $productos;
     }
