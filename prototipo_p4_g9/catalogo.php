@@ -117,6 +117,3 @@ EOS;
 
 require RAIZ_APP . '/vistas/plantillas/plantilla.php';
 ?>
-
-require RAIZ_APP . '/vistas/plantillas/plantilla.php';
-?>
