@@ -71,7 +71,7 @@ $hayProductos = false;
 foreach ($todosLosProductos as $prod) {
     if ($prod->getIdCategoria() == $catActiva && $prod->getDisponible()) {
         $hayProductos   = true;
-        $precioFinal    = $prod->getPrecioTotal();
+        $precioFinal    = round($prod->getPrecioTotal(), 2);
         $precioFormateado = number_format($precioFinal, 2, ',', '.');
         $imgPrincipal   = $prod->getImagenPrincipal();
         $rutaImg        = $imgPrincipal
