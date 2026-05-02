@@ -48,10 +48,13 @@ $contenidoPrincipal = "
         <h1 class='mb-0'>Catálogo de Productos</h1>
         <p class='catalogo-tipo'>Tipo: {$tipoTexto}</p>
     </div>
-    <div>
-    <a href='carrito.php' class='nav-link'>🛒 Ver Carrito
-    (<span id='contador-carrito'>{$cantidadCarrito}</span>)</a> 
-    <a href='recompensas.php' class='nav-link'>🎁 Recompensas</a>
+    <div class='flex-fila gap-10'>
+        <a href='recompensas.php'>
+            <button type='button' class='btn-naranja btn-lg'>🎁 Recompensas</button>
+        </a>
+        <a href='carrito.php'>
+            <button type='button' class='btn-oscuro btn-lg'>🛒 Ver Carrito (<span id='contador-carrito'>{$cantidadCarrito}</span>)</button>
+        </a>
     </div>
 </div>";
 

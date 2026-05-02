@@ -108,16 +108,23 @@ foreach ($_SESSION['carrito']['productos'] as $item) {
 $contenidoPrincipal = "
 <div class='catalogo-header'>
     <div>
-        <a href='catalogo.php' class='nav-link'>← Volver al catálogo</a>
+        <a href='catalogo.php'>
+            <button type='button' class='btn-contorno btn-sm mb-10'>&larr; Volver al catálogo</button>
+        </a>
         <h1 class='mb-0'>Recompensas disponibles</h1>
+        <p class='texto-sm texto-azul mb-10 mt-5'>
+            <em>Por cada euro gastado recibes 1 BistroCoin.</em>
+        </p>
         <p class='catalogo-tipo'>
         Tienes <strong>{$saldo} BistroCoins</strong><br>
         Vas a gastar <strong>{$bistrocoinsCarrito} BistroCoins</strong><br>
         Te quedarán <strong>{$saldoRestante} BistroCoins</strong>
-    </p>
+        </p>
     </div>
-    <div>
-        <a href='carrito.php' class='nav-link'>🛒 Ver Carrito ({$cantidadCarrito})</a>
+    <div class='flex-fila gap-10'>
+        <a href='carrito.php'>
+            <button type='button' class='btn-oscuro btn-lg'>🛒 Ver Carrito ({$cantidadCarrito})</button>
+        </a>
     </div>
 </div>
 
