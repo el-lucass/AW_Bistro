@@ -26,13 +26,13 @@ use es\ucm\fdi\aw\Aplicacion;
  * Parámetros de conexión a la BD
  */
 define('BD_HOST', 'localhost');
-define('BD_NAME', 'awp4');
-define('BD_USER', 'awp4'); // Recuerda usar 'root' si te daba Access Denied
-define('BD_PASS', 'awpass'); // Vacío '' si usas 'root' en XAMPP
+define('BD_NAME', 'examen');
+define('BD_USER', 'examen'); // Recuerda usar 'root' si te daba Access Denied
+define('BD_PASS', 'examenpass'); // Vacío '' si usas 'root' en XAMPP
 
 // Configuración de Rutas
 define('RAIZ_APP', __DIR__);
-define('RUTA_APP', '/Proyectos/AW_Bistro/prototipo_p4_g9');
+define('RUTA_APP', '/Proyectos/AW_Bistro/examen ordinaria');
 define('RUTA_IMGS', RUTA_APP . '/img/');
 define('RUTA_CSS', RUTA_APP . '/CSS/');
 define('RUTA_JS', RUTA_APP . '/JS/');

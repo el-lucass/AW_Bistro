@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-03-2026 a las 19:26:50
+-- Tiempo de generación: 17-06-2026 a las 17:23:47
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,8 +18,52 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `awp4`
+-- Base de datos: `examen`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `alergenos`
+--
+
+CREATE TABLE `alergenos` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `imagen_grande` varchar(255) DEFAULT NULL,
+  `imagen_pequeña` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `alergenos`
+--
+
+INSERT INTO `alergenos` (`id`, `nombre`, `imagen_grande`, `imagen_pequeña`) VALUES
+(1, 'gluten', 'gluten_large.png', 'gluten_small.png'),
+(2, 'crustáceos', 'crustaceos_large.png', 'crustaceos_small.png'),
+(3, 'huevos', 'huevos_large.png', 'huevos_small.png'),
+(4, 'pescado', 'pescado_large.png', 'pescado_small.png'),
+(5, 'cacahuetes', 'cacahuetes_large.png', 'cacahuetes_small.png'),
+(6, 'soja', 'soja_large.png', 'soja_small.png'),
+(7, 'lacteos', 'lacteos_large.png', 'lacteos_small.png'),
+(8, 'frutos de cáscara', 'frutos_cascara_large.png', 'frutos_cascara_small.png'),
+(9, 'apio', 'apio_large.png', 'apio_small.png'),
+(10, 'mostaza', 'mostaza_large.png', 'mostaza_small.png'),
+(11, 'granos de sésamo', 'sesamo_large.png', 'sesamo_small.png'),
+(12, 'dióxido de azufre y sulfitos', 'sulfitos_large.png', 'sulfitos_small.png'),
+(13, 'moluscos', 'moluscos_large.png', 'moluscos_small.png'),
+(14, 'altramuces', 'altramuces_large.png', 'altramuces_small.png');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `alergeno_productos`
+--
+
+CREATE TABLE `alergeno_productos` (
+  `id_alergeno` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -127,22 +171,23 @@ CREATE TABLE `pedido_productos` (
   `id_producto` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_unitario_historico` decimal(10,2) NOT NULL,
-  `preparado` tinyint(1) NOT NULL DEFAULT 0
+  `preparado` tinyint(1) NOT NULL DEFAULT 0,
+  `es_recompensa` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pedido_productos`
 --
 
-INSERT INTO `pedido_productos` (`id_pedido`, `id_producto`, `cantidad`, `precio_unitario_historico`, `preparado`) VALUES
-(1, 7, 1, 1.50, 0),
-(1, 9, 1, 1.50, 0),
-(2, 6, 3, 4.50, 0),
-(2, 11, 4, 1.20, 0),
-(3, 4, 1, 4.00, 0),
-(3, 7, 1, 1.50, 0),
-(4, 6, 2, 4.50, 0),
-(4, 11, 2, 1.20, 0);
+INSERT INTO `pedido_productos` (`id_pedido`, `id_producto`, `cantidad`, `precio_unitario_historico`, `preparado`, `es_recompensa`) VALUES
+(1, 7, 1, 1.50, 0, 0),
+(1, 9, 1, 1.50, 0, 0),
+(2, 6, 3, 4.50, 0, 0),
+(2, 11, 4, 1.20, 0, 0),
+(3, 4, 1, 4.00, 0, 0),
+(3, 7, 1, 1.50, 0, 0),
+(4, 6, 2, 4.50, 0, 0),
+(4, 11, 2, 1.20, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -172,7 +217,7 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `id_categoria`, `precio_
 (4, 'Dürum de Pollo', 'Tu pollo favorito enrollado en una suave tortilla de trigo, ideal para comer donde quieras con el máximo sabor.', 3, 3.64, 10, 1, 1),
 (5, 'Dürum de Ternera', 'Todo el carácter de la ternera asada en un formato práctico, compacto y repleto de frescura en cada bocado.', 3, 3.64, 10, 1, 1),
 (6, 'Dürum Mixto', 'El favorito de la casa. Mezcla de carnes con vegetales y salsas, perfectamente enrollados para una experiencia explosiva.', 3, 4.09, 10, 1, 1),
-(7, 'Coca-cola', 'La chispa clásica que equilibra perfectamente el sabor especiado de nuestra carne.', 1, 1.24, 21, 1, 1),
+(7, 'Coca-cola', 'La chispa clásica que equilibra perfectamente el sabor especiado de nuestra carne.', 1, 1.24, 21, 0, 1),
 (8, 'Fanta de Naranja', 'El toque cítrico y refrescante ideal para limpiar el paladar entre bocado y bocado.', 1, 1.24, 21, 1, 1),
 (9, 'Nestea', 'Té frío con un toque de limón, perfecto para quienes buscan una opción sin gas pero llena de frescura.', 1, 1.24, 21, 1, 1),
 (10, 'Aquarius', 'Bebida isotónica refrescante, ligera y con ese punto ácido que tanto gusta.', 1, 1.65, 21, 1, 1),
@@ -210,6 +255,19 @@ INSERT INTO `producto_imagenes` (`id`, `id_producto`, `ruta_imagen`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `recompensas`
+--
+
+CREATE TABLE `recompensas` (
+  `id` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `bistrocoins` int(11) NOT NULL,
+  `activa` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
@@ -231,11 +289,26 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre_usuario`, `email`, `nombre`, `apellidos`, `password`, `rol`, `avatar`, `bistrocoins`) VALUES
 (1, 'admin', 'pedrosanchez@gmail.com', 'Pedro', 'Sanchez', '$2y$10$jgpJdBHZRvcBui84WHc9ueNZxEE/4oeBCzvxn9Te1DmSnoi6yaZ1O', 'gerente', 'default.png', 0),
-(3, 'a', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cliente', 'default.png', 0);
+(3, 'a', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cliente', 'default.png', 0),
+(8, 'cocinero', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cocinero', 'default.png', 0),
+(9, 'camarero', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'camarero', 'default.png', 0);
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `alergenos`
+--
+ALTER TABLE `alergenos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `alergeno_productos`
+--
+ALTER TABLE `alergeno_productos`
+  ADD PRIMARY KEY (`id_alergeno`,`id_producto`),
+  ADD KEY `id_producto` (`id_producto`);
 
 --
 -- Indices de la tabla `categorias`
@@ -286,6 +359,13 @@ ALTER TABLE `producto_imagenes`
   ADD KEY `id_producto` (`id_producto`);
 
 --
+-- Indices de la tabla `recompensas`
+--
+ALTER TABLE `recompensas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_producto` (`id_producto`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -295,6 +375,12 @@ ALTER TABLE `usuarios`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `alergenos`
+--
+ALTER TABLE `alergenos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -327,14 +413,27 @@ ALTER TABLE `producto_imagenes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT de la tabla `recompensas`
+--
+ALTER TABLE `recompensas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `alergeno_productos`
+--
+ALTER TABLE `alergeno_productos`
+  ADD CONSTRAINT `alergeno_productos_ibfk_1` FOREIGN KEY (`id_alergeno`) REFERENCES `alergenos` (`id`),
+  ADD CONSTRAINT `alergeno_productos_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`);
 
 --
 -- Filtros para la tabla `oferta_productos`
@@ -369,20 +468,12 @@ ALTER TABLE `productos`
 ALTER TABLE `producto_imagenes`
   ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
-CREATE TABLE recompensas (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_producto INT NOT NULL,
-  bistrocoins INT NOT NULL,
-  activa TINYINT(1) NOT NULL DEFAULT 1,
-  FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
-);
-
-ALTER TABLE pedido_productos
-ADD es_recompensa TINYINT(1) NOT NULL DEFAULT 0;
-
+--
+-- Filtros para la tabla `recompensas`
+--
+ALTER TABLE `recompensas`
+  ADD CONSTRAINT `recompensas_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 COMMIT;
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

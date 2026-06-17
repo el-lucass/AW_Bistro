@@ -4,6 +4,8 @@ require_once '../includes/config.php';
 // Importamos las clases necesarias
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\productos\Producto;
+use es\ucm\fdi\aw\alergenos\Alergeno;
+
 
 // Seguridad: Solo el gerente puede editar
 if (!Usuario::tieneRol('gerente')) {
@@ -62,6 +64,31 @@ if (isset($_GET['error']) && $_GET['error'] === 'db') {
     $mensaje = "<div class='alerta-error'>Error al actualizar en la base de datos.</div>";
 }
 
+
+// Para los alergenos
+$htmlFilasAlergenos = '';
+$listaAlergenos = Alergeno::listaAlergenos();
+
+if(!empty($listaAlergenos)){
+    foreach($listaAlergenos as $row){
+        $idAlergeno = $row['id'];
+        $nombre = $row['nombre'];
+        $valNombre = htmlspecialchars($nombre);
+        $coincide = Alergeno::alergeno_producto($idAlergeno, $id) ? "checked" : "";
+
+        // El name es un array que se va a ir rellenando con si checked o no según el idAleregeno
+        // El valNombre es lo que se ve en la pantalla
+        $htmlFilasAlergenos .= "
+        <label>
+            <input type='checkbox' name='alergenos[]' value='{$idAlergeno}' {$coincide}>
+            {$valNombre}
+        </label><br>";
+    }
+}
+else{
+    $htmlFilasAlergenos .= "No hay alérgenos registrados";
+}
+
 $contenidoPrincipal = "
 <h1>Editar Producto</h1>
 {$mensaje}
@@ -107,6 +134,11 @@ $contenidoPrincipal = "
                 Disponible (hay stock)
             </label>
         </div>
+    </fieldset>
+
+    <fieldset class='fieldset-mt'>
+        <legend>Alérgenos</legend>
+        $htmlFilasAlergenos
     </fieldset>
 
     <fieldset class='fieldset-mt'>
