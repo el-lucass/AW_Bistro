@@ -4,6 +4,8 @@ require_once '../includes/config.php';
 // Importamos las clases necesarias
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\productos\Producto;
+use es\ucm\fdi\aw\alergenos\Alergeno;
+
 
 // 1. Seguridad: Solo el gerente puede procesar esto
 if (!Usuario::tieneRol('gerente')) {
@@ -19,6 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $precio_base = $_POST['precio_base'] ?? 0;
     $iva = $_POST['iva'] ?? 21;
     $disponible = isset($_POST['disponible']) ? 1 : 0; 
+
+    $alergenos = $_POST['alergenos'] ?? [];
+    Alergeno::borrarAlergenos($id);
+    foreach($alergenos as $id_alergeno){
+        Alergeno::ponerAlergeno($id, $id_alergeno);
+    }
     
     if (!$id) {
         header('Location: ../admin/productos.php');

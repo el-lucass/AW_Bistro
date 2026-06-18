@@ -58,5 +58,20 @@ class Alergeno
 
         return $res;
     }
+
+    public static function borrarAlergenos($id_producto){      
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $stmt = $conn->prepare("DELETE FROM alergeno_productos WHERE id_producto = ?");
+        $stmt->bind_param("i", $id_producto);
+        $stmt->execute();
+    }
+
+    public static function ponerAlergeno($id_producto, $id_alergeno){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        
+        $stmt = $conn->prepare("INSERT INTO alergeno_productos (id_alergeno, id_producto) VALUES (?, ?)");
+        $stmt->bind_param("ii", $id_alergeno, $id_producto);
+        $stmt->execute();
+    }
 }
 ?>
