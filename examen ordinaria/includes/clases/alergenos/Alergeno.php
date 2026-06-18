@@ -28,6 +28,23 @@ class Alergeno
     public function getImagenPequena() { return $this->imagen_pequena; }
 
 
+    public static function alergenoPorID($id_alergeno) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $stmt = $conn->prepare("SELECT * FROM alergenos WHERE id = ?");
+        $stmt->bind_param("i", $id_alergeno);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        
+        // ESTO ES LA CLAVE: fetch_assoc() lo convierte en el Array que tu código espera
+        if ($row = $result->fetch_assoc()) {
+            return $row; 
+        }
+        
+        return null; // Si no encuentra nada
+    }
+
+
 
     public static function listaAlergenos() {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -72,6 +89,18 @@ class Alergeno
         $stmt = $conn->prepare("INSERT INTO alergeno_productos (id_alergeno, id_producto) VALUES (?, ?)");
         $stmt->bind_param("ii", $id_alergeno, $id_producto);
         $stmt->execute();
+    }
+
+    
+    public static function alergenos_del_producto($id_producto){
+
+        $conn = Aplicacion::getInstance()->getConexionBd();     
+        $stmt = $conn->prepare("SELECT * FROM alergeno_productos WHERE id_producto = ?");
+        $stmt->bind_param("i", $id_producto);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result;
     }
 }
 ?>

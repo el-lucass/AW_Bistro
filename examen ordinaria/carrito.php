@@ -4,6 +4,8 @@ require_once __DIR__.'/includes/config.php';
 // Importamos las clases
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\ofertas\Oferta;
+use es\ucm\fdi\aw\alergenos\Alergeno;
+
 
 // Seguridad: Solo los clientes logueados pueden ver el carrito
 if (!isset($_SESSION['login']) || !Usuario::tieneRol('cliente')) {
@@ -137,6 +139,7 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
         <thead>
             <tr>
                 <th>Producto</th>
+                <th>Alergenos</th>
                 <th class='texto-centro'>Precio</th>
                 <th class='texto-centro'>Cantidad</th>
                 <th class='texto-derecha'>Subtotal</th>
@@ -150,53 +153,67 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
 
     foreach ($_SESSION['carrito']['productos'] as $item) {
 
-    $esRecompensa = !empty($item['es_recompensa']);
+        $esRecompensa = !empty($item['es_recompensa']);
 
-    $paramRecompensa = $esRecompensa ? '1' : '0';
+        $paramRecompensa = $esRecompensa ? '1' : '0';
 
-    $subtotalLinea = $esRecompensa
-        ? 0
-        : $item['precio'] * $item['cantidad'];
+        $subtotalLinea = $esRecompensa
+            ? 0
+            : $item['precio'] * $item['cantidad'];
 
-    $subtotalCarrito += $subtotalLinea;
+        $subtotalCarrito += $subtotalLinea;
 
-    $precioFormateado = $esRecompensa
-        ? "0.00"
-        : number_format($item['precio'], 2);
+        $precioFormateado = $esRecompensa
+            ? "0.00"
+            : number_format($item['precio'], 2);
 
-    $subtotalFormateado = number_format($subtotalLinea, 2);
+        $subtotalFormateado = number_format($subtotalLinea, 2);
 
-    $nombre = htmlspecialchars($item['nombre']);
+        $nombre = htmlspecialchars($item['nombre']);
 
-    $paramRecompensa = $esRecompensa ? '1' : '0';
+        $paramRecompensa = $esRecompensa ? '1' : '0';
 
-    if ($esRecompensa) {
-        $nombre .= " (Recompensa)";
+        if ($esRecompensa) {
+            $nombre .= " (Recompensa)";
+        }
+
+
+        // Alergenos
+        $id_producto = $item['id_producto'];
+        $alergenos_producto = Alergeno::alergenos_del_producto($id_producto);
+        $htmlAlergenos = '';
+        foreach ($alergenos_producto as $ap) {
+            $aux = Alergeno::alergenoPorID($ap['id_alergeno']);
+            $rutaImgAlergeno = RUTA_APP . "/img/alergenos/{$aux['imagen_pequena']}";
+            $htmlAlergenos.= "<img src ='{$rutaImgAlergeno}'>";
+        }
+
+
+
+        $contenidoPrincipal .= "
+            <tr>
+                <td><strong>{$nombre}</strong></td>
+                <td> {$htmlAlergenos} </td>
+                <td class='texto-centro'>{$precioFormateado} €</td>
+                <td class='texto-centro'>
+                    <div class='flex-centro gap-10'>
+                        <a href='carrito.php?actualizar=restar&id={$item['id_producto']}&recompensa={$paramRecompensa}'>
+                            <button class='btn-cantidad'>-</button>
+                        </a>
+                        <span class='cantidad-display'>{$item['cantidad']}</span>
+                        <a href='carrito.php?actualizar=sumar&id={$item['id_producto']}&recompensa={$paramRecompensa}'>
+                            <button class='btn-cantidad'>+</button>
+                        </a>
+                    </div>
+                </td>
+                <td class='texto-derecha'>{$subtotalFormateado} €</td>
+                <td class='texto-centro'>
+                    <a href='carrito.php?eliminar={$item['id_producto']}&recompensa={$paramRecompensa}'>
+                        <button class='btn-contorno btn-sm'>🗑️</button>
+                    </a>
+                </td>
+            </tr>";
     }
-
-    $contenidoPrincipal .= "
-        <tr>
-            <td><strong>{$nombre}</strong></td>
-            <td class='texto-centro'>{$precioFormateado} €</td>
-            <td class='texto-centro'>
-                <div class='flex-centro gap-10'>
-                    <a href='carrito.php?actualizar=restar&id={$item['id_producto']}&recompensa={$paramRecompensa}'>
-                        <button class='btn-cantidad'>-</button>
-                    </a>
-                    <span class='cantidad-display'>{$item['cantidad']}</span>
-                    <a href='carrito.php?actualizar=sumar&id={$item['id_producto']}&recompensa={$paramRecompensa}'>
-                        <button class='btn-cantidad'>+</button>
-                    </a>
-                </div>
-            </td>
-            <td class='texto-derecha'>{$subtotalFormateado} €</td>
-            <td class='texto-centro'>
-                <a href='carrito.php?eliminar={$item['id_producto']}&recompensa={$paramRecompensa}'>
-                    <button class='btn-contorno btn-sm'>🗑️</button>
-                </a>
-            </td>
-        </tr>";
-}
 
     $contenidoPrincipal .= "</tbody></table>";
 

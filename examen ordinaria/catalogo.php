@@ -3,6 +3,8 @@ require_once __DIR__.'/includes/config.php';
 
 // Importamos la clase Producto
 use es\ucm\fdi\aw\productos\Producto;
+use es\ucm\fdi\aw\alergenos\Alergeno;
+
 
 // Seguridad: Solo los clientes logueados pueden hacer pedidos
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {
@@ -81,6 +83,18 @@ foreach ($todosLosProductos as $prod) {
             ? RUTA_APP . "/img/productos/{$imgPrincipal}"
             : RUTA_APP . "/img/productos/default_food.png";
 
+
+        // Alergenos
+        $id_producto = $prod->getId();
+        $alergenos_producto = Alergeno::alergenos_del_producto($id_producto);
+        $htmlAlergenos = '';
+        foreach ($alergenos_producto as $ap) {
+            $aux = Alergeno::alergenoPorID($ap['id_alergeno']);
+            $rutaImgAlergeno = RUTA_APP . "/img/alergenos/{$aux['imagen_pequena']}";
+            $htmlAlergenos.= "<img src ='{$rutaImgAlergeno}'>";
+        }
+        
+
         $contenidoPrincipal .= "
         <div class='producto-card'>
             <div>
@@ -89,6 +103,7 @@ foreach ($todosLosProductos as $prod) {
                 <p class='producto-descripcion'>" . htmlspecialchars($prod->getDescripcion()) . "</p>
                 <h2 class='producto-precio'>{$precioFormateado} €</h2>
                 <p class='producto-iva'>IVA {$prod->getIva()}% incluido</p>
+                {$htmlAlergenos}
             </div>
             <form method='POST' action='catalogo.php?categoria={$catActiva}' class='producto-form js-form-cantidad'>
                 <input type='hidden' name='id_producto'     value='{$prod->getId()}'>

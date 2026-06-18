@@ -4,6 +4,8 @@ require_once __DIR__.'/includes/config.php';
 // Importamos la clase Pedido
 use es\ucm\fdi\aw\pedidos\Pedido;
 use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\alergenos\Alergeno;
+
 
 // Seguridad básica
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente' || !isset($_SESSION['carrito']) || empty($_SESSION['carrito']['productos'])) {
@@ -92,6 +94,7 @@ if ($resultadoBD['exito']) {
     $descuentoFormateado = number_format($descuentoTotal, 2);
     $totalFinalFormateado = number_format($totalFinal, 2);
 
+
     // Pantalla de éxito
     $contenidoPrincipal = "
     <div class='pagina-estrecha'>
@@ -141,9 +144,21 @@ if ($resultadoBD['exito']) {
             ? "0.00"
             : number_format($item['precio'] * $item['cantidad'], 2);
 
+    
+        // Alergenos
+        $id_producto = $item['id_producto'];
+        $alergenos_producto = Alergeno::alergenos_del_producto($id_producto);
+        $htmlAlergenos = '';
+        foreach ($alergenos_producto as $ap) {
+            $aux = Alergeno::alergenoPorID($ap['id_alergeno']);
+            $rutaImgAlergeno = RUTA_APP . "/img/alergenos/{$aux['imagen_pequena']}";
+            $htmlAlergenos.= "<img src ='{$rutaImgAlergeno}'>";
+        }
+
         $contenidoPrincipal .= "
                 <div class='ticket-producto'>
                     <span>{$nombreLinea} x{$item['cantidad']}</span>
+                    <span>{$htmlAlergenos}</span>
                     <span>{$subtotal} €</span>
                 </div>";
     }

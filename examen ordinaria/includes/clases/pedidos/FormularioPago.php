@@ -2,6 +2,7 @@
 namespace es\ucm\fdi\aw\pedidos;
 
 use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\alergenos\Alergeno;
 
 class FormularioPago extends Formulario
 {
@@ -76,9 +77,21 @@ class FormularioPago extends Formulario
         foreach ($this->carrito['productos'] as $item) {
             $subtotal              = $item['precio'] * $item['cantidad'];
             $subtotalSinDescuento += $subtotal;
+
+            // Alergenos
+            $id_producto = $item['id_producto'];
+            $alergenos_producto = Alergeno::alergenos_del_producto($id_producto);
+            $htmlAlergenos = '';
+            foreach ($alergenos_producto as $ap) {
+                $aux = Alergeno::alergenoPorID($ap['id_alergeno']);
+                $rutaImgAlergeno = RUTA_APP . "/img/alergenos/{$aux['imagen_pequena']}";
+                $htmlAlergenos.= "<img src ='{$rutaImgAlergeno}'>";
+            }
+
             $html .= "
             <div class='pago-item'>
                 <span>" . htmlspecialchars($item['nombre']) . " x{$item['cantidad']}</span>
+                <span> {$htmlAlergenos} </span>
                 <span>" . number_format($subtotal, 2) . " €</span>
             </div>";
         }
