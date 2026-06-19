@@ -116,6 +116,20 @@ foreach ($todosLosProductos as $prod) {
     }
 }
 
+if($hayProductos){
+    $alergenos = Alergeno::listaAlergenos();
+    $htmlAlergenos = '';
+    $contenidoPrincipal .= "</div>";
+    foreach($alergenos as $a){
+        $imgPequena = $a['imagen_pequena'];
+        $rutaImg = RUTA_APP . "/img/alergenos/{$imgPequena}";
+        $nombre = $a['nombre'];
+        $htmlAlergenos .= 
+            "<img src='{$rutaImg}' >
+            {$nombre}";
+    }
+    $contenidoPrincipal .= "{$htmlAlergenos}";
+}
 if (!$hayProductos) {
     $contenidoPrincipal .= "<p>No hay productos disponibles en esta categoría.</p>";
 }
