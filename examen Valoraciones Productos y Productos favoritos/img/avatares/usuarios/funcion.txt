@@ -1,0 +1,3 @@
+En esta carpeta se suben las fotos de usuarios que hayan subido sus fotos de avatares
+Se borran automaticamente cuando se borra la cuenta, ya sea desde el mismo perfil del usuario
+o desde la cuenta del gerente
