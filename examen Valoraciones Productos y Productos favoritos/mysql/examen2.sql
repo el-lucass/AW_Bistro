@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-03-2026 a las 19:26:50
+-- Tiempo de generación: 22-06-2026 a las 19:07:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `awp4`
+-- Base de datos: `examen2`
 --
 
 -- --------------------------------------------------------
@@ -112,7 +112,7 @@ CREATE TABLE `pedidos` (
 
 INSERT INTO `pedidos` (`id`, `id_usuario`, `id_cocinero`, `numero_dia`, `fecha_hora`, `estado`, `tipo`, `total_sin_descuento`, `descuento_aplicado`, `total_iva`) VALUES
 (1, 3, NULL, 1, '2026-03-22 18:07:28', 'cancelado', 'llevar', 0.00, 0.00, 3.00),
-(2, 3, NULL, 2, '2026-03-22 18:56:47', 'recibido', 'llevar', 0.00, 0.00, 18.29),
+(2, 3, 4, 2, '2026-03-22 18:56:47', 'entregado', 'llevar', 0.00, 0.00, 18.29),
 (3, 3, NULL, 3, '2026-03-22 19:04:36', 'cancelado', 'llevar', 0.00, 0.00, 5.50),
 (4, 3, NULL, 4, '2026-03-22 19:23:06', 'cancelado', 'llevar', 11.39, 2.98, 8.41);
 
@@ -127,22 +127,23 @@ CREATE TABLE `pedido_productos` (
   `id_producto` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_unitario_historico` decimal(10,2) NOT NULL,
-  `preparado` tinyint(1) NOT NULL DEFAULT 0
+  `preparado` tinyint(1) NOT NULL DEFAULT 0,
+  `es_recompensa` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pedido_productos`
 --
 
-INSERT INTO `pedido_productos` (`id_pedido`, `id_producto`, `cantidad`, `precio_unitario_historico`, `preparado`) VALUES
-(1, 7, 1, 1.50, 0),
-(1, 9, 1, 1.50, 0),
-(2, 6, 3, 4.50, 0),
-(2, 11, 4, 1.20, 0),
-(3, 4, 1, 4.00, 0),
-(3, 7, 1, 1.50, 0),
-(4, 6, 2, 4.50, 0),
-(4, 11, 2, 1.20, 0);
+INSERT INTO `pedido_productos` (`id_pedido`, `id_producto`, `cantidad`, `precio_unitario_historico`, `preparado`, `es_recompensa`) VALUES
+(1, 7, 1, 1.50, 0, 0),
+(1, 9, 1, 1.50, 0, 0),
+(2, 6, 3, 4.50, 1, 0),
+(2, 11, 4, 1.20, 1, 0),
+(3, 4, 1, 4.00, 0, 0),
+(3, 7, 1, 1.50, 0, 0),
+(4, 6, 2, 4.50, 0, 0),
+(4, 11, 2, 1.20, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -210,6 +211,19 @@ INSERT INTO `producto_imagenes` (`id`, `id_producto`, `ruta_imagen`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `recompensas`
+--
+
+CREATE TABLE `recompensas` (
+  `id` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `bistrocoins` int(11) NOT NULL,
+  `activa` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
@@ -231,7 +245,30 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre_usuario`, `email`, `nombre`, `apellidos`, `password`, `rol`, `avatar`, `bistrocoins`) VALUES
 (1, 'admin', 'pedrosanchez@gmail.com', 'Pedro', 'Sanchez', '$2y$10$jgpJdBHZRvcBui84WHc9ueNZxEE/4oeBCzvxn9Te1DmSnoi6yaZ1O', 'gerente', 'default.png', 0),
-(3, 'a', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cliente', 'default.png', 0);
+(3, 'a', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cliente', 'default.png', 18),
+(4, 'cocinero', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'cocinero', 'default.png', 0),
+(5, 'camarero', 'a@a', 'a', '', '$2y$10$3ddpxCtdM.C4tPpa3qMo3u5SKe5XtYTrf5fgzZJ9KwsOmJ6dfehw6', 'camarero', 'default.png', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `valoraciones`
+--
+
+CREATE TABLE `valoraciones` (
+  `id_usuario` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `puntuacion` int(11) NOT NULL,
+  `comentario` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `valoraciones`
+--
+
+INSERT INTO `valoraciones` (`id_usuario`, `id_producto`, `puntuacion`, `comentario`) VALUES
+(3, 6, 3, 'gracias por tanto perdona por tan poco'),
+(3, 11, 3, '');
 
 --
 -- Índices para tablas volcadas
@@ -286,11 +323,24 @@ ALTER TABLE `producto_imagenes`
   ADD KEY `id_producto` (`id_producto`);
 
 --
+-- Indices de la tabla `recompensas`
+--
+ALTER TABLE `recompensas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_producto` (`id_producto`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre_usuario` (`nombre_usuario`);
+
+--
+-- Indices de la tabla `valoraciones`
+--
+ALTER TABLE `valoraciones`
+  ADD PRIMARY KEY (`id_usuario`,`id_producto`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -327,10 +377,16 @@ ALTER TABLE `producto_imagenes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT de la tabla `recompensas`
+--
+ALTER TABLE `recompensas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -369,20 +425,12 @@ ALTER TABLE `productos`
 ALTER TABLE `producto_imagenes`
   ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
-CREATE TABLE recompensas (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_producto INT NOT NULL,
-  bistrocoins INT NOT NULL,
-  activa TINYINT(1) NOT NULL DEFAULT 1,
-  FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
-);
-
-ALTER TABLE pedido_productos
-ADD es_recompensa TINYINT(1) NOT NULL DEFAULT 0;
-
+--
+-- Filtros para la tabla `recompensas`
+--
+ALTER TABLE `recompensas`
+  ADD CONSTRAINT `recompensas_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 COMMIT;
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

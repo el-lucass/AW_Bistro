@@ -92,12 +92,25 @@ $renderPedido = function($pedido) use (&$estado_map, &$tipo_map, &$clase_estado,
         $esRecompensa = !empty($detalle['es_recompensa']);
         $nombreProducto = htmlspecialchars($detalle['nombre']) . ($esRecompensa ? " (Recompensa)" : "");
         $subtotalLine = $esRecompensa ? "0.00" : number_format($detalle['precio_unitario_historico'] * $detalle['cantidad'], 2);
-
+       
+        $htmlValoraciones = '';
+        if($estado_raw == "entregado") {
+            $id_producto = $detalle['id_producto'];
+            $htmlValoraciones .= "
+                <span>
+                    <a href='valorar_producto.php?id_producto={$id_producto}'>
+                    <button class='btn-editar btn-sm'>Valorar</button>
+                    </a>
+                </span>";
+        }
         $html .= "
             <div class='pedido-hist-prod-linea'>
                 <span>{$nombreProducto} x{$detalle['cantidad']}</span>
+                {$htmlValoraciones}
                 <span>{$subtotalLine} €</span>
             </div>";
+
+
     }
 
     $html .= "</div></div>";
