@@ -91,7 +91,10 @@ foreach ($todosLosProductos as $prod) {
         foreach ($alergenos_producto as $ap) {
             $aux = Alergeno::alergenoPorID($ap['id_alergeno']);
             $rutaImgAlergeno = RUTA_APP . "/img/alergenos/{$aux['imagen_pequena']}";
-            $htmlAlergenos.= "<img src ='{$rutaImgAlergeno}'>";
+            $htmlAlergenos.= 
+                "<a href = '#alergeno-{$ap['id_alergeno']}'>
+                    <img src ='{$rutaImgAlergeno}'>
+                </a>";
         }
         
 
@@ -119,15 +122,33 @@ foreach ($todosLosProductos as $prod) {
 if($hayProductos){
     $alergenos = Alergeno::listaAlergenos();
     $htmlAlergenos = '';
-    $contenidoPrincipal .= "</div>";
-    foreach($alergenos as $a){
-        $imgPequena = $a['imagen_pequena'];
-        $rutaImg = RUTA_APP . "/img/alergenos/{$imgPequena}";
-        $nombre = $a['nombre'];
-        $htmlAlergenos .= 
-            "<img src='{$rutaImg}' >
-            {$nombre}";
+    $contenidoPrincipal .= "
+        </div>
+        <h2> Leyenda de Alergenos</h2>
+        <h3> Señala tus alergias también</h3>
+        ";
+
+
+    if(!empty($alergenos)){
+        foreach($alergenos as $row){
+            $idAlergeno = $row['id'];
+            $nombre = $row['nombre'];
+            $valNombre = htmlspecialchars($nombre);
+            $coincide = Alergeno::alergenos_del_usuario($idAlergeno, $_SESSION['id']) ? "checked" : "";
+            //$coincide = "";
+            $imgGrande = $row['imagen_grande'];
+            $rutaImg = RUTA_APP . "/img/alergenos/{$imgGrande}";
+            // El name es un array que se va a ir rellenando con si checked o no según el idAleregeno
+            // El valNombre es lo que se ve en la pantalla
+            $htmlAlergenos .= "
+            <label>
+                <img id='alergeno-{$idAlergeno}' src='{$rutaImg}' >
+                <input type='checkbox' name='alergenos[]' value='{$idAlergeno}' {$coincide}>
+                {$valNombre}
+            </label><br>";
+        }
     }
+    
     $contenidoPrincipal .= "{$htmlAlergenos}";
 }
 if (!$hayProductos) {

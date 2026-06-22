@@ -102,5 +102,20 @@ class Alergeno
 
         return $result;
     }
+
+    public static function alergenos_del_usuario($id_alergeno, $id_usuario){
+
+        $conn = Aplicacion::getInstance()->getConexionBd();     
+        $stmt = $conn->prepare("SELECT * FROM alergeno_usuarios WHERE id_alergeno = ? AND id_usuario = ?");
+        $stmt->bind_param("ii", $id_producto, $id_usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $res = 0;
+        if ($result->num_rows > 0){
+            $res = 1;
+        }
+        return $res;
+    }
 }
 ?>
