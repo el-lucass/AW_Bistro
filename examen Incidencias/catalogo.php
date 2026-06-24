@@ -3,8 +3,6 @@ require_once __DIR__.'/includes/config.php';
 
 // Importamos la clase Producto
 use es\ucm\fdi\aw\productos\Producto;
-use es\ucm\fdi\aw\pedidos\Valoracion;
-
 
 // Seguridad: Solo los clientes logueados pueden hacer pedidos
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {
@@ -83,26 +81,11 @@ foreach ($todosLosProductos as $prod) {
             ? RUTA_APP . "/img/productos/{$imgPrincipal}"
             : RUTA_APP . "/img/productos/default_food.png";
 
-        // Valoraciones
-        $htmlValoraciones = '<span>';
-        $id_producto = $prod->getId();
-        $valoraciones = Valoracion::resumenValoracionesProducto($id_producto);
-        if($valoraciones['num_valoraciones'] == 0){
-            $htmlValoraciones .= "Sin valoraciones.";
-        }
-        else{
-            $media = $valoraciones['media'];
-            $num_valoraciones = $valoraciones['num_valoraciones'];
-            $htmlValoraciones .= "⭐ {$media}/5 ({$num_valoraciones} opiniones)";
-        }
-        $htmlValoraciones .= "</span>";
-
         $contenidoPrincipal .= "
         <div class='producto-card'>
             <div>
                 <img src='{$rutaImg}' class='producto-imagen' alt='" . htmlspecialchars($prod->getNombre()) . "'>
                 <h3 class='producto-nombre'>" . htmlspecialchars($prod->getNombre()) . "</h3>
-                {$htmlValoraciones}
                 <p class='producto-descripcion'>" . htmlspecialchars($prod->getDescripcion()) . "</p>
                 <h2 class='producto-precio'>{$precioFormateado} €</h2>
                 <p class='producto-iva'>IVA {$prod->getIva()}% incluido</p>

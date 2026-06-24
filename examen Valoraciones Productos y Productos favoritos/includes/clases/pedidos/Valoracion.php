@@ -47,4 +47,37 @@ class Valoracion
         return $stmt->execute();
     }
 
+
+public static function valoracionesDelProducto($id_producto){
+        $conn = Aplicacion::getInstance()->getConexionBd();        
+        $stmt = $conn->prepare("SELECT * FROM valoraciones WHERE id_producto = ?");
+        $stmt->bind_param("i",  $id_producto);
+
+        $stmt->execute(); // 1. Primero ejecutamos
+        return $stmt->get_result(); // 2. Luego devolvemos el resultado
+    }
+
+    public static function resumenValoracionesProducto($id_producto){
+        $valoraciones = self::valoracionesDelProducto($id_producto);
+        
+        $resumen = []; // Es buena práctica inicializar el array
+        $resumen['num_valoraciones'] = $valoraciones->num_rows;
+        $resumen['media'] = 0; // Por defecto la media es 0
+
+        if($resumen['num_valoraciones'] > 0) {
+            $suma_puntuaciones = 0; // Creamos una variable para ir sumando
+            
+            // ¡Corregido! Usamos $valoraciones, no $result
+            while ($row = $valoraciones->fetch_assoc()) {
+                $suma_puntuaciones += $row['puntuacion']; // Sumamos todas las notas
+            }
+            
+            // La media se calcula FUERA del bucle, dividiendo la suma total
+            // entre el número total de valoraciones que ya teníamos guardado.
+            $resumen['media'] = $suma_puntuaciones / $resumen['num_valoraciones'];
+        }
+        
+        return $resumen;
+    }
+
 }
