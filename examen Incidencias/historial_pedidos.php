@@ -4,6 +4,8 @@ require_once __DIR__.'/includes/config.php';
 // Importamos la clase Pedido
 use es\ucm\fdi\aw\pedidos\Pedido;
 use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\incidencias\Incidencia;
+
 
 // Seguridad: solo clientes logueados
 if (!isset($_SESSION['login']) || $_SESSION['rol'] != 'cliente') {
@@ -59,6 +61,32 @@ $renderPedido = function($pedido) use (&$estado_map, &$tipo_map, &$clase_estado,
     $tipo_text    = $tipo_map[$pedido->getTipo()] ?? ucfirst($pedido->getTipo());
     $claseE       = $clase_estado[$estado_raw] ?? 'estado-default';
 
+    // Incidencias(solo salen si es entregado y no se ha puesto una antes)
+    $htmlIncidencias = '';
+    if($estado_raw == "entregado"){
+        if(Incidencia::existeIncidencia($id_pedido)){
+            if(Incidencia::getEstadoPorIdPedido($id_pedido) == "pendiente"){
+                $htmlIncidencias .= "
+                <a href='reportar_incidencia.php?id_pedido={$id_pedido}'>
+                    <button class='btn-editar btn-sm mb-5'> ⚠️ Editar Incidencia: En revisión</button>
+                </a> ";
+            }
+            else {
+               $htmlIncidencias .= "
+                <span>
+                    ✅ Incidencia Resuelta
+                </span> ";
+            }
+        }
+        else {
+            $htmlIncidencias .= "
+            <a href='reportar_incidencia.php?id_pedido={$id_pedido}'>
+                <button class='btn-editar btn-sm mb-5'>Poner incidencia</button>
+            </a> ";
+        }
+    }
+
+
     $html = "
     <div class='pedido-hist-card'>
         <div class='pedido-hist-top'>
@@ -66,6 +94,7 @@ $renderPedido = function($pedido) use (&$estado_map, &$tipo_map, &$clase_estado,
                 <div class='pedido-hist-num-fila'>
                     <h2 class='pedido-hist-num'>Pedido #{$pedido->getNumeroDia()}</h2>
                     <span class='badge-estado {$claseE}'>{$status_text}</span>
+                    {$htmlIncidencias}
                 </div>
                 <div class='pedido-hist-fecha'>Fecha: {$fechaFormat}</div>
                 <div class='pedido-hist-tipo'>Tipo: {$tipo_text}</div>

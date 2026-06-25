@@ -32,6 +32,8 @@ $nombreActual = $estaLogueado && isset($_SESSION['nombre']) ? $_SESSION['nombre'
             <a href="<?= RUTA_APP ?>/admin/pedidos_pendientes.php"   class="nav-link-admin">Pedidos pendientes</a>
             <a href="<?= RUTA_APP ?>/admin/ofertas.php"              class="nav-link-admin">Ofertas</a>
             <a href="<?= RUTA_APP ?>/admin/recompensas.php"              class="nav-link-admin">Recompensas</a>
+            <a href="<?= RUTA_APP ?>/admin/incidencias.php"              class="nav-link-admin">Incidencias</a>
+
             <span class="nav-separador"></span>
         <?php endif; ?>
 

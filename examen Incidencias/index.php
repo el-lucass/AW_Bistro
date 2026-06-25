@@ -67,6 +67,12 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
                     </a>
                 </div>
                 <div class='tarjeta-opcion'>
+                    <h3>Incidencias</h3>
+                    <a href='" . resuelve('/admin/incidencias.php') . "'>
+                        <button class='btn-contorno'>Administrar incidencias</button>
+                    </a>
+                </div>
+                <div class='tarjeta-opcion'>
                     <div class='icono-opcion'>
                         <img src='" . resuelve('img/iconos/Icono_durum.jpg') . "' alt='Productos'>
                     </div>
